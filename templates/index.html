@@ -1,14 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!--
+    Specifies the document type and version of HTML - HTML5.
+    -->
     <meta charset="UTF-8">
+    <!--
+    Sets the character encoding for the HTML document to UTF-8.
+    UTF-8 is a standard character set that supports most of the characters used worldwide.
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+    Ensures the webpage is responsive and adjusts to different screen sizes.
+    `width=device-width` sets the width of the page to follow the screen width of the device.
+    `initial-scale=1.0` sets the initial zoom level when the page is loaded.
+    -->
     <title>PDF Merger</title>
+    <!--
+    Sets the title of the webpage that appears on the browser tab.
+    In this case, the title is "PDF Merger".
+    -->
 </head>
 <body>
+    <!-- Main heading of the webpage -->
     <h1>Upload PDF Files to Merge</h1>
+
+    <!--
+    Form for uploading PDF files.
+    `action="/upload"` specifies the URL where the form data will be sent when submitted.
+    `method="post"` specifies the HTTP method to use for the form submission (POST in this case).
+    `enctype="multipart/form-data"` specifies that the form can upload files.
+    -->
     <form action="/upload" method="post" enctype="multipart/form-data">
+        <!--
+        Input field for selecting files to upload.
+        `type="file"` specifies this input is for file uploads.
+        `name="file"` is the name used to identify this input field when submitted.
+        `multiple` allows users to select multiple files at once.
+        -->
         <input type="file" name="file" multiple>
+
+        <!--
+        Submit button for the form.
+        When clicked, it sends the selected files to the server for processing.
+        `type="submit"` specifies this input is a submit button.
+        `value="Upload and Merge"` is the text displayed on the button.
+        -->
         <input type="submit" value="Upload and Merge">
     </form>
 </body>
