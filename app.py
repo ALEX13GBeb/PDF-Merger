@@ -40,6 +40,13 @@ def upload_file():
     if not files: # Checks if the files list is empty
         return redirect(request.url)
 
+    merged_filename=request.form.get("merged_filename")
+    if not merged_filename:
+        return redirect(request.url)
+
+    # Ensure the filename is safe and add the .pdf extension
+    merged_filename=secure_filename(merged_filename) + ".pdf"
+
     filenames = []
     for file in files:
         if file and allowed_file(file.filename): # file.filename - This is an attribute of the FileStorage object (file) that gives the name of the uploaded file as a string.
@@ -57,9 +64,10 @@ def upload_file():
 
     if filenames:
         merger_pdf(filenames)
-        merged_file_path = os.path.join(app.config['MERGED_FOLDER'], 'merger_output.pdf')
+        merged_file_path = os.path.join(app.config['MERGED_FOLDER'], merged_filename)
+        os.rename(os.path.join(app.config['MERGED_FOLDER'], 'merger_output.pdf'), merged_file_path)
         # Defines the path for the merged output pdf
-        return send_from_directory(app.config['MERGED_FOLDER'], 'merger_output.pdf', as_attachment=True)
+        return send_from_directory(app.config['MERGED_FOLDER'], merged_filename, as_attachment=True)
         # Sends the merged PDF file to the user as a downloadable attachment.
         # send_from_directory - ensures the file is sent from the specified directory.
     else:
