@@ -25,6 +25,20 @@ def allowed_file(filename): # Returns TRUE or FALSE
 def index(): # Basically the html call for the home page interface
     return render_template('index.html')
 
+@app.route("/profile", methods=["GET", "POST"])
+def profile_page():
+    return render_template("profile.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login_page():
+    return render_template("login.html")
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup_page():
+    return render_template("signup.html")
+
+
+
 @app.route('/upload', methods=['POST']) # Decorator
 # It tells the app that the following function should run if a Post request has been made
 # to the \upload URL
