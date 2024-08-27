@@ -46,27 +46,46 @@
             color: #333;             /* Text color */
         }
 
+        .form-group{
+            display: flex;
+            align-items: center;
+            margin-bottom:15px;
+        }
+
+        .form-group label{
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .form-group input{
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            flex-grow: 1;
+        }
+
     </style>
 </head>
 <body>
     <div class="box">
         <form>
 
-            <div>
-                <label>Username:  </label>
-                <input type="text" name="login_un"  required>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="login_un"  required>
             </div>
 
             <br>
 
-            <div>
-                <label>Password:  </label>
-                <input type="text" name="login_password" required>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="text" id="password" name="login_password" required>
             </div>
 
             <br>
 
-            <div>
+            <div class="form-group">
                 <input type="submit" class="button blue" value="Log In">
             </div>
 

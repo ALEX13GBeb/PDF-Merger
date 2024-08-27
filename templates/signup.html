@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
     <style>
-        /* CSS to center the box and style it */
-
+        /* General styles for buttons */
         .button {
             padding: 10px 20px; /* Padding inside the button */
             color: white;       /* Text color */
@@ -14,15 +13,16 @@
             border-radius: 5px; /* Rounded corners */
             cursor: pointer;    /* Cursor changes to a pointer on hover */
             text-decoration: none; /* Remove underline from text */
-            width: 80px;       /* Fixed width for both buttons */
+            width: 80px;       /* Fixed width for buttons */
             text-align: center; /* Center text inside the button */
-            display: inline-block; /* Ensure the width and text alignment work */
+            display: inline-block; /* Ensure width and text alignment work */
         }
 
-        .blue{
-            background-color: #6495ED;
+        .blue {
+            background-color: #6495ED; /* Blue background for buttons */
         }
 
+        /* Body styling */
         body {
             display: flex;
             justify-content: center; /* Centers the box horizontally */
@@ -32,20 +32,40 @@
             background-color: #f0f0f0; /* Light background color for contrast */
         }
 
+        /* Box styling */
         .box {
             width: 450px;           /* Width of the box */
-            height: 500px;          /* Height of the box */
+            height: auto;           /* Height adjusts based on content */
             border: 2px solid #4CAF50; /* Green outline */
             border-radius: 10px;    /* Rounded corners */
             background-color: white; /* White background inside the box */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a 3D effect */
             display: flex;
-            justify-content: center; /* Center content horizontally */
-            align-items: center;     /* Center content vertically */
+            flex-direction: column;  /* Stack children vertically */
+            padding: 20px;           /* Padding inside the box */
             font-family: Arial, sans-serif; /* Font styling */
             color: #333;             /* Text color */
         }
 
+
+        .form-group {
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Align items vertically centered */
+            margin-bottom: 15px; /* Space between form groups */
+        }
+
+        .form-group label {
+            font-weight: bold; /* Bold text for labels */
+            margin-right: 10px; /* Space between label and input */
+        }
+
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            flex-grow: 1; /* Allows input to take up remaining space */
+        }
     </style>
 </head>
 <body>
@@ -53,54 +73,41 @@
     <div class="box">
         <form>
 
-            <div>
-                <label>First Name:  </label>
-                <input type="text" name="signup_fs" required>
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="signup_fs" required>
             </div>
 
-            <br>
-
-            <div>
-                <label>Last Name:  </label>
-                <input type="text" name="signup_ln" required>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="signup_ln" required>
             </div>
 
-            <br>
-
-            <div>
-                <label>Username:  </label>
-                <input type="text" name="signup_un" required>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="signup_un" required>
             </div>
 
-            <br>
-
-            <div>
-                <label>Email:  </label>
-                <input type="text" name="signup_email" required>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="signup_email" required>
             </div>
 
-            <br>
-
-            <div>
-                <label>Password:  </label>
-                <input type="text" name="signup_password" required>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="signup_password" required>
             </div>
 
-            <br>
-
-            <div>
-                <label>Check Password:  </label>
-                <input type="text" name="signup_password" required>
+            <div class="form-group">
+                <label for="re_password">Check Password:</label>
+                <input type="password" id="re_password" name="signup_re_password" required>
             </div>
 
-            <br>
-
-            <div>
+            <div class="form-group">
                 <input type="submit" class="button blue" value="Sign Up">
             </div>
 
         </form>
-
     </div>
 
 </body>
