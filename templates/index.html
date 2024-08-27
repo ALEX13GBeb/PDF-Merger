@@ -1,54 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!--
-    Specifies the document type and version of HTML - HTML5.
-    -->
     <meta charset="UTF-8">
-    <!--
-    Sets the character encoding for the HTML document to UTF-8.
-    UTF-8 is a standard character set that supports most of the characters used worldwide.
-    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--
-    Ensures the webpage is responsive and adjusts to different screen sizes.
-    `width=device-width` sets the width of the page to follow the screen width of the device.
-    `initial-scale=1.0` sets the initial zoom level when the page is loaded.
-    -->
     <title>PDF Merger</title>
-    <!--
-    Sets the title of the webpage that appears on the browser tab.
-    In this case, the title is "PDF Merger".
-    -->
+
+    <style>
+        .button {
+            padding: 10px 20px; /* Padding inside the button */
+            color: white;       /* Text color */
+            border: none;       /* Remove button border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer;    /* Cursor changes to a pointer on hover */
+            text-decoration: none; /* Remove underline from text */
+            width: 90px;       /* Fixed width for both buttons */
+            text-align: center; /* Center text inside the button */
+            display: inline-block; /* Ensure the width and text alignment work */
+        }
+
+        .button:hover {
+            background-color: #45a049; /* Darken the button on hover */
+        }
+
+        .button-wrapper {
+            position: absolute;
+            right: 10px; /* Align buttons to the right of the page */
+            /* Ensure both buttons are vertically aligned */
+        }
+
+        .button-wrapper:nth-of-type(1) {
+            top: 10px; /* Position first button from the top */
+        }
+
+        .button-wrapper:nth-of-type(2) {
+            top: 50px; /* Position second button below the first button */
+        }
+
+        .green{
+            background-color: #4CAF50; /* Button background color */
+        }
+
+        .blue{
+            background-color: #000000;
+        }
+    </style>
 </head>
 <body>
-    <!-- Main heading of the webpage -->
+
     <h1>Upload PDF Files to Merge</h1>
 
-    <!--
-    Form for uploading PDF files.
-    `action="/upload"` specifies the URL where the form data will be sent when submitted.
-    `method="post"` specifies the HTTP method to use for the form submission (POST in this case).
-    `enctype="multipart/form-data"` specifies that the form can upload files.
-    -->
+    <div class="button-wrapper">
+        <a href="/login" class="button green">Log in</a>
+    </div>
+
+    <div class="button-wrapper">
+        <a href="/signup" class="button green">Sign up</a>
+    </div>
+
+    <div>
+        <a href="/profile" class="button blue">Profile</a>
+    </div>
+
+    <br>
+
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <!--
-        Input field for selecting files to upload.
-        `type="file"` specifies this input is for file uploads.
-        `name="file"` is the name used to identify this input field when submitted.
-        `multiple` allows users to select multiple files at once.
-        -->
-        <input type="file" name="file" multiple>
-
-        <input type="text" name="merged_filename" placeholder="Enter merged file name (without .pdf)" required>
-
-        <!--
-        Submit button for the form.
-        When clicked, it sends the selected files to the server for processing.
-        `type="submit"` specifies this input is a submit button.
-        `value="Upload and Merge"` is the text displayed on the button.
-        -->
-        <input type="submit" value="Upload and Merge">
+        <div>
+            <input type="file" name="file" multiple>
+        </div>
+        <br>
+        <div>
+            <input type="text" name="merged_filename" placeholder="Enter merged file name (without .pdf)" required>
+            <input type="submit" value="Upload and Merge">
+        </div>
     </form>
 </body>
 </html>
