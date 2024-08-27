@@ -1,5 +1,6 @@
 from flask import Flask, request, redirect, url_for, send_from_directory, render_template
 import os
+import csv
 from werkzeug.utils import secure_filename
 from merge import merger_pdf
 
@@ -7,19 +8,13 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MERGED_FOLDER'] = 'merged'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
-# app.config['...'] is a key in Flask’s configuration object, app.config.
-# It is being set to the string 'uploads/ merged'
 
-# Ensure upload and merged folders exist,
-# even if they have been deleted
+# Ensure upload and merged folders exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['MERGED_FOLDER'], exist_ok=True)
 
-def allowed_file(filename): # Returns TRUE or FALSE
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS'] # Basically an AND Gate
-# rsplit(".", 1) - splits the string into a LIST
-# "." - specifies where to split
-# 1 - specifies how many components the list should have = 2 (0 and 1)
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 @app.route('/')
 def index():
@@ -35,59 +30,64 @@ def login_page():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup_page():
+    if request.method == 'POST':
+        # Collect user data from the form
+        user_data = {
+            "first_name": request.form.get("signup_fn"),
+            "last_name": request.form.get("signup_ln"),
+            "username": request.form.get("signup_un"),
+            "email": request.form.get("signup_email"),
+            "password": request.form.get("signup_password"),
+        }
+
+        # Define the path to the CSV file
+        csv_file_path = 'admin.csv'
+
+        # Write user_data to CSV file
+        file_exists = os.path.isfile(csv_file_path)
+        with open(csv_file_path, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.DictWriter(file, fieldnames=user_data.keys())
+            # Write header if file is empty
+            if not file_exists:
+                writer.writeheader()
+            # Write user data
+            writer.writerow(user_data)
+
+        return redirect(url_for('index'))
+
     return render_template("signup.html")
 
-
-
-@app.route('/upload', methods=['POST']) # Decorator
-# It tells the app that the following function should run if a Post request has been made
-# to the \upload URL
-# Post means sending data to the server (uploading files)
-
+@app.route('/upload', methods=['POST'])
 def upload_file():
-    if 'file' not in request.files: # This means no files were uploaded
+    if 'file' not in request.files:
         return redirect(request.url)
 
-    files = request.files.getlist('file') # Get a list of files uploaded
-    # Allows the function to handle multiple files in one request
+    files = request.files.getlist('file')
 
-    if not files: # Checks if the files list is empty
+    if not files:
         return redirect(request.url)
 
-    merged_filename=request.form.get("merged_filename")
+    merged_filename = request.form.get("merged_filename")
     if not merged_filename:
         return redirect(request.url)
 
-    # Ensure the filename is safe and add the .pdf extension
-    merged_filename=secure_filename(merged_filename) + ".pdf"
+    merged_filename = secure_filename(merged_filename) + ".pdf"
 
     filenames = []
     for file in files:
-        if file and allowed_file(file.filename): # file.filename - This is an attribute of the FileStorage object (file) that gives the name of the uploaded file as a string.
-            # In Flask, when you upload a file using a form,
-            # each file is represented as a FileStorage object in request.files.
-            # This object contains methods and attributes that provide information about the uploaded file.
-            filename = secure_filename(file.filename) # Cleans up the Filename:
-            # Removes Unsafe Characters
-            # Avoids Path Traversals
-            # Normalizes the Filename
-            # Limits Length
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename) # Creates the full path where the file will be saved
-            file.save(file_path) # Saves the file to the specified path
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
             filenames.append(file_path)
 
     if filenames:
         merger_pdf(filenames)
         merged_file_path = os.path.join(app.config['MERGED_FOLDER'], merged_filename)
         os.rename(os.path.join(app.config['MERGED_FOLDER'], 'merger_output.pdf'), merged_file_path)
-        # Defines the path for the merged output pdf
         return send_from_directory(app.config['MERGED_FOLDER'], merged_filename, as_attachment=True)
-        # Sends the merged PDF file to the user as a downloadable attachment.
-        # send_from_directory - ensures the file is sent from the specified directory.
     else:
         return redirect(request.url)
 
 if __name__ == '__main__':
     app.run(debug=True)
-    # Starts the app in debug mode
-    # Debug Mode - let's you see errors and reloads the page automatically
