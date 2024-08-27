@@ -21,8 +21,8 @@ def allowed_file(filename): # Returns TRUE or FALSE
 # "." - specifies where to split
 # 1 - specifies how many components the list should have = 2 (0 and 1)
 
-@app.route('/') # This runs when someone visits the home page
-def index(): # Basically the html call for the home page interface
+@app.route('/')
+def index():
     return render_template('index.html')
 
 @app.route("/profile", methods=["GET", "POST"])

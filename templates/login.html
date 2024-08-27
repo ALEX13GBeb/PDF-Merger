@@ -2,9 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Log In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        /* CSS to center the box and style it */
+
+        .button {
+            padding: 10px 20px; /* Padding inside the button */
+            color: white;       /* Text color */
+            border: none;       /* Remove button border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer;    /* Cursor changes to a pointer on hover */
+            text-decoration: none; /* Remove underline from text */
+            width: 80px;       /* Fixed width for both buttons */
+            text-align: center; /* Center text inside the button */
+            display: inline-block; /* Ensure the width and text alignment work */
+        }
+
+        .blue{
+            background-color: #6495ED;
+        }
+
+        body {
+            display: flex;
+            justify-content: center; /* Centers the box horizontally */
+            align-items: center;     /* Centers the box vertically */
+            height: 100vh;           /* Full viewport height */
+            margin: 0;               /* Removes default body margin */
+            background-color: #f0f0f0; /* Light background color for contrast */
+        }
+
+        .box {
+            width: 300px;           /* Width of the box */
+            height: 200px;          /* Height of the box */
+            border: 2px solid #4CAF50; /* Green outline */
+            border-radius: 10px;    /* Rounded corners */
+            background-color: white; /* White background inside the box */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a 3D effect */
+            display: flex;
+            justify-content: center; /* Center content horizontally */
+            align-items: center;     /* Center content vertically */
+            font-family: Arial, sans-serif; /* Font styling */
+            color: #333;             /* Text color */
+        }
+
+    </style>
 </head>
 <body>
-    <h1>This is where you log in</h1>
+    <div class="box">
+        <form>
+
+            <div>
+                <label>Username:  </label>
+                <input type="text" name="login_un"  required>
+            </div>
+
+            <br>
+
+            <div>
+                <label>Password:  </label>
+                <input type="text" name="login_password" required>
+            </div>
+
+            <br>
+
+            <div>
+                <input type="submit" class="button blue" value="Log In">
+            </div>
+
+        </form>
+    </div>
 </body>
 </html>
