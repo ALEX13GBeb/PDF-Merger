@@ -1,24 +1,26 @@
-from flask import Flask, request, redirect, url_for, send_from_directory, render_template
+from flask import Flask, request, redirect, url_for, send_from_directory, render_template, session
 import os
 import csv
 from werkzeug.utils import secure_filename
 from merge import merger_pdf
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MERGED_FOLDER'] = 'merged'
-app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+app.secret_key = "my_session_key"
+
+app.config["UPLOAD_FOLDER"] = "uploads"
+app.config["MERGED_FOLDER"] = "merged"
+app.config["ALLOWED_EXTENSIONS"] = {"pdf"}
 
 # Ensure upload and merged folders exist
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-os.makedirs(app.config['MERGED_FOLDER'], exist_ok=True)
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+os.makedirs(app.config["MERGED_FOLDER"], exist_ok=True)
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
 
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile_page():
@@ -26,11 +28,36 @@ def profile_page():
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
-    return render_template("login.html")
+    if request.method == "POST":
+        try_login = [request.form.get("login_un"), request.form.get("login_password")]
+
+        login_file_path = "login_data.csv"
+
+        if os.path.isfile(login_file_path):
+            with open(login_file_path, "r", newline="", encoding="utf-8") as Llogin_file:
+                login_rows = csv.reader(Llogin_file)
+                next(login_rows)  # Skip the header row if there is one
+
+                for row in login_rows:
+                    available_login = [row[0], row[1]]
+                    if try_login == available_login:
+                        session.pop("error", None)  # Clear any existing error messages
+                        print("Login successful.")  # Debugging statement
+                        return redirect(url_for("index"))  # Redirect to the index or another page
+
+        # Set an error message in session if login fails
+        session["error"] = "Invalid username or password"
+        print(f"Login failed: {session['error']}")  # Debugging statement
+        return redirect(url_for("login_page"))  # Redirect to the login page to display the error
+
+    # For GET requests, or if login fails, render the login page
+    error = session.pop("error", None)  # Clear the error from session if it exists
+    print(f"Rendering login page with error: {error}")  # Debugging statement
+    return render_template("login.html", error=error)
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup_page():
-    if request.method == 'POST':
+    if request.method == "POST":
         # Collect user data from the form
         user_data = {
             "first_name": request.form.get("signup_fn"),
@@ -40,35 +67,54 @@ def signup_page():
             "password": request.form.get("signup_password"),
         }
 
+        login_data = {
+            "username": request.form.get("signup_un"),
+            "password": request.form.get("signup_password")
+        }
+
         # Define the path to the CSV file
-        csv_file_path = 'admin.csv'
+        Aadmin_file_path = "admin.csv"
+        Alogin_file_path = "login_data.csv"
 
         # Write user_data to CSV file
-        file_exists = os.path.isfile(csv_file_path)
-        with open(csv_file_path, mode='a', newline='', encoding='utf-8') as file:
-            writer = csv.DictWriter(file, fieldnames=user_data.keys())
+        admin_exists = os.path.isfile(Aadmin_file_path)
+        with open(Aadmin_file_path, mode="a", newline="", encoding="utf-8") as admin_file:
+            # newline - ensures blank lines are handled consistently between platforms
+            admin_writer = csv.DictWriter(admin_file, fieldnames=user_data.keys())
             # Write header if file is empty
-            if not file_exists:
-                writer.writeheader()
+            if not admin_exists:
+                admin_writer.writeheader()
             # Write user data
-            writer.writerow(user_data)
+            admin_writer.writerow(user_data)
+            print(f"User data written to {Aadmin_file_path}: {user_data}")  # Debugging statement
 
-        return redirect(url_for('index'))
+            login_exists = os.path.isfile(Alogin_file_path)
+            with open(Alogin_file_path, "a", newline="", encoding="utf-8") as login_file:
+                login_writer = csv.DictWriter(login_file, fieldnames=login_data.keys())
+                if not login_exists:
+                    login_writer.writeheader()
+                login_writer.writerow(login_data)
+                print(f"Login data written to {Alogin_file_path}: {login_data}")  # Debugging statement
 
-    return render_template("signup.html")
+        return redirect(url_for("index"))  # Redirects back to the index page
 
-@app.route('/upload', methods=['POST'])
+    return render_template("signup.html")  # Renders the sign-up form
+
+@app.route("/upload", methods=["POST"])
 def upload_file():
-    if 'file' not in request.files:
+    if "file" not in request.files:
+        print("No file part in request.")  # Debugging statement
         return redirect(request.url)
 
-    files = request.files.getlist('file')
+    files = request.files.getlist("file")
 
     if not files:
+        print("No files selected.")  # Debugging statement
         return redirect(request.url)
 
     merged_filename = request.form.get("merged_filename")
     if not merged_filename:
+        print("No merged filename provided.")  # Debugging statement
         return redirect(request.url)
 
     merged_filename = secure_filename(merged_filename) + ".pdf"
@@ -77,17 +123,20 @@ def upload_file():
     for file in files:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(file_path)
             filenames.append(file_path)
+            print(f"File saved: {file_path}")  # Debugging statement
 
     if filenames:
         merger_pdf(filenames)
-        merged_file_path = os.path.join(app.config['MERGED_FOLDER'], merged_filename)
-        os.rename(os.path.join(app.config['MERGED_FOLDER'], 'merger_output.pdf'), merged_file_path)
-        return send_from_directory(app.config['MERGED_FOLDER'], merged_filename, as_attachment=True)
+        merged_file_path = os.path.join(app.config["MERGED_FOLDER"], merged_filename)
+        os.rename(os.path.join(app.config["MERGED_FOLDER"], "merger_output.pdf"), merged_file_path)
+        print(f"Merged file saved: {merged_file_path}")  # Debugging statement
+        return send_from_directory(app.config["MERGED_FOLDER"], merged_filename, as_attachment=True)
     else:
+        print("No valid files to merge.")  # Debugging statement
         return redirect(request.url)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)

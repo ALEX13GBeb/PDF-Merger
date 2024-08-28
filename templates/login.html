@@ -33,8 +33,8 @@
         }
 
         .box {
-            width: 300px;           /* Width of the box */
-            height: 200px;          /* Height of the box */
+            width: 325px;           /* Width of the box */
+            height: 300px;          /* Height of the box */
             border: 2px solid #4CAF50; /* Green outline */
             border-radius: 10px;    /* Rounded corners */
             background-color: white; /* White background inside the box */
@@ -65,11 +65,18 @@
             flex-grow: 1;
         }
 
+        .error-message{
+            color: red;
+            text-align: center;
+            margin-top:10px;
+        }
+
     </style>
 </head>
 <body>
+
     <div class="box">
-        <form>
+        <form method="post">
 
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -87,6 +94,12 @@
 
             <div class="form-group">
                 <input type="submit" class="button blue" value="Log In">
+            </div>
+
+            <div>
+                {% if error%}
+                <p class="error-message">{{ error }}</p>
+                {% endif %}
             </div>
 
         </form>
