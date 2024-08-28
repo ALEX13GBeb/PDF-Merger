@@ -20,7 +20,8 @@ def allowed_file(filename):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    logged_in=session.get("logged_in", False)
+    return render_template("index.html", logged_in=logged_in)
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile_page():
@@ -28,6 +29,7 @@ def profile_page():
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
+
     if request.method == "POST":
         try_login = [request.form.get("login_un"), request.form.get("login_password")]
 
@@ -41,19 +43,18 @@ def login_page():
                 for row in login_rows:
                     available_login = [row[0], row[1]]
                     if try_login == available_login:
-                        session.pop("error", None)  # Clear any existing error messages
-                        print("Login successful.")  # Debugging statement
+                        session.pop("error", None)# Clear any existing error messages
+                        ########################
+                        session["logged_in"]=True
+                        ########################
                         return redirect(url_for("index"))  # Redirect to the index or another page
 
         # Set an error message in session if login fails
         session["error"] = "Invalid username or password"
-        print(f"Login failed: {session['error']}")  # Debugging statement
         return redirect(url_for("login_page"))  # Redirect to the login page to display the error
 
     # For GET requests, or if login fails, render the login page
-    error = session.pop("error", None)  # Clear the error from session if it exists
-    print(f"Rendering login page with error: {error}")  # Debugging statement
-    return render_template("login.html", error=error)
+    return render_template("login.html", error=session.pop("error", None))
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup_page():
@@ -137,6 +138,11 @@ def upload_file():
     else:
         print("No valid files to merge.")  # Debugging statement
         return redirect(request.url)
+
+@app.route("/signout")
+def logout():
+    session.pop("logged_in", None)
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug=True)

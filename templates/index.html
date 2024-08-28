@@ -16,32 +16,33 @@
             width: 80px;       /* Fixed width for both buttons */
             text-align: center; /* Center text inside the button */
             display: inline-block; /* Ensure the width and text alignment work */
+            margin-bottom:10px;
         }
+
+        .button:last-child {
+        margin-bottom: 0; /* Remove bottom margin for the last button */
+        }
+
 
         .button:hover {
             background-color: #45a049; /* Darken the button on hover */
         }
 
-        .button-wrapper {
-            position: absolute;
-            right: 10px; /* Align buttons to the right of the page */
-            /* Ensure both buttons are vertically aligned */
-        }
-
-        .button-wrapper:nth-of-type(1) {
-            top: 10px; /* Position first button from the top */
-        }
-
-        .button-wrapper:nth-of-type(2) {
-            top: 50px; /* Position second button below the first button */
-        }
+        .button-container {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-end; /* Align items to the right */
+        position: fixed;
+        top: 10px; /* Start from the top of the page */
+        right: 10px; /* Align to the right side */
+    }
 
         .green{
             background-color: #4CAF50; /* Button background color */
         }
 
-        .black{
-            background-color: #000000;
+        .blue{
+            background-color: #483D8B;
         }
     </style>
 </head>
@@ -49,16 +50,17 @@
 
     <h1>Upload PDF Files to Merge</h1>
 
-    <div class="button-wrapper">
+
+    <div class="button-container">
+        {% if not logged_in %}
         <a href="/login" class="button green">Log in</a>
-    </div>
-
-    <div class="button-wrapper">
         <a href="/signup" class="button green">Sign up</a>
-    </div>
+        {% endif %}
 
-    <div>
-        <a href="/profile" class="button black">Profile</a>
+        {% if logged_in %}
+        <a href="/profile" class="button blue">Profile</a>
+        <a href="/signout" class="button blue">Sign Out</a>
+        {% endif %}
     </div>
 
     <br>
