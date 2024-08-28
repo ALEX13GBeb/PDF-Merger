@@ -23,6 +23,11 @@ def index():
     logged_in=session.get("logged_in", False)
     return render_template("index.html", logged_in=logged_in)
 
+@app.route("/signout")
+def logout():
+    session.pop("logged_in", None)
+    return redirect(url_for("index"))
+
 @app.route("/profile", methods=["GET", "POST"])
 def profile_page():
     return render_template("profile.html")
@@ -139,10 +144,7 @@ def upload_file():
         print("No valid files to merge.")  # Debugging statement
         return redirect(request.url)
 
-@app.route("/signout")
-def logout():
-    session.pop("logged_in", None)
-    return redirect(url_for("index"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
