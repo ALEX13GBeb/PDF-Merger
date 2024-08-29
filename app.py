@@ -52,6 +52,7 @@ def login_page():
                         ########################
                         session["logged_in"]=True
                         ########################
+
                         return redirect(url_for("index"))  # Redirect to the index or another page
 
         # Set an error message in session if login fails
