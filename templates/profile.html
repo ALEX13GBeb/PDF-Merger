@@ -2,9 +2,123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <style>
+        .page-box {
+            position: absolute;
+            background-color: #FFFFFF;
+            border: 3px solid #3E376C;
+            top: 20px;
+            left: 40px;
+            right: 40px;
+            bottom: 20px;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+            height: 250px;
+            width: 400px;
+            border: 3px solid #3E376C;
+            padding: 10px;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
+            border-radius: 10px;
+        }
+
+        .info p {
+            padding: 3px;
+            line-height: 0;
+        }
+
+        .info-item {
+            display: flex; /* Align content horizontally */
+            align-items: center; /* Center vertically */
+            margin-bottom: 5px; /* Space between rows */
+        }
+
+        .info-box {
+            flex-grow: 1; /* Stretch box to fill available space */
+            height: 25px; /* Give some height for visibility */
+            border: 1px solid #3E376C;
+            margin-left: 10px; /* Space between text and box */
+            border-radius: 5px;
+        }
+
+        .edit-button {
+            border: none;
+            margin:5px;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            flex-shrink:1;
+            justify-content:right;
+            align-items: center;
+            padding: 0;
+        }
+
+        .edit-icon {
+            height: 32px;
+            width: 32px;
+        }
+
+        .edit-button:focus {
+            outline: none; /* Removes default outline on focus */
+        }
+
+        h3 {
+            font-size: 27px;
+            margin: 0;
+            padding: 3px;
+        }
+
+        body {
+            background-color: #f0f0f0;
+        }
+    </style>
 </head>
 <body>
-    <h1>This is Your Profile</h1>
+    <div class="page-box">
+        <h1>This is Your Profile</h1>
+
+        <div class="info">
+            <div class="info-item">
+                <h3 style="flex-grow:1;"><b>Information:</b></h3>
+                <button class="edit-button" aria-label="Edit Button">
+                    <img src="{{ url_for('static', filename='images/Edit_icon.png') }}" alt="Edit Icon" class="edit-icon">
+                </button>
+            </div>
+            <div class="info-item">
+                <p>Last Name:</p>
+                <div class="info-box"></div>
+            </div>
+
+            <div class="info-item">
+                <p>First Name:</p>
+                <div class="info-box"></div>
+            </div>
+
+            <div class="info-item">
+                <p>Username:</p>
+                <div class="info-box"></div>
+            </div>
+
+            <div class="info-item">
+                <p>Email:</p>
+                <div class="info-box"></div>
+            </div>
+
+            <div class="info-item">
+                <p>Password:</p>
+                <div class="info-box"></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
