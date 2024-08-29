@@ -4,10 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59a25845-4347-48c0-942f-0f5db7ae6045" name="Changes" comment="Added Basic Profile Info Template, Edit Button">
-      <change afterPath="$PROJECT_DIR$/static/images/pdf_background.jpg" afterDir="false" />
+    <list default="true" id="59a25845-4347-48c0-942f-0f5db7ae6045" name="Changes" comment="Cleaned app.py a bit">
+      <change afterPath="$PROJECT_DIR$/modules.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/3DPrintScrisoare_1.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Alexia.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Caiet_v1.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Curriculum_Vitae.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Scrisoare_de_Intentie.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/Slide_C2.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/geronimo.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/slides.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin.csv" beforeDir="false" afterPath="$PROJECT_DIR$/admin.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/login_data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/login_data.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/merge.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -165,7 +178,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724944487254</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Added Profile Background Image">
+      <option name="closed" value="true" />
+      <created>1724955578710</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1724955578710</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -208,6 +229,8 @@
     <MESSAGE value="Added Profile, Sing Out, Session Buttons" />
     <MESSAGE value="Fixed Blue Hover Color" />
     <MESSAGE value="Added Basic Profile Info Template, Edit Button" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Basic Profile Info Template, Edit Button" />
+    <MESSAGE value="Added Profile Background Image" />
+    <MESSAGE value="Cleaned app.py a bit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaned app.py a bit" />
   </component>
 </project>

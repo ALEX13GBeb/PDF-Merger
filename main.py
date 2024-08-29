@@ -1,5 +1,5 @@
 import os
-from merge import merger_pdf
+from modules import merger_pdf
 
 pdf_files=[path for path in os.listdir() if path.endswith(".pdf")]
 

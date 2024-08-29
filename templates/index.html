@@ -6,6 +6,24 @@
     <title>PDF Merger</title>
 
     <style>
+
+        .page-box{
+            position: absolute;
+            background-image: url("static/images/pdf_background.jpg");
+            background-size:contain;
+            background-repeat:no-repeat;
+            background-position:center;
+            border: 3px solid #3E376C;
+            top: 20px;
+            left: 40px;
+            right: 40px;
+            bottom: 20px;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+
         .button {
             padding: 10px 12px; /* Padding inside the button */
             color: white;       /* Text color */
@@ -14,8 +32,8 @@
             cursor: pointer;    /* Cursor changes to a pointer on hover */
             text-decoration: none; /* Remove underline from text */
             width: 80px;       /* Fixed width for both buttons */
-            text-align: center; /* Center text inside the button */
-            display: inline-block; /* Ensure the width and text alignment work */
+            text-align:center;
+
             margin-bottom:10px;
         }
 
@@ -33,9 +51,10 @@
         flex-direction: column; /* Stack items vertically */
         align-items: flex-end; /* Align items to the right */
         position: fixed;
-        top: 10px; /* Start from the top of the page */
-        right: 10px; /* Align to the right side */
-    }
+        top: 30px; /* Start from the top of the page */
+        right: 50px; /* Align to the right side */
+
+        }
 
         .green{
             background-color: #4CAF50; /* Button background color */
@@ -49,36 +68,52 @@
         .blue:hover{
             background-color: #3E376C;
         }
+
+        body{
+            background-color:#f0f0f0;
+        }
+
+        h1{
+            color:#483D8B;
+            font-size:48px;
+            font-family: Arial, "Times New Roman", Times, serif;
+            font-weight:900;
+
+
+        }
     </style>
 </head>
 <body>
 
-    <h1>Upload PDF Files to Merge</h1>
+    <div class="page-box">
+
+        <h1>Upload PDF Files to Merge</h1>
 
 
-    <div class="button-container">
-        {% if not logged_in %}
-        <a href="/login" class="button green">Log in</a>
-        <a href="/signup" class="button green">Sign up</a>
-        {% endif %}
+        <div class="button-container">
+            {% if not logged_in %}
+            <a href="/login" class="button green">Log in</a>
+            <a href="/signup" class="button green">Sign up</a>
+            {% endif %}
 
-        {% if logged_in %}
-        <a href="/profile" class="button blue">Profile</a>
-        <a href="/signout" class="button blue">Sign Out</a>
-        {% endif %}
-    </div>
-
-    <br>
-
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <div>
-            <input type="file" name="file" multiple>
+            {% if logged_in %}
+            <a href="/profile" class="button blue">Profile</a>
+            <a href="/signout" class="button blue">Sign Out</a>
+            {% endif %}
         </div>
+
         <br>
-        <div>
-            <input type="text" name="merged_filename" placeholder="Enter merged file name (without .pdf)" required>
-            <input type="submit" value="Upload and Merge">
-        </div>
-    </form>
+
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="file" name="file" multiple>
+            </div>
+            <br>
+            <div>
+                <input type="text" name="merged_filename" placeholder="Enter merged file name (without .pdf)" required>
+                <input type="submit" value="Upload and Merge">
+            </div>
+        </form>
+    </div>
 </body>
 </html>

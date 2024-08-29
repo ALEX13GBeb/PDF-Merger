@@ -2,7 +2,7 @@ from flask import Flask, request, redirect, url_for, send_from_directory, render
 import os
 import csv
 from werkzeug.utils import secure_filename
-from merge import merger_pdf
+import modules
 
 app = Flask(__name__)
 app.secret_key = "my_session_key"
@@ -14,9 +14,6 @@ app.config["ALLOWED_EXTENSIONS"] = {"pdf"}
 # Ensure upload and merged folders exist
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 os.makedirs(app.config["MERGED_FOLDER"], exist_ok=True)
-
-def allowed_file(filename):
-    return "." in filename and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
 
 @app.route("/")
 def index():
@@ -30,7 +27,17 @@ def logout():
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile_page():
-    return render_template("profile.html")
+    fn_dynamic = session.get("fn_dynamic", "Default First Name")
+    ln_dynamic = session.get("ln_dynamic", "Default Last Name")
+    un_dynamic = session.get("un_dynamic", "Default Username")
+    email_dynamic = session.get("email_dynamic", "Default Email")
+    pw_dynamic = session.get("pw_dynamic", "Default Password")
+    return render_template("profile.html",
+                           fn_dynamic=fn_dynamic,
+                           ln_dynamic=ln_dynamic,
+                           un_dynamic=un_dynamic,
+                           email_dynamic=email_dynamic,
+                           pw_dynamic=pw_dynamic)
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
@@ -39,20 +46,21 @@ def login_page():
         try_login = [request.form.get("login_un"), request.form.get("login_password")]
 
         login_file_path = "login_data.csv"
+        admin_file_path = "admin.csv"
 
-        if os.path.isfile(login_file_path):
-            with open(login_file_path, "r", newline="", encoding="utf-8") as Llogin_file:
-                login_rows = csv.reader(Llogin_file)
-                next(login_rows)  # Skip the header row if there is one
+        if os.path.isfile(admin_file_path):
+            with open(admin_file_path, "r", newline="", encoding="utf-8") as Ladmin_file:
+                admin_rows = csv.reader(Ladmin_file)
+                next(admin_rows)  # Skip the header row if there is one
 
-                for row in login_rows:
-                    available_login = [row[0], row[1]]
+                for row in admin_rows:
+                    available_login = [row[2], row[4]]
                     if try_login == available_login:
                         session.pop("error", None)# Clear any existing error messages
                         ########################
                         session["logged_in"]=True
                         ########################
-
+                        modules.profile_data(row) # Stores the profile data for the profile page
                         return redirect(url_for("index"))  # Redirect to the index or another page
 
         # Set an error message in session if login fails
@@ -119,24 +127,16 @@ def upload_file():
         print("No files selected.")  # Debugging statement
         return redirect(request.url)
 
-    merged_filename = request.form.get("merged_filename")
-    if not merged_filename:
-        print("No merged filename provided.")  # Debugging statement
-        return redirect(request.url)
-
-    merged_filename = secure_filename(merged_filename) + ".pdf"
+    merged_filename = modules.get_merged_name(request.form.get("merged_filename"))
 
     filenames = []
     for file in files:
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-            file.save(file_path)
+        if file and modules.allowed_file(file.filename, app.config["ALLOWED_EXTENSIONS"]):
+            file_path=modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
             filenames.append(file_path)
-            print(f"File saved: {file_path}")  # Debugging statement
 
     if filenames:
-        merger_pdf(filenames)
+        modules.merger_pdf(filenames)
         merged_file_path = os.path.join(app.config["MERGED_FOLDER"], merged_filename)
         os.rename(os.path.join(app.config["MERGED_FOLDER"], "merger_output.pdf"), merged_file_path)
         print(f"Merged file saved: {merged_file_path}")  # Debugging statement
