@@ -27,17 +27,18 @@ def logout():
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile_page():
-    fn_dynamic = session.get("fn_dynamic", "Default First Name")
-    ln_dynamic = session.get("ln_dynamic", "Default Last Name")
-    un_dynamic = session.get("un_dynamic", "Default Username")
-    email_dynamic = session.get("email_dynamic", "Default Email")
-    pw_dynamic = session.get("pw_dynamic", "Default Password")
+    fn_dynamic = session.get("fn_dynamic", "none")
+    ln_dynamic = session.get("ln_dynamic", "none")
+    un_dynamic = session.get("un_dynamic", "none")
+    email_dynamic = session.get("email_dynamic", "none")
+    pw_dynamic = session.get("pw_dynamic", "none")
     return render_template("profile.html",
                            fn_dynamic=fn_dynamic,
                            ln_dynamic=ln_dynamic,
                            un_dynamic=un_dynamic,
                            email_dynamic=email_dynamic,
-                           pw_dynamic=pw_dynamic)
+                           pw_dynamic=pw_dynamic
+                           )
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
@@ -93,15 +94,24 @@ def signup_page():
 
         # Write user_data to CSV file
         admin_exists = os.path.isfile(Aadmin_file_path)
-        with open(Aadmin_file_path, mode="a", newline="", encoding="utf-8") as admin_file:
+        with open(Aadmin_file_path, mode="a", newline="", encoding="utf-8") as admin_append_file:
             # newline - ensures blank lines are handled consistently between platforms
-            admin_writer = csv.DictWriter(admin_file, fieldnames=user_data.keys())
+            admin_writer = csv.DictWriter(admin_append_file, fieldnames=user_data.keys())
             # Write header if file is empty
             if not admin_exists:
                 admin_writer.writeheader()
-            # Write user data
-            admin_writer.writerow(user_data)
-            print(f"User data written to {Aadmin_file_path}: {user_data}")  # Debugging statement
+
+
+            with open(Aadmin_file_path, mode="r", newline="", encoding="utf-8") as admin_read_file:
+                admin_check = csv.reader(admin_read_file)
+                next(admin_check)
+                new=modules.is_user_registered(user_data,admin_check)
+                if new:
+                # Write user data
+                    admin_writer.writerow(user_data)
+                else:
+                    return render_template("signup.html", error=session.pop("error", None))
+
 
             login_exists = os.path.isfile(Alogin_file_path)
             with open(Alogin_file_path, "a", newline="", encoding="utf-8") as login_file:
@@ -109,7 +119,7 @@ def signup_page():
                 if not login_exists:
                     login_writer.writeheader()
                 login_writer.writerow(login_data)
-                print(f"Login data written to {Alogin_file_path}: {login_data}")  # Debugging statement
+
 
         return redirect(url_for("index"))  # Redirects back to the index page
 

@@ -38,5 +38,17 @@ def get_filepaths(file, upload_folder):
     return file_path
 
 
+def is_user_registered(user_data, user_database):
+    for row in user_database:
+        if user_data["email"] != row[3] and user_data["username"] != row[2]:
+            new = True
+        else:
+            new = False
+            session.pop("error", None)
+            session["error"] = "Username or Email already registered"
+            break
+    return new
+
+
 
 

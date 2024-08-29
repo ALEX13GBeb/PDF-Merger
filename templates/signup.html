@@ -65,6 +65,13 @@
             font-size: 14px;
             flex-grow: 1; /* Allows input to take up remaining space */
         }
+
+        .error-message{
+            color: red;
+            text-align: center;
+            margin-top:10px;
+        }
+
     </style>
 </head>
 <body>
@@ -105,6 +112,12 @@
             <div class="form-group">
                 <input type="submit" class="button blue" value="Sign Up">
             </div>
+
+            {% if error %}
+            <div>
+                <p class="error-message">{{ error }}</p>
+            </div>
+            {% endif %}
 
         </form>
     </div>
