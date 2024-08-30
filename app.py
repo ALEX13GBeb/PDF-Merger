@@ -88,7 +88,7 @@ def signup_page():
             "password": request.form.get("signup_password")
         }
 
-        modules.password_strength(user_data["password"])
+        re_password=request.form.get("signup_re_password")
 
         # Define the path to the CSV file
         Aadmin_file_path = "admin.csv"
@@ -107,19 +107,44 @@ def signup_page():
             with open(Aadmin_file_path, mode="r", newline="", encoding="utf-8") as admin_read_file:
                 admin_check = csv.reader(admin_read_file)
                 next(admin_check)
-                new=modules.is_user_registered(user_data,admin_check)
 
-                if new:
-                    if modules.is_valid_email_syntax(user_data["email"]):
-                        if modules.pass_too_short(user_data["password"]):
-                            # Write user data
-                            admin_writer.writerow(user_data)
-                        else:
-                            return render_template("signup.html", error=session.pop("error", None))
-                    else:
-                        return render_template("signup.html", error=session.pop("error", None))
+                eroare=""
+                write = True
+
+                if modules.is_user_registered(user_data,admin_check):
+                    pass
                 else:
+                    eroare =eroare + "Username Or Email Already Registered" +"\n"
+                    write=False
+
+                if modules.is_valid_email_syntax(user_data["email"]):
+                    pass
+                else:
+                    eroare = eroare + "Invalid Email" +"\n"
+                    write=False
+
+                if modules.pass_too_short(user_data["password"]):
+                    pass
+                else:
+                    eroare = eroare + "Password Too Short" +"\n"
+                    write=False
+
+                if modules.repeat_password(user_data["password"],re_password):
+                    pass
+                else:
+                    eroare=eroare+"Passwords Don't Match"+"\n"
+                    write=False
+
+
+                if write==True:
+                    admin_writer.writerow(user_data)
+                else:
+                    session["error"]=eroare
                     return render_template("signup.html", error=session.pop("error", None))
+
+
+
+
 
 
             login_exists = os.path.isfile(Alogin_file_path)

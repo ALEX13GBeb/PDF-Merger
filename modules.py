@@ -45,8 +45,7 @@ def is_user_registered(user_data, user_database):
             valid = True
         else:
             valid = False
-            session.pop("error", None)
-            session["error"] = "Username Or Email Already Registered"
+
             break
     return valid
 
@@ -73,16 +72,14 @@ def is_valid_email_syntax(email):
     if parts_email[1] in popular_domains and re.match(regex, email):
         return True
     else:
-        session.pop("error", None)
-        session["error"] = "Invalid Email"
+
         return False
 
 def pass_too_short(password):
     if len(password)>=8:
         return True
     else:
-        session.pop("error", None)
-        session["error"] = "Password Too Short"
+
         return False
 
 
@@ -97,6 +94,12 @@ def password_strength(password):
                 if any(not (char.isdigit() or char.isalpha()) for char in password):
                     strength += 1
     return strength
+
+def repeat_password(password, re_password):
+    if password==re_password:
+        return True
+    else:
+        return False
 
 
 
