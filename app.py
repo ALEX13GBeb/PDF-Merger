@@ -88,6 +88,8 @@ def signup_page():
             "password": request.form.get("signup_password")
         }
 
+        modules.password_strength(user_data["password"])
+
         # Define the path to the CSV file
         Aadmin_file_path = "admin.csv"
         Alogin_file_path = "login_data.csv"
@@ -106,9 +108,16 @@ def signup_page():
                 admin_check = csv.reader(admin_read_file)
                 next(admin_check)
                 new=modules.is_user_registered(user_data,admin_check)
+
                 if new:
-                # Write user data
-                    admin_writer.writerow(user_data)
+                    if modules.is_valid_email_syntax(user_data["email"]):
+                        if modules.pass_too_short(user_data["password"]):
+                            # Write user data
+                            admin_writer.writerow(user_data)
+                        else:
+                            return render_template("signup.html", error=session.pop("error", None))
+                    else:
+                        return render_template("signup.html", error=session.pop("error", None))
                 else:
                     return render_template("signup.html", error=session.pop("error", None))
 

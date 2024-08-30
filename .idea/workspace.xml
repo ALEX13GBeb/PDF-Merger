@@ -4,29 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59a25845-4347-48c0-942f-0f5db7ae6045" name="Changes" comment="Cleaned app.py a bit">
-      <change afterPath="$PROJECT_DIR$/merged/TREBUIEREPETAT.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/merged/sad.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_Curs3_Sisteme_liniare.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_Curs4__Jacobi_GaussSeidel.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_Curs5_sisteme_neliniare.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_Curs8_Integrare_Trapeze_Richardson.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_Curs9_Alte_metode_de_integrare.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_curs_1_in_lucru.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_curs_2_in_lucru.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/TREBUIEREPETAT.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/asd_2.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/geronimo.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/mamaia.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/nume_modul.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/slides.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/test999.pdf" afterDir="false" />
+    <list default="true" id="59a25845-4347-48c0-942f-0f5db7ae6045" name="Changes" comment="Added Register Checking">
+      <change afterPath="$PROJECT_DIR$/static/script.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin.csv" beforeDir="false" afterPath="$PROJECT_DIR$/admin.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/login_data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/login_data.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/signup.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,8 +60,9 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\static\images" />
       <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\static" />
+      <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\templates" />
+      <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\static\images" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -200,7 +185,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724962517618</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Added Register Checking">
+      <option name="closed" value="true" />
+      <created>1724965221189</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1724965221190</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -245,6 +238,7 @@
     <MESSAGE value="Added Basic Profile Info Template, Edit Button" />
     <MESSAGE value="Added Profile Background Image" />
     <MESSAGE value="Cleaned app.py a bit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cleaned app.py a bit" />
+    <MESSAGE value="Added Register Checking" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Register Checking" />
   </component>
 </project>

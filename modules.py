@@ -3,6 +3,7 @@ from flask import session, redirect, request
 from werkzeug.utils import secure_filename
 import os
 
+
 def merger_pdf(pdf_files):
 
     merger = PdfMerger()
@@ -41,13 +42,62 @@ def get_filepaths(file, upload_folder):
 def is_user_registered(user_data, user_database):
     for row in user_database:
         if user_data["email"] != row[3] and user_data["username"] != row[2]:
-            new = True
+            valid = True
         else:
-            new = False
+            valid = False
             session.pop("error", None)
-            session["error"] = "Username or Email already registered"
+            session["error"] = "Username Or Email Already Registered"
             break
-    return new
+    return valid
+
+import re
+
+def is_valid_email_syntax(email):
+    regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    popular_domains = [
+        "gmail",
+        "yahoo",
+        "outlook",
+        "hotmail",
+        "icloud",
+        "aol",
+        "protonmail",
+        "yandex",
+        "zoho",
+        "mail"
+    ]
+    parts_email = re.split(r"[@.]", email)
+
+
+
+    if parts_email[1] in popular_domains and re.match(regex, email):
+        return True
+    else:
+        session.pop("error", None)
+        session["error"] = "Invalid Email"
+        return False
+
+def pass_too_short(password):
+    if len(password)>=8:
+        return True
+    else:
+        session.pop("error", None)
+        session["error"] = "Password Too Short"
+        return False
+
+
+def password_strength(password):
+    strength=0
+    if len(password)>=8:
+        strength+=1
+        if any(char.isdigit() for char in password):
+            strength += 1
+            if any(char.isalpha() for char in password):
+                strength += 1
+                if any(not (char.isdigit() or char.isalpha()) for char in password):
+                    strength += 1
+    return strength
+
 
 
 
