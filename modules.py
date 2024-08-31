@@ -87,12 +87,12 @@ def password_strength(password):
     strength=0
     if len(password)>=8:
         strength+=1
-        if any(char.isdigit() for char in password):
-            strength += 1
-            if any(char.isalpha() for char in password):
-                strength += 1
-                if any(not (char.isdigit() or char.isalpha()) for char in password):
-                    strength += 1
+    if any(char.isdigit() for char in password):
+        strength += 1
+    if any(char.isalpha() for char in password):
+        strength += 1
+    if any(not (char.isdigit() or char.isalpha()) for char in password):
+        strength += 1
     return strength
 
 def repeat_password(password, re_password):

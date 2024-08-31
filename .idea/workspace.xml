@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="59a25845-4347-48c0-942f-0f5db7ae6045" name="Changes" comment="Added Register Checking">
+    <list default="true" id="59a25845-4347-48c0-942f-0f5db7ae6045" name="Changes" comment="Sign up Checking - re_password, multi errors">
+      <change afterPath="$PROJECT_DIR$/merged/sad.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/interact/ok.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/MN_curs_1_in_lucru.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/MN_curs_2_in_lucru.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin.csv" beforeDir="false" afterPath="$PROJECT_DIR$/admin.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/login_data.csv" beforeDir="false" afterPath="$PROJECT_DIR$/login_data.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/script.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/signup.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,20 +51,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Python.app.executor": "Run",
-    "Python.modules.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "CSV-Functionality"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.modules.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;CSV-Functionality&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\static" />
       <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\templates" />
+      <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\templates\Interact" />
+      <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\static" />
       <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\static\images" />
     </key>
   </component>
@@ -193,7 +197,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724965221190</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Sign up Checking - re_password, multi errors">
+      <option name="closed" value="true" />
+      <created>1725012732903</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1725012732903</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -239,6 +251,7 @@
     <MESSAGE value="Added Profile Background Image" />
     <MESSAGE value="Cleaned app.py a bit" />
     <MESSAGE value="Added Register Checking" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Register Checking" />
+    <MESSAGE value="Sign up Checking - re_password, multi errors" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sign up Checking - re_password, multi errors" />
   </component>
 </project>
