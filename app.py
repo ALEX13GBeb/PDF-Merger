@@ -142,11 +142,6 @@ def signup_page():
                     session["error"]=eroare
                     return render_template("signup.html", error=session.pop("error", None))
 
-
-
-
-
-
             login_exists = os.path.isfile(Alogin_file_path)
             with open(Alogin_file_path, "a", newline="", encoding="utf-8") as login_file:
                 login_writer = csv.DictWriter(login_file, fieldnames=login_data.keys())

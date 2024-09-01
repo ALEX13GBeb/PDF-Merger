@@ -5,15 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59a25845-4347-48c0-942f-0f5db7ae6045" name="Changes" comment="Sign up Checking - re_password, multi errors">
-      <change afterPath="$PROJECT_DIR$/merged/sad.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/interact/ok.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/script.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_curs_1_in_lucru.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/MN_curs_2_in_lucru.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/aaaa.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/asdas.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/asdasdasdasd.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/asdasdasdasdasdadasdasdasdasda.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/asfsdef.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/bionebunie.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/c5296926540328b47-07oybusdhdjdfs.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/dfdsf.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/f4y5976w05794TREYBHUI.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/fsdfgghfrt5556.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/fsdfgghfrt5556e33.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/gdfgdf545465454.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/rtgrdf486327462739alsdk.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/merged/sdge5_4eys54weyrgdf.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/2024MG_SO.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/2024_Curs_gust.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/2024_MG_Biochimia_parodontiului_II.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/dsfsfdsffsf.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/fgtdfbusyghb.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/fjgfhjg.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/fsdfgghfrt5556e33.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/oashdfshf__ahdfo.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/rtgrdf486327462739alsdk.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/sadas.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uploads/sfdsuykliukjjjjhgkhgjbky.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules.py" beforeDir="false" afterPath="$PROJECT_DIR$/modules.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/script.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/signup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/merged/sad.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uploads/MN_curs_1_in_lucru.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/uploads/MN_curs_2_in_lucru.pdf" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +53,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="CSV-Functionality" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -51,16 +73,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.modules.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;CSV-Functionality&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Python.app.executor": "Run",
+    "Python.modules.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "a6042912"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Admin\Desktop\Github Projects\PDF_Merge\templates" />

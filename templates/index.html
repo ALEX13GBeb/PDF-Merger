@@ -8,6 +8,7 @@
     <style>
 
         .page-box{
+            background-color: white;
             position: absolute;
             background-image: url("static/images/pdf_background.jpg");
             background-size:contain;
@@ -21,6 +22,7 @@
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
             padding: 10px;
             border-radius: 10px;
+
         }
 
 
@@ -78,9 +80,14 @@
             font-size:48px;
             font-family: Arial, "Times New Roman", Times, serif;
             font-weight:900;
-
-
         }
+
+        .error-message{
+            color: red;
+            text-align: left;
+            margin-top:10px;
+        }
+
     </style>
 </head>
 <body>
@@ -104,16 +111,23 @@
 
         <br>
 
-        <form action="/upload" method="post" enctype="multipart/form-data">
+        <form action="/upload" if="index_form" method="post" enctype="multipart/form-data">
             <div>
-                <input type="file" name="file" multiple>
+                <input type="file" name="file" id="inputfiles" multiple required>
             </div>
             <br>
             <div>
-                <input type="text" name="merged_filename" placeholder="Enter merged file name (without .pdf)" required>
-                <input type="submit" value="Upload and Merge">
+                <input type="text" name="merged_filename" placeholder="Enter merged file name" required>
+                <input type="submit" id="submit_button" value="Upload and Merge">
             </div>
+
+                <p class="error-message" id="error_number_files"></p>
+
         </form>
     </div>
+
+    <script src="static/index.js"></script>
+
 </body>
 </html>
+
