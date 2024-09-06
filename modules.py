@@ -2,6 +2,8 @@ from PyPDF2 import PdfMerger
 from flask import session, redirect, request
 from werkzeug.utils import secure_filename
 import os
+import re
+
 
 
 def merger_pdf(pdf_files):
@@ -40,16 +42,15 @@ def get_filepaths(file, upload_folder):
 
 
 def is_user_registered(user_data, user_database):
-    for row in user_database:
-        if user_data["email"] != row[3] and user_data["username"] != row[2]:
-            valid = True
-        else:
-            valid = False
+    valid = True  # Initialize valid to True
 
+    for row in user_database:
+        if user_data["email"] == row[3] or user_data["username"] == row[2]:
+            valid = False
             break
+
     return valid
 
-import re
 
 def is_valid_email_syntax(email):
     regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
