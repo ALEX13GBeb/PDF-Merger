@@ -1,8 +1,9 @@
 /venv/
 __pycache__/
 .idea/
-.idea/workspace.xml
 uploads
 uploads_docPdf
 converted_docPdf
 merged
+admin.csv
+login_data.csv
