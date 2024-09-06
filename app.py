@@ -106,7 +106,10 @@ def signup_page():
 
             with open(Aadmin_file_path, mode="r", newline="", encoding="utf-8") as admin_read_file:
                 admin_check = csv.reader(admin_read_file)
-                next(admin_check)
+                try:
+                    next(admin_check)
+                except StopIteration:
+                    pass
 
                 eroare=""
                 write = True
