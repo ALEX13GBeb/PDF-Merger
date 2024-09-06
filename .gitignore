@@ -1,6 +1,8 @@
 /venv/
+__pycache__
+.idea
 .idea/workspace.xml
-/uploads/
-/uploads_docPdf/
+uploads
+uploads_docPdf
 converted_docPdf
 merged
