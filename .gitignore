@@ -1,2 +1,6 @@
 /venv/
 .idea/workspace.xml
+/uploads/
+/uploads_docPdf/
+converted_docPdf
+merged
