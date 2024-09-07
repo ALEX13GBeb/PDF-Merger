@@ -85,9 +85,25 @@
             background-color: #3E376C;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             display: none; /* Hidden by default */
+        }
+
+        .cancel-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #CC0000;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px; /* Adjust space between buttons if needed */
         }
 
         h3 {
@@ -140,8 +156,14 @@
                 <div class="info-box"><input type="password" id="password" value="{{pw_dynamic}}" disabled></div>
             </div>
 
-            <button class="save-button" id="save_button">Save Changes</button>
+
         </div>
+
+        <div class="button-container">
+            <button class="save-button" id="save_button">Save Changes</button>
+            <button class="cancel-button" id="cancel_button">Cancel</button>
+        </div>
+
         </div>
 
                 <script src="static/profile.js"></script>

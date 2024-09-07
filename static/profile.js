@@ -1,5 +1,6 @@
 const editButton = document.getElementById('info_edit');
 const saveButton = document.getElementById('save_button');
+const cancelButton = document.getElementById("cancel_button");
 const inputs = document.querySelectorAll('.info-box input');
 //The querySelectorAll method is used to select multiple elements from the DOM (Document Object Model)
 //that match a specified CSS selector.
@@ -8,6 +9,7 @@ const inputs = document.querySelectorAll('.info-box input');
 editButton.addEventListener('click', function() {
     inputs.forEach(input => input.disabled = false); // Enable all input fields
     saveButton.style.display = 'block'; // Show the save button
+    cancelButton.style.display = 'block'; // Show the cancel button
 });
 
 saveButton.addEventListener('click', function() {
@@ -37,4 +39,11 @@ saveButton.addEventListener('click', function() {
     // Disable input fields after saving
     inputs.forEach(input => input.disabled = true);
     saveButton.style.display = 'none'; // Hide the save button again
+    cancelButton.style.display = 'none';
 });
+
+cancelButton.addEventListener("click", function(){
+    inputs.forEach(input => input.disabled = true);
+    saveButton.style.display = 'none'; // Hide the save button again
+    cancelButton.style.display = 'none'; // Hide the cancel button
+})

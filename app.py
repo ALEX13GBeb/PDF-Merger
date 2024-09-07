@@ -219,7 +219,7 @@ def signup_page():
                     admin_writer.writerow(user_data)
                 else:
                     session["error"]=eroare
-                    return render_template("signup.html", error=session.pop("error", None))
+                    return redirect(url_for("signup_page"))
 
             login_exists = os.path.isfile(Alogin_file_path)
             with open(Alogin_file_path, "a", newline="", encoding="utf-8") as login_file:
@@ -237,7 +237,8 @@ def signup_page():
 
         return redirect(url_for("index"))  # Redirects back to the index page
 
-    return render_template("signup.html")  # Renders the sign-up form
+    error = session.pop("error", None)
+    return render_template("signup.html", error=error)
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
