@@ -21,9 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function DisplayList1() {
     var listItem1 = document.getElementById("list_item1");
-    var listItem2 = document.getElementById("list_item2");
-
-    listItem2.style.display="none"
 
     if (listItem1.style.display === "flex") {
         listItem1.style.display = "none"; // Hide the forms
@@ -42,9 +39,6 @@ function DisplayList1() {
 
 function DisplayList2() {
     var listItem2 = document.getElementById("list_item2");
-    var listItem1 = document.getElementById("list_item1");
-
-    listItem1.style.display="none"
 
     if (listItem2.style.display === "flex") {
         listItem2.style.display = "none"; // Hide the forms
