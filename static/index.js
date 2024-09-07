@@ -17,3 +17,48 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+
+function showPdfForm() {
+    document.getElementById("red_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("blue_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("green_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("orange_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("index_form").style.display = "flex"; // Show the form
+    document.getElementById("word_form").style.display = "none"; // Show the form
+    document.getElementById("excel_form").style.display = "none"; // Show the form
+    document.getElementById("pp_form").style.display = "none";
+}
+
+function showWordForm() {
+    document.getElementById("red_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("blue_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("green_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("orange_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("index_form").style.display = "none"; // Show the form
+    document.getElementById("word_form").style.display = "flex"; // Show the form
+    document.getElementById("excel_form").style.display = "none"; // Show the form
+    document.getElementById("pp_form").style.display = "none";
+}
+
+function showExcelForm() {
+    document.getElementById("red_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("blue_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("green_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("orange_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("index_form").style.display = "none"; // Show the form
+    document.getElementById("word_form").style.display = "none"; // Show the form
+    document.getElementById("excel_form").style.display = "flex"; // Show the form
+    document.getElementById("pp_form").style.display = "none";
+}
+
+function showPPForm() {
+    document.getElementById("red_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("blue_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("green_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("orange_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("index_form").style.display = "none"; // Show the form
+    document.getElementById("word_form").style.display = "none"; // Show the form
+    document.getElementById("excel_form").style.display = "none"; // Show the form
+    document.getElementById("pp_form").style.display = "flex";
+}

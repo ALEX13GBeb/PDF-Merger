@@ -55,7 +55,68 @@
         position: fixed;
         top: 30px; /* Start from the top of the page */
         right: 50px; /* Align to the right side */
+        }
 
+        .rectangle {
+            display:flex;
+            flex-direction:row;
+            align-items:center;
+            justify-content:center;
+            width: 50%;
+            height: 150px;
+            border-radius: 10px;
+            cursor: pointer;
+            max-width: 400px;
+            min-width: 200px;
+            text-align:center;
+            color:white;
+            font-size:46px;
+            font-weight:bold;
+        }
+
+        .orange-rec { background-color: #FF6743; }
+        .red-rec { background-color: #DD0000; }
+        .blue-rec { background-color: #485FBB; }
+        .green-rec { background-color: #008000; }
+
+        /* Hover colors */
+        .orange-rec:hover {
+            background-color: #FF5733; /* Darker orange on hover */
+        }
+
+        .red-rec:hover {
+            background-color: #C70000; /* Darker red on hover */
+        }
+
+        .blue-rec:hover {
+            background-color: #3C4F9B; /* Darker blue on hover */
+        }
+
+        .green-rec:hover {
+            background-color: #006400; /* Darker green on hover */
+        }
+
+        form {
+            display: none;
+            positon:fixed;
+            flex-direction: column; /* Stack the inputs vertically */
+            align-items: center; /* Center inputs horizontally */
+            border: 3px solid #FF7F50;
+            width: 50%;
+            height:50%;
+            padding=20px;
+            border-radius:10px;
+            max-width: 400px;
+            min-width: 200px;
+            height: 150px;
+            box-sizing:border-box;
+            background-color:white;
+        }
+
+        form input {
+            padding:10px;
+            width: 100%;
+            box-sizing:border-box;
         }
 
         .green{
@@ -63,7 +124,7 @@
         }
 
         .blue{
-            background-color: #483D8B;
+            background-color: #483DBB;
 
         }
 
@@ -111,7 +172,10 @@
 
         <br>
 
-        <form action="/upload" if="index_form" method="post" enctype="multipart/form-data">
+        <div id="red_rectangle" class="rectangle red-rec" onclick="showPdfForm()">
+            PDF Merger
+        </div>
+        <form action="/upload" id="index_form" method="post" enctype="multipart/form-data">
             <div>
                 <input type="file" name="file" id="inputfiles" multiple required>
             </div>
@@ -122,8 +186,64 @@
             </div>
 
                 <p class="error-message" id="error_number_files"></p>
-
         </form>
+
+        <br>
+
+        <div id="blue_rectangle" class="rectangle blue-rec" onclick="showWordForm()">
+            Word to PDF
+        </div>
+        <form action="/convertWord" id="word_form" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="file" name="file" id="wordfiles" multiple required>
+            </div>
+            <br>
+            <div>
+                <input type="text" name="w_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="submit" id="word_convert" value="Convert to PDF">
+            </div>
+
+                <p class="error-message" id="error_number_wordfiles"></p>
+        </form>
+
+        <br>
+
+        <div id="green_rectangle" class="rectangle green-rec" onclick="showExcelForm()">
+            Excel to PDF
+        </div>
+        <form action="/convertWord" id="excel_form" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="file" name="file" id="excelfiles" multiple required>
+            </div>
+            <br>
+            <div>
+                <input type="text" name="w_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="submit" id="excel_convert" value="Convert to PDF">
+            </div>
+
+                <p class="error-message" id="error_number_excelfiles"></p>
+        </form>
+
+        <br>
+
+        <div id="orange_rectangle" class="rectangle orange-rec" onclick="showPPForm()">
+            PowerPoint to PDF
+        </div>
+        <form action="/convertWord" id="pp_form" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="file" name="file" id="ppfiles" multiple required>
+            </div>
+            <br>
+            <div>
+                <input type="text" name="w_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="submit" id="pp_convert" value="Convert to PDF">
+            </div>
+
+                <p class="error-message" id="error_number_ppfiles"></p>
+        </form>
+
+
+
     </div>
 
     <script src="static/index.js"></script>
