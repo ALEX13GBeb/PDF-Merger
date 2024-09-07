@@ -57,6 +57,68 @@
         right: 50px; /* Align to the right side */
         }
 
+        .tools-box{
+            display:flex;
+            flex-direction:row;
+            justify-content:center;
+            align-items:center;
+            padding:5px;
+            border-radius:10px;
+            border:1px solid black;
+            max-width:500px;
+            max-height:50px;
+            width:50%;
+            background-color:white;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+        }
+
+        .tools-box h3 {
+            flex-grow: 1; /* Allow <h3> to take up remaining space */
+            margin: 0; /* Remove default margin */
+            font-size: 16px; /* Adjust font size as needed */
+            font-weight:900;
+        }
+
+
+        .list-button {
+            border: none;
+            margin:5px;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            flex-shrink:1;
+            justify-content:center;
+            align-items: center;
+            padding: 0;
+        }
+
+        .list-button:focus {
+            outline: none; /* Removes default outline on focus */
+        }
+
+
+        .list-button img {
+            height: 20px; /* Adjust as needed */
+            width: 20px;  /* Adjust as needed */
+        }
+
+        #list_item1{
+            display:none;
+            overflow:hidden;
+            flex-direction:column;
+            align-items:left;
+            justify-content:center;
+        }
+
+        #list_item2{
+            display:none;
+            overflow:hidden;
+            flex-direction:column;
+            align-items:left;
+            justify-content:center;
+        }
+
+
         .rectangle {
             display:flex;
             flex-direction:row;
@@ -72,7 +134,10 @@
             color:white;
             font-size:46px;
             font-weight:bold;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
         }
+
+
 
         .orange-rec { background-color: #FF6743; }
         .red-rec { background-color: #DD0000; }
@@ -96,9 +161,32 @@
             background-color: #006400; /* Darker green on hover */
         }
 
+
+        .jpeg-rec { background-color: #FF6743; }
+        .png-rec { background-color: #DD0000; }
+        .gif-rec { background-color: #485FBB; }
+        .bmp-rec { background-color: #008000; }
+
+        /* Hover colors */
+        .jpeg-rec:hover {
+            background-color: #FF5733; /* Darker orange on hover */
+        }
+
+        .png-rec:hover {
+            background-color: #C70000; /* Darker red on hover */
+        }
+
+        .gif-rec:hover {
+            background-color: #3C4F9B; /* Darker blue on hover */
+        }
+
+        .bmp-rec:hover {
+            background-color: #006400; /* Darker green on hover */
+        }
+
         form {
             display: none;
-            positon:fixed;
+            position:relative;
             flex-direction: column; /* Stack the inputs vertically */
             align-items: center; /* Center inputs horizontally */
             border: 3px solid #FF7F50;
@@ -111,13 +199,22 @@
             height: 150px;
             box-sizing:border-box;
             background-color:white;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
         }
 
         form input {
             padding:10px;
             width: 100%;
             box-sizing:border-box;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
         }
+        form input[type="file"]{
+            padding:10px;
+            width: 100%;
+            box-sizing:border-box;
+            box-shadow: none;
+        }
+
 
         .green{
             background-color: #4CAF50; /* Button background color */
@@ -172,6 +269,16 @@
 
         <br>
 
+        <div class="tools-box" >
+        <h3>PDf Merger / Word-to-PDF / Excel-to-PDF / PowerPoint-to-PDF</h3>
+        <button class="list-button" onclick="DisplayList1()">
+
+            <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
+        </button>
+        </div>
+
+        <br>
+        <div id="list_item1">
         <div id="red_rectangle" class="rectangle red-rec" onclick="showPdfForm()">
             PDF Merger
         </div>
@@ -181,7 +288,7 @@
             </div>
             <br>
             <div>
-                <input type="text" name="merged_filename" placeholder="Enter merged file name" required>
+                <input type="text" name="merged_filename" placeholder="Enter merged file name..." required>
                 <input type="submit" id="submit_button" value="Upload and Merge">
             </div>
 
@@ -199,11 +306,11 @@
             </div>
             <br>
             <div>
-                <input type="text" name="w_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="text" name="word_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="word_convert" value="Convert to PDF">
             </div>
 
-                <p class="error-message" id="error_number_wordfiles"></p>
+                <p class="error-message" id="error_number_word_files"></p>
         </form>
 
         <br>
@@ -217,11 +324,11 @@
             </div>
             <br>
             <div>
-                <input type="text" name="w_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="text" name="exel_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="excel_convert" value="Convert to PDF">
             </div>
 
-                <p class="error-message" id="error_number_excelfiles"></p>
+                <p class="error-message" id="error_number_excel_files"></p>
         </form>
 
         <br>
@@ -235,14 +342,106 @@
             </div>
             <br>
             <div>
-                <input type="text" name="w_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="text" name="pp_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="pp_convert" value="Convert to PDF">
             </div>
 
-                <p class="error-message" id="error_number_ppfiles"></p>
+                <p class="error-message" id="error_number_pp_files"></p>
+        </form>
+        </div>
+
+
+
+
+
+
+        <br>
+
+
+
+
+
+
+        <div class="tools-box" >
+        <h3>JPEG / PNG / GIF / BMP -- TO PDF</h3>
+        <button class="list-button" onclick="DisplayList2()">
+
+            <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
+        </button>
+        </div>
+
+        <div id="list_item2">
+        <br>
+        <div id="jpeg_rectangle" class="rectangle jpeg-rec" onclick="showJPEGForm()">
+            JPEG Converter
+        </div>
+        <form action="/upload" id="jpeg_form" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="file" name="file" id="inputjpegfiles" multiple required>
+            </div>
+            <br>
+            <div>
+                <input type="text" name="jpeg_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="submit" id="submit_jpeg_button" value="Convert to PDF">
+            </div>
+
+                <p class="error-message" id="error_number_jpeg_files"></p>
         </form>
 
+        <br>
 
+        <div id="png_rectangle" class="rectangle png-rec" onclick="showPNGForm()">
+            PNG Converter
+        </div>
+        <form action="/convertWord" id="png_form" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="file" name="file" id="pngfiles" multiple required>
+            </div>
+            <br>
+            <div>
+                <input type="text" name="png_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="submit" id="png_convert" value="Convert to PDF">
+            </div>
+
+                <p class="error-message" id="error_number_png_files"></p>
+        </form>
+
+        <br>
+
+        <div id="gif_rectangle" class="rectangle gif-rec" onclick="showGIFForm()">
+            GIF Converter
+        </div>
+        <form action="/convertWord" id="gif_form" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="file" name="file" id="giffiles" multiple required>
+            </div>
+            <br>
+            <div>
+                <input type="text" name="gif_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="submit" id="gif_convert" value="Convert to PDF">
+            </div>
+
+                <p class="error-message" id="error_number_gif_files"></p>
+        </form>
+
+        <br>
+
+        <div id="bmp_rectangle" class="rectangle bmp-rec" onclick="showBMPForm()">
+            BMP Converter
+        </div>
+        <form action="/convertWord" id="bmp_form" method="post" enctype="multipart/form-data">
+            <div>
+                <input type="file" name="file" id="bmpfiles" multiple required>
+            </div>
+            <br>
+            <div>
+                <input type="text" name="bmp_conversion_filename" placeholder="Enter PDF name..." required>
+                <input type="submit" id="bmp_convert" value="Convert to PDF">
+            </div>
+
+                <p class="error-message" id="error_number_bmp_files"></p>
+        </form>
+        </div>
 
     </div>
 
