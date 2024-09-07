@@ -24,12 +24,37 @@
         }
 
         body {
+            position : relative;
             display: flex;
             justify-content: center; /* Centers the box horizontally */
             align-items: center;     /* Centers the box vertically */
             height: 100vh;           /* Full viewport height */
             margin: 0;               /* Removes default body margin */
             background-color: #f0f0f0; /* Light background color for contrast */
+        }
+
+        .home-button {
+            position:absolute;
+            display:flex;
+            border:3px solid black;
+            top:25px;
+            left:25px;
+            padding:5px 5px;
+            background-color:white;
+            color: #585858;
+            border-radius:5px;
+            cursor:pointer;
+            text-decoration:none;
+            width: 200px;
+            text-align:center;
+            display:inline-block;
+            font-weight:900;
+            font-size:20px;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+        }
+
+        .home-button:hover {
+            border:3px solid green;
         }
 
         .box {
@@ -46,6 +71,8 @@
             font-family: Arial, sans-serif; /* Font styling */
             color: #333;             /* Text color */
         }
+
+
 
         form{
             position:relative;
@@ -79,9 +106,23 @@
             color: red;
         }
 
+        .site-icon {
+            height: 20px;
+            width: 20px;
+            margin-right:5px;
+            margin-bottom:0 px;
+        }
+
     </style>
 </head>
 <body>
+
+    <div>
+        <button class="home-button" onclick="window.location.href='{{ url_for('index') }}'">
+            <img src="{{url_for('static', filename='images/Logo.png')}}" alt="Site_Logo", class="site-icon">
+            PDF ALEX
+        </button>
+    </div>
 
     <div class="box">
         <form method="post">

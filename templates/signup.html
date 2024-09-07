@@ -24,12 +24,38 @@
 
         /* Body styling */
         body {
+            position:relative;
             display: flex;
             justify-content: center; /* Centers the box horizontally */
             align-items: center;     /* Centers the box vertically */
             height: 100vh;           /* Full viewport height */
             margin: 0;               /* Removes default body margin */
             background-color: #f0f0f0; /* Light background color for contrast */
+        }
+
+        .home-button {
+            position: absolute; /* Position absolutely within its positioned ancestor */
+            top: 25px; /* Distance from the top of the viewport */
+            left: 25px; /* Distance from the left of the viewport */
+            display: flex;
+            padding: 5px 5px; /* Padding inside the button */
+            background-color: white;
+            border: 3px solid black;
+            color: #585858; /* Text color */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Cursor changes to a pointer on hover */
+            text-decoration: none; /* Remove underline from text */
+            width: 200px; /* Fixed width for buttons */
+            text-align: center; /* Center text inside the button */
+            display: inline-block; /* Ensure width and text alignment work */
+            font-weight:900;
+            font-size:20px;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+        }
+
+        .home-button:hover {
+            border:3px solid green;
+
         }
 
         /* Box styling */
@@ -89,9 +115,24 @@
             font-weight: 900;
             font-size: 16px;
         }
+
+        .site-icon {
+            height: 20px;
+            width: 20px;
+            margin-right:5px;
+            margin-bottom:0 px;
+        }
+
     </style>
 </head>
 <body>
+
+    <div>
+        <button class="home-button" onclick="window.location.href='{{ url_for('index') }}'">
+            <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">
+            PDF ALEX</button>
+    </div>
+
     <div class="box">
         <form method="post">
             <div class="form-group">
