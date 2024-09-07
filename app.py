@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, send_from_directory, render_template, session
+from flask import Flask, request, redirect, url_for, send_from_directory, render_template, session, jsonify
 import os
 import csv
 from werkzeug.utils import secure_filename
@@ -32,6 +32,7 @@ def profile_page():
     un_dynamic = session.get("un_dynamic", "none")
     email_dynamic = session.get("email_dynamic", "none")
     pw_dynamic = session.get("pw_dynamic", "none")
+
     return render_template("profile.html",
                            fn_dynamic=fn_dynamic,
                            ln_dynamic=ln_dynamic,
@@ -39,6 +40,81 @@ def profile_page():
                            email_dynamic=email_dynamic,
                            pw_dynamic=pw_dynamic
                            )
+
+
+@app.route('/update_user', methods=['POST'])
+def update_user():
+    try:
+        updated_data = request.json
+        original_email = session.get('email_dynamic')  # Retrieve original email from session
+        original_username = session.get("un_dynamic")
+        if not original_email:
+            return jsonify({'error': 'Original email is required for update.'}), 400
+
+        csv_adminFile = "admin.csv"
+        csv_loginFile = "login_data.csv"
+        rows = []
+        login_rows = []
+        user_updated = False
+
+        # Read admin data
+        with open(csv_adminFile, 'r') as admin_file:
+            csv_reader = csv.DictReader(admin_file)
+            rows = [row for row in csv_reader]  # Read all rows into memory
+
+        # Read login data
+        with open(csv_loginFile, 'r') as login_file:
+            csv_loginReader = csv.DictReader(login_file)
+            login_rows = [row for row in csv_loginReader]  # Read all rows into memory
+
+        # Update admin data
+        for row in rows:
+            if row["username"] == original_username:
+                # Update the user information
+                row['first_name'] = updated_data['firstName']
+                row['last_name'] = updated_data['lastName']
+                row['username'] = updated_data['username']
+                row['email'] = updated_data['email']
+                row['password'] = updated_data['password']
+                user_updated = True
+                break  # Exit loop once we update the row
+
+        # Update login data
+        for login_row in login_rows:
+            if login_row["username"] == original_username:
+                login_row['username'] = updated_data['username']
+                login_row['password'] = updated_data['password']
+                break  # Exit loop once we update the row
+
+        if user_updated:
+            # Write updated admin data back to file
+            with open(csv_adminFile, 'w', newline='') as file:
+                fieldnames = ['first_name', 'last_name', 'username', 'email', 'password']
+                csv_writer = csv.DictWriter(file, fieldnames=fieldnames)
+                csv_writer.writeheader()
+                csv_writer.writerows(rows)
+
+            # Write updated login data back to file
+            with open(csv_loginFile, 'w', newline='') as login_file:
+                fieldnames = ['username', 'password']
+                csv_writer = csv.DictWriter(login_file, fieldnames=fieldnames)
+                csv_writer.writeheader()
+                csv_writer.writerows(login_rows)
+
+            # Update session data
+            session['fn_dynamic'] = updated_data['firstName']
+            session['ln_dynamic'] = updated_data['lastName']
+            session['un_dynamic'] = updated_data['username']
+            session['email_dynamic'] = updated_data['email']
+            session['pw_dynamic'] = updated_data['password']
+
+            return jsonify({'message': 'User info updated successfully!'})
+        else:
+            return jsonify({'error': 'User not found.'}), 404
+
+    except Exception as e:
+        print(f"Error: {e}")  # This will log the error in the Flask console
+        return jsonify({'error': 'An error occurred while updating the user info.'}), 500
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
@@ -143,7 +219,7 @@ def signup_page():
                     admin_writer.writerow(user_data)
                 else:
                     session["error"]=eroare
-                    return render_template("signup.html", error=session.pop("error", None))
+                    return redirect(url_for("signup_page"))
 
             login_exists = os.path.isfile(Alogin_file_path)
             with open(Alogin_file_path, "a", newline="", encoding="utf-8") as login_file:
@@ -152,10 +228,17 @@ def signup_page():
                     login_writer.writeheader()
                 login_writer.writerow(login_data)
 
+        session["logged_in"] = True
+        session["fn_dynamic"] = user_data["first_name"]
+        session["ln_dynamic"] = user_data["last_name"]
+        session["un_dynamic"] = user_data["username"]
+        session["email_dynamic"] = user_data["email"]
+        session["pw_dynamic"] = user_data["password"]
 
         return redirect(url_for("index"))  # Redirects back to the index page
 
-    return render_template("signup.html")  # Renders the sign-up form
+    error = session.pop("error", None)
+    return render_template("signup.html", error=error)
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
@@ -186,8 +269,6 @@ def upload_file():
     else:
         print("No valid files to merge.")  # Debugging statement
         return redirect(request.url)
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)

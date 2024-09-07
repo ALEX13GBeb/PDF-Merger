@@ -27,19 +27,13 @@
             flex-direction: column;
             justify-content: center;
             text-align: left;
-            height: 250px;
+            height: 300px;
             width: 400px;
             border: 3px solid #3E376C;
             padding: 10px;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
             border-radius: 10px;
             background-color: white;
-        }
-
-        .info p {
-            padding: 3px;
-            line-height: 0;
-
         }
 
         .info-item {
@@ -55,7 +49,13 @@
             margin-left: 10px; /* Space between text and box */
             border-radius: 5px;
             padding:3px;
+        }
 
+        .info-box input {
+            width: 100%;
+            border: none;
+            background: none;
+            padding: 0;
         }
 
         .edit-button {
@@ -79,6 +79,33 @@
             outline: none; /* Removes default outline on focus */
         }
 
+        .save-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #3E376C;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+
+        .cancel-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #CC0000;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px; /* Adjust space between buttons if needed */
+        }
+
         h3 {
             font-size: 27px;
             margin: 0;
@@ -88,6 +115,8 @@
         body {
             background-color: #f0f0f0;
         }
+
+
     </style>
 </head>
 <body>
@@ -97,35 +126,46 @@
         <div class="info">
             <div class="info-item">
                 <h3 style="flex-grow:1;"><b>Information:</b></h3>
-                <button class="edit-button" aria-label="Edit Button">
+                <button class="edit-button" id="info_edit" aria-label="Edit Button">
                     <img src="{{ url_for('static', filename='images/Edit_icon.png') }}" alt="Edit Icon" class="edit-icon">
                 </button>
+
             </div>
             <div class="info-item">
                 <p>Last Name:</p>
-                <div class="info-box">{{ln_dynamic}}</div>
+                <div class="info-box"><input type="text" id="last_name" value="{{ln_dynamic}}" disabled></div>
             </div>
 
             <div class="info-item">
                 <p>First Name:</p>
-                <div class="info-box">{{fn_dynamic}}</div>
+                <div class="info-box"><input type="text" id="first_name" value="{{fn_dynamic}}" disabled></div>
             </div>
 
             <div class="info-item">
                 <p>Username:</p>
-                <div class="info-box">{{un_dynamic}}</div>
+                <div class="info-box"><input type="text" id="username" value="{{un_dynamic}}" disabled></div>
             </div>
 
             <div class="info-item">
                 <p>Email:</p>
-                <div class="info-box">{{email_dynamic}}</div>
+                <div class="info-box"><input type="email" id="email" value="{{email_dynamic}}" disabled></div>
             </div>
 
             <div class="info-item">
                 <p>Password:</p>
-                <div class="info-box">{{pw_dynamic}}</div>
+                <div class="info-box"><input type="password" id="password" value="{{pw_dynamic}}" disabled></div>
             </div>
+
+
         </div>
-    </div>
+
+        <div class="button-container">
+            <button class="save-button" id="save_button">Save Changes</button>
+            <button class="cancel-button" id="cancel_button">Cancel</button>
+        </div>
+
+        </div>
+
+                <script src="static/profile.js"></script>
 </body>
 </html>
