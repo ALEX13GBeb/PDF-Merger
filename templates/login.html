@@ -82,6 +82,7 @@
             display: flex;
             align-items: center;
             margin-bottom:15px;
+            background-color: white;
         }
 
         .form-group label{
@@ -95,6 +96,7 @@
             border-radius: 5px;
             font-size: 14px;
             flex-grow: 1;
+
         }
 
         .error-message{
@@ -111,6 +113,26 @@
             width: 20px;
             margin-right:5px;
             margin-bottom:0 px;
+        }
+
+        .password-container {
+            display:flex;
+            position: relative;
+            width: 100%
+        }
+
+        .password-container input {
+            width: 100%; /* Full width to fill the container */
+            padding-right: 40px; /* Space for the image */
+        }
+
+        .password-image {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer; /* Optional: if you want the user to click to show/hide the password */
+            width: 24px; /* Adjust the size if needed */
         }
 
     </style>
@@ -136,7 +158,12 @@
 
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="text" id="password" name="login_password" required>
+                <div class="password-container">
+                    <input type="password" id="password" name="login_password" required>
+                    <img src="{{ url_for('static', filename='images/eye-close.png') }}" alt="Password Hidden" id="pass_img" class="password-image"
+                    data-eye-open="{{ url_for('static', filename='images/eye-open.png') }}"
+                    data-eye-close="{{ url_for('static', filename='images/eye-close.png') }}">
+                </div>
             </div>
 
             <br>
@@ -154,5 +181,8 @@
             </div>
 
     </div>
+
+
+    <script src="static/login.js"></script>
 </body>
 </html>

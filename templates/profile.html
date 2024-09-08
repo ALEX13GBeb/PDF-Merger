@@ -42,13 +42,23 @@
             margin-bottom: 5px; /* Space between rows */
         }
 
+        .password-image {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            width: 24px; /* Adjust the size if needed */
+        }
+
         .info-box {
             flex-grow: 1; /* Stretch box to fill available space */
             height: 25px; /* Give some height for visibility */
             border: 1px solid #3E376C;
             margin-left: 10px; /* Space between text and box */
             border-radius: 5px;
-            padding:3px;
+            padding: 3px;
+            position: relative; /* Ensures the eye icon stays inside the box */
         }
 
         .info-box input {
@@ -60,12 +70,12 @@
 
         .edit-button {
             border: none;
-            margin:5px;
+            margin: 5px;
             background: none;
             cursor: pointer;
             display: flex;
-            flex-shrink:1;
-            justify-content:right;
+            flex-shrink: 1;
+            justify-content: right;
             align-items: center;
             padding: 0;
         }
@@ -116,7 +126,6 @@
             background-color: #f0f0f0;
         }
 
-
     </style>
 </head>
 <body>
@@ -129,8 +138,8 @@
                 <button class="edit-button" id="info_edit" aria-label="Edit Button">
                     <img src="{{ url_for('static', filename='images/Edit_icon.png') }}" alt="Edit Icon" class="edit-icon">
                 </button>
-
             </div>
+
             <div class="info-item">
                 <p>Last Name:</p>
                 <div class="info-box"><input type="text" id="last_name" value="{{ln_dynamic}}" disabled></div>
@@ -153,9 +162,13 @@
 
             <div class="info-item">
                 <p>Password:</p>
-                <div class="info-box"><input type="password" id="password" value="{{pw_dynamic}}" disabled></div>
+                <div class="info-box">
+                    <input type="password" id="password" value="{{pw_dynamic}}" disabled>
+                    <img src="{{ url_for('static', filename='images/eye-close.png') }}" alt="Password Hidden" id="pass_img" class="password-image"
+                        data-eye-open="{{ url_for('static', filename='images/eye-open.png') }}"
+                        data-eye-close="{{ url_for('static', filename='images/eye-close.png') }}">
+                </div>
             </div>
-
 
         </div>
 
@@ -163,8 +176,7 @@
             <button class="save-button" id="save_button">Save Changes</button>
             <button class="cancel-button" id="cancel_button">Cancel</button>
         </div>
-
-        </div>
+    </div>
 
                 <script src="static/profile.js"></script>
 </body>
