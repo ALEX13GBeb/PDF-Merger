@@ -252,11 +252,11 @@ def upload_file():
         print("No files selected.")  # Debugging statement
         return redirect(request.url)
 
-    merged_filename = modules.get_merged_name(request.form.get("merged_filename"))
+    merged_filename = modules.get_pdf_name(request.form.get("merged_filename"))
 
     filenames = []
     for file in files:
-        if file and modules.allowed_file(file.filename, app.config["ALLOWED_EXTENSIONS"]):
+        if file and modules.allow_pdf(file.filename, app.config["ALLOWED_EXTENSIONS"]):
             file_path=modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
             filenames.append(file_path)
 
@@ -264,11 +264,46 @@ def upload_file():
         modules.merger_pdf(filenames)
         merged_file_path = os.path.join(app.config["MERGED_FOLDER"], merged_filename)
         os.rename(os.path.join(app.config["MERGED_FOLDER"], "merger_output.pdf"), merged_file_path)
+        print(merged_file_path)
+        print(os.path.join(app.config["MERGED_FOLDER"], "merger_output.pdf"))
         print(f"Merged file saved: {merged_file_path}")  # Debugging statement
         return send_from_directory(app.config["MERGED_FOLDER"], merged_filename, as_attachment=True)
     else:
         print("No valid files to merge.")  # Debugging statement
         return redirect(request.url)
+
+
+@app.route("/convertWord", methods=["POST","GET"])
+def upload_word_file():
+    if "file" not in request.files:
+        print("No file part in request.")  # Debugging statement
+        return redirect(request.url)
+
+    files = request.files.getlist("file")
+
+    if not files:
+        print("No files selected.")  # Debugging statement
+        return redirect(request.url)
+
+    conversion_name = modules.get_pdf_name(request.form.get("word_conversion_filename"))
+    filenames = []
+    for file in files:
+        if file and modules.allow_word(file.filename):
+            file_path = modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
+            filenames.append(file_path)
+        else:
+            print(f"Invalid file format: {file.filename}")  # Debugging statement
+
+    if filenames:
+        try:
+            modules.convert_docx_to_pdf(filenames, conversion_name)
+            return send_from_directory(app.config["MERGED_FOLDER"], conversion_name, as_attachment=True)
+        except Exception as e:
+            print(f"Error during conversion: {e}")  # Debugging statement
+            return redirect(request.url)  # Redirect or send an error message
+    else:
+        print("No valid files to convert.")  # Debugging statement
+        return redirect(request.url)  # Redirect or send an error message
 
 if __name__ == "__main__":
     app.run(debug=True)
