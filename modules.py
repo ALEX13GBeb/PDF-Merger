@@ -29,50 +29,46 @@ def merger_pdf(pdf_files, output_folder):
     merger.close()
 
 
-def convert_docx_to_pdf(docx_file, rename, output_folder="merged"):
-    pythoncom.CoInitialize()  # Initialize COM
-    try:
-        convert(docx_file, output_folder)  # Perform conversion
-        first_split = os.path.splitext(docx_file)[0]
-        second_split = first_split.split(os.path.sep)[-1]  # For cross-platform compatibility
+def convert_docx_to_pdf(docx_file, rename, output_folder):
+    pythoncom.CoInitialize()
 
-        original_pdf_path = os.path.join(output_folder, second_split + ".pdf")
+    try:
+        # Sanitize file names
+        print(docx_file)
+        print(rename)
+
+
+        print("Performing conversion...")
+        convert(docx_file, output_folder)
+
+        base_name = os.path.splitext(os.path.basename(docx_file))[0]
+        print(base_name)
+
+        original_pdf_path = os.path.join(output_folder, f"{base_name}.pdf")
+        print(original_pdf_path)
 
         if rename.endswith(".docx"):
-            # Replace '.docx' with '.pdf'
             new_pdf_name = rename[:-5] + ".pdf"
         else:
-            # Append '.pdf' if '.docx' is not at the end
             new_pdf_name = rename + ".pdf"
 
-        new_pdf_path=os.path.join(output_folder, new_pdf_name)
+        new_pdf_path = os.path.join(output_folder, new_pdf_name)
 
         if os.path.exists(original_pdf_path):
-            os.rename(original_pdf_path, new_pdf_path)  # Rename the converted PDF
+            os.rename(original_pdf_path, new_pdf_path)
             print(f"Renamed {original_pdf_path} to {new_pdf_path}")
         else:
-            print(f"File {original_pdf_path} not found.")
+            print(f"Converted file {original_pdf_path} not found.")
+
+    except Exception as e:
+        print(f"Error during conversion or renaming: {e}")
+
     finally:
         pythoncom.CoUninitialize()
 
 def sanitize_filename(filename):
-    # Define invalid characters and reserved names for different systems
-    invalid_chars = r'[\/:*?"<>|]'
-    reserved_names = ['CON', 'PRN', 'AUX', 'NUL'] + [f'COM{i}' for i in range(1, 10)] + [f'LPT{i}' for i in range(1, 10)]
-
-    # Replace invalid characters with an underscore
-    sanitized = re.sub(invalid_chars, '_', filename)
-
-    # Ensure name does not start with a period
-    if sanitized.startswith('.'):
-        sanitized = '_' + sanitized[1:]
-
-    # Avoid reserved names
-    name_parts = sanitized.split('.')
-    if name_parts[0].upper() in reserved_names:
-        name_parts[0] = '_' + name_parts[0]
-        sanitized = '.'.join(name_parts)
-
+    # Replace spaces with underscores and handle other special characters
+    sanitized = re.sub(r'[^\w\s]', '', filename).replace(' ', '_')
     return sanitized
 
 

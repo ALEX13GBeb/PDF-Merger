@@ -316,52 +316,61 @@ def upload_word_file():
     names = request.form.getlist("file_names[]")
     print(f"New names: {names}")
 
-    files = [f for f in os.listdir(app.config["UPLOAD_FOLDER"]) if not f.startswith('~$')]  # Filter out temp files
+    # List files in the upload directory and filter out temp files
+    files = [f for f in os.listdir(app.config["UPLOAD_FOLDER"]) if not f.startswith('~$')]
     print(f"Contents of the temp dir: {files}")
 
-    # Correct output folder to place it outside upload directory
-    output_folder = app.config["OUTPUT_FOLDER"]  # Use MERGED_FOLDER instead of creating a new one inside upload
-    os.makedirs(output_folder, exist_ok=True)  # Ensure output folder exists
+    output_folder = app.config["OUTPUT_FOLDER"]
+    os.makedirs(output_folder, exist_ok=True)
 
     converted_files = []
 
-
     if names:
-        for file, name in zip(files, names):
+        for file,file_name in zip(files,names):
+            secured_name = secure_filename(file_name)
+            if not secured_name.endswith(".docx"):
+                secured_name+=".docx"
             try:
                 docx_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file)
-                modules.convert_docx_to_pdf(docx_file_path, name, output_folder)
-                if name.endswith(".docx"):
-                    cleaned_name=name[:-5] + ".pdf"
+                # Convert file and handle name correction
+                modules.convert_docx_to_pdf(docx_file_path, secured_name, output_folder)
+
+                # Rename the file if necessary and check for conversion output
+                cleaned_name = secured_name[:-5] + ".pdf" if secured_name.endswith(".docx") else secured_name + ".pdf"
+                output_file_path = os.path.join(output_folder, cleaned_name)
+
+                if os.path.exists(output_file_path):
+                    converted_files.append(output_file_path)
+                    print(f"Conversion successful for {file_name}")
                 else:
-                    cleaned_name=name+".pdf"
-                converted_files.append(os.path.join(output_folder, cleaned_name))
-                print(f"Conversion successful for {name}")
+                    print(f"Converted file not found for {file_name}")
+
             except Exception as e:
-                print(f"Error during conversion: {e}")
-                return redirect(request.url)  # Redirect or send an error message
+                print(f"Error during conversion for {file_name}: {e}")
+                return redirect(request.url)
 
-        print(f"These are the comverted files{converted_files}")
+        print(f"Converted files: {converted_files}")
 
-        # If multiple files, zip them; if only one file, return it directly
         if len(converted_files) > 1:
             zip_filename = "converted_files.zip"
             zip_path = os.path.join(output_folder, zip_filename)
             with zipfile.ZipFile(zip_path, "w") as zipf:
                 for file in converted_files:
                     zipf.write(file, os.path.basename(file))
-
             print(f"Returning zip file: {zip_path}")
-            modules.clear_directory(app.config["UPLOAD_FOLDER"])  # Clear upload folder after process
+            modules.clear_directory(app.config["UPLOAD_FOLDER"])
             return send_file(zip_path, as_attachment=True, mimetype='application/zip')
-        else:
+        elif converted_files:
             print(f"Returning single file: {converted_files[0]}")
-            modules.clear_directory(app.config["UPLOAD_FOLDER"])  # Clear upload folder after process
+            modules.clear_directory(app.config["UPLOAD_FOLDER"])
             return send_file(converted_files[0], as_attachment=True)
+        else:
+            print("No valid files were converted.")
+            return redirect(request.url)
 
     else:
-        print("No valid files to convert.")  # Debugging statement
-        return redirect(request.url)  # Redirect or send an error message
+        print("No file names provided.")
+        return redirect(request.url)
 
 
 @app.route('/deleteFile', methods=['POST'])
