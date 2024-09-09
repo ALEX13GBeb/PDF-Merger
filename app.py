@@ -296,7 +296,7 @@ def render_wordFiles():
         else:
             print(f"Invalid file format: {file.filename}")  # Debugging statement
 
-    return render_template("WordConvert.html", logged_in=logged_in, file_names=file_names)
+    return render_template("Convert.html", logged_in=logged_in, file_names=file_names)
 
 
 @app.route("/convertWord", methods=["POST", "GET"])
