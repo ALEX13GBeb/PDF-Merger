@@ -310,11 +310,10 @@
         </div>
         <form action="/Convert" style="border: 2px solid #485FBB" id="word_form" method="post" enctype="multipart/form-data">
             <div>
-                <input type="file" name="file" id="wordfiles" accept=".docx" multiple required>
+                <input type="file" name="file" id="wordfiles" accept=".docx, .doc" multiple required>
             </div>
             <br>
             <div>
-
                 <input type="submit" id="word_convert" value="Convert to PDF">
             </div>
                 <p class="error-message" id="error_number_word_files"></p>
@@ -325,13 +324,12 @@
         <div id="green_rectangle" class="rectangle green-rec" onclick="showExcelForm()">
             Excel to PDF
         </div>
-        <form action="/convertExcel" style="border: 2px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
+        <form action="/Convert" style="border: 2px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
             <div>
-                <input type="file" name="file" id="excelfiles" multiple required>
+                <input type="file" name="file" id="excelfiles" accept=".xlsx, .xls" multiple required>
             </div>
             <br>
             <div>
-                <input type="text" name="exel_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="excel_convert" value="Convert to PDF">
             </div>
                 <p class="error-message" id="error_number_excel_files"></p>
@@ -342,13 +340,12 @@
         <div id="orange_rectangle" class="rectangle orange-rec" onclick="showPPForm()">
             PowerPoint to PDF
         </div>
-        <form action="/convertPPT" style="border: 2px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
+        <form action="/Convert" style="border: 2px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
             <div>
-                <input type="file" name="file" id="ppfiles" multiple required>
+                <input type="file" name="file" id="ppfiles" accept=".pptx, .ppt" multiple required>
             </div>
             <br>
             <div>
-                <input type="text" name="pp_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="pp_convert" value="Convert to PDF">
             </div>
                 <p class="error-message" id="error_number_pp_files"></p>
@@ -378,13 +375,12 @@
         <div id="jpeg_rectangle" class="rectangle jpeg-rec" onclick="showJPEGForm()">
             JPEG Converter
         </div>
-        <form action="/convertJPEG" style="border: 2px solid #6B2282" id="jpeg_form" method="post" enctype="multipart/form-data">
+        <form action="/Convert" style="border: 2px solid #6B2282" id="jpeg_form" method="post" enctype="multipart/form-data">
             <div>
-                <input type="file" name="file" id="inputjpegfiles" multiple required>
+                <input type="file" name="file" id="inputjpegfiles" accept=".jpeg, .jpg" multiple required>
             </div>
             <br>
             <div>
-                <input type="text" name="jpeg_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="submit_jpeg_button" value="Convert to PDF">
             </div>
                 <p class="error-message" id="error_number_jpeg_files"></p>
@@ -395,13 +391,12 @@
         <div id="gif_rectangle" class="rectangle gif-rec" onclick="showGIFForm()">
             GIF Converter
         </div>
-        <form action="/convertGIF" style="border: 2px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
+        <form action="/Convert" style="border: 2px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
             <div>
-                <input type="file" name="file" id="giffiles" multiple required>
+                <input type="file" name="file" id="giffiles" accept=".gif" multiple required>
             </div>
             <br>
             <div>
-                <input type="text" name="gif_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="gif_convert" value="Convert to PDF">
             </div>
                 <p class="error-message" id="error_number_gif_files"></p>
@@ -412,13 +407,12 @@
          <div id="png_rectangle" class="rectangle png-rec" onclick="showPNGForm()">
             PNG Converter
         </div>
-        <form action="/convertPNG" style="border: 2px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
+        <form action="/Convert" style="border: 2px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
             <div>
-                <input type="file" name="file" id="pngfiles" multiple required>
+                <input type="file" name="file" id="pngfiles" accept=".png" multiple required>
             </div>
             <br>
             <div>
-                <input type="text" name="png_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="png_convert" value="Convert to PDF">
             </div>
                 <p class="error-message" id="error_number_png_files"></p>
@@ -429,13 +423,12 @@
         <div id="bmp_rectangle" class="rectangle bmp-rec" onclick="showBMPForm()">
             BMP Converter
         </div>
-        <form action="/convertBMP" style="border: 2px solid #FF8C00" id="bmp_form" method="post" enctype="multipart/form-data">
+        <form action="/Convert" style="border: 2px solid #FF8C00" id="bmp_form" method="post" enctype="multipart/form-data">
             <div>
-                <input type="file" name="file" id="bmpfiles" multiple required>
+                <input type="file" name="file" id="bmpfiles" accept=".bmp" multiple required>
             </div>
             <br>
             <div>
-                <input type="text" name="bmp_conversion_filename" placeholder="Enter PDF name..." required>
                 <input type="submit" id="bmp_convert" value="Convert to PDF">
             </div>
                 <p class="error-message" id="error_number_bmp_files"></p>

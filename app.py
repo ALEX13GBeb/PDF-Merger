@@ -3,6 +3,8 @@ import os
 import csv
 import modules
 import zipfile
+from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)
 app.secret_key = "my_session_key"
@@ -276,6 +278,7 @@ def upload_file():
 
 @app.route("/Convert", methods=["POST", "GET"])
 def render_wordFiles():
+    modules.clear_directory(app.config["UPLOAD_FOLDER"])
     logged_in = session.get("logged_in")
     if "file" not in request.files:
         print("No file part in request.")  # Debugging statement
@@ -291,7 +294,7 @@ def render_wordFiles():
         return redirect(request.url)
 
     for file in files:
-        if file and modules.allow_word(file.filename):
+        if file:
             file_path = modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
         else:
             print(f"Invalid file format: {file.filename}")  # Debugging statement
@@ -350,6 +353,34 @@ def upload_word_file():
     else:
         print("No valid files to convert.")  # Debugging statement
         return redirect(request.url)  # Redirect or send an error message
+
+
+@app.route('/deleteFile', methods=['POST'])
+def delete_file():
+    data = request.get_json()
+    file_name = data.get('fileName')
+    secured_filename= secure_filename(file_name)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], secured_filename)
+
+    print(f"Attempting to delete file: {file_path}")  # Debugging statement
+
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+            print(f"Successfully deleted file: {file_path}")  # Debugging statement
+            return jsonify({'success': True})
+        except Exception as e:
+            print(f"Error deleting file: {e}")  # Debugging statement
+            return jsonify({'success': False, 'message': 'Error deleting file'}), 500
+    else:
+        print(f"File not found: {file_path}")  # Debugging statement
+        return jsonify({'success': False, 'message': 'File not found'}), 404
+
+
+# Serve static files from the 'static' directory
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
 
 
 if __name__ == "__main__":
