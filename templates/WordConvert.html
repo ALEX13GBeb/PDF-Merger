@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Merger</title>
+
+    <style>
+        .page-box{
+            background-color: white;
+            position: absolute;
+            background-image: url("static/images/PDF_Alex.png");
+            background-size:contain;
+            background-repeat:no-repeat;
+            background-position:center;
+            border: 3px solid #3E376C;
+            top: 20px;
+            left: 40px;
+            right: 40px;
+            bottom: 20px;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+
+        .button {
+            padding: 10px 12px; /* Padding inside the button */
+            color: white;       /* Text color */
+            border: none;       /* Remove button border */
+            border-radius: 10px; /* Rounded corners */
+            cursor: pointer;    /* Cursor changes to a pointer on hover */
+            text-decoration: none; /* Remove underline from text */
+            width: 80px;       /* Fixed width for both buttons */
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .button:last-child {
+            margin-bottom: 0; /* Remove bottom margin for the last button */
+        }
+
+        .green:hover {
+            background-color: #45a049; /* Darken the button on hover */
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            align-items: flex-end; /* Align items to the right */
+            position: fixed;
+            top: 30px; /* Start from the top of the page */
+            right: 50px; /* Align to the right side */
+        }
+
+        .green {
+            background-color: #4CAF50; /* Button background color */
+        }
+
+        .blue {
+            background-color: #483DBB;
+        }
+
+        .blue:hover {
+            background-color: #3E376C;
+        }
+
+        body {
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            color: #585858;
+            font-size: 48px;
+            font-family: Arial, "Times New Roman", Times, serif;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .site-icon {
+            height: 40px;
+            width: 40px;
+            margin-right: 15px;
+
+        }
+
+        .icons-container {
+
+            display:flex;
+            flex-direction: row;
+            justify-content:center;
+            flex-wrap:wrap;
+            align-items: center;
+            margin-top:20px;
+        }
+
+        .icon-item {
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .word-icon {
+            display: flex;
+            flex-direction: row;
+            justify-content:center;
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            background-image: url("static/images/Docx.png");
+            background-color: white;
+            background-size: 90% 90%;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 3px solid black;
+            border-radius: 10px;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+        }
+
+        .file-name {
+            text-align: center;
+            font-size: 12px;
+            width: 100px;
+            border-radius:5px;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+        }
+
+        .convert-button-container {
+            position: absolute; /* Fixed positioning for the button container */
+            bottom: 20px; /* Space from the bottom of the page */
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Offset the left position by 50% of the width */
+            width: 400px; /* Fixed width for the button */
+            text-align: center; /* Center text inside the button */
+        }
+
+        .convert-button {
+            padding: 10px 12px; /* Padding inside the button */
+            color: white;       /* Text color */
+            border: none;       /* Remove button border */
+            border-radius: 15px; /* Rounded corners */
+            cursor: pointer;    /* Cursor changes to a pointer on hover */
+            text-decoration: none; /* Remove underline from text */
+            height:100px;
+            width: 400px;       /* Fixed width for both buttons */
+            text-align: center;
+            margin-bottom: 10px;
+            background-color: #FF4433;
+            font-size:32px;
+            font-weight: 900;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-box">
+        <h1><img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">PDF Merger</h1>
+
+        <div class="button-container">
+            {% if not logged_in %}
+            <a href="/login" class="button green">Log in</a>
+            <a href="/signup" class="button green">Sign up</a>
+            {% endif %}
+
+            {% if logged_in %}
+            <a href="/profile" class="button blue">Profile</a>
+            <a href="/signout" class="button blue">Sign Out</a>
+            {% endif %}
+        </div>
+
+        <form action="/convertWord" method="post" enctype="multipart/form-data">
+        <div class="icons-container">
+            {% for file_name in file_names %}
+            <div class="icon-item">
+                <div class="word-icon"></div>
+                <input class="file-name" type="text" name="file_names[]" value="{{ file_name }}">
+                <input type="hidden" name="original_file_names[]" value="{{ file_name }}">
+            </div>
+            {% endfor %}
+
+        <div class="convert-button-container">
+            <button class="convert-button" type="submit">Convert to PDF ></button>
+        </div>
+        </div>
+        </form>
+    </div>
+</body>
+</html>

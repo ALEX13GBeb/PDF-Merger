@@ -1,8 +1,8 @@
-from flask import Flask, request, redirect, url_for, send_from_directory, render_template, session, jsonify
+from flask import Flask, request, redirect, url_for, send_from_directory, render_template, session, jsonify, send_file
 import os
 import csv
-from werkzeug.utils import secure_filename
 import modules
+import zipfile
 
 app = Flask(__name__)
 app.secret_key = "my_session_key"
@@ -272,38 +272,76 @@ def upload_file():
         print("No valid files to merge.")  # Debugging statement
         return redirect(request.url)
 
-
-@app.route("/convertWord", methods=["POST","GET"])
-def upload_word_file():
+@app.route("/WordConvert", methods=["POST", "GET"])
+def render_wordFiles():
+    logged_in = session.get("logged_in")
     if "file" not in request.files:
         print("No file part in request.")  # Debugging statement
         return redirect(request.url)
 
     files = request.files.getlist("file")
+    file_names = [file.filename for file in files]
+
+    print(f"These are the files: {files}")
 
     if not files:
         print("No files selected.")  # Debugging statement
         return redirect(request.url)
 
-    conversion_name = modules.get_pdf_name(request.form.get("word_conversion_filename"))
-    filenames = []
     for file in files:
         if file and modules.allow_word(file.filename):
             file_path = modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
-            filenames.append(file_path)
         else:
             print(f"Invalid file format: {file.filename}")  # Debugging statement
 
-    if filenames:
-        try:
-            modules.convert_docx_to_pdf(filenames, conversion_name)
-            return send_from_directory(app.config["MERGED_FOLDER"], conversion_name, as_attachment=True)
-        except Exception as e:
-            print(f"Error during conversion: {e}")  # Debugging statement
-            return redirect(request.url)  # Redirect or send an error message
+    return render_template("WordConvert.html", logged_in=logged_in, file_names=file_names)
+
+
+@app.route("/convertWord", methods=["POST", "GET"])
+def upload_word_file():
+    names = request.form.getlist("file_names[]")
+    print(f"New names: {names}")
+
+    files = [f for f in os.listdir(app.config["UPLOAD_FOLDER"]) if not f.startswith('~$')]  # Filter out temp files
+    print(f"Contents of the temp dir: {files}")
+
+    # Correct output folder to place it outside upload directory
+    output_folder = app.config["MERGED_FOLDER"]  # Use MERGED_FOLDER instead of creating a new one inside upload
+    os.makedirs(output_folder, exist_ok=True)  # Ensure output folder exists
+
+    converted_files = []
+
+    if names:
+        for file, file_name in zip(files, names):
+            try:
+                docx_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file)
+                modules.convert_docx_to_pdf(docx_file_path, file_name, output_folder)
+                converted_files.append(os.path.join(output_folder, file_name + ".pdf"))
+                print(f"Conversion successful for {file_name}")
+            except Exception as e:
+                print(f"Error during conversion: {e}")
+                return redirect(request.url)  # Redirect or send an error message
+
+        # If multiple files, zip them; if only one file, return it directly
+        if len(converted_files) > 1:
+            zip_filename = "converted_files.zip"
+            zip_path = os.path.join(output_folder, zip_filename)
+            with zipfile.ZipFile(zip_path, "w") as zipf:
+                for file in converted_files:
+                    zipf.write(file, os.path.basename(file))
+
+            print(f"Returning zip file: {zip_path}")
+            modules.clear_directory(app.config["UPLOAD_FOLDER"])  # Clear upload folder after process
+            return send_file(zip_path, as_attachment=True, mimetype='application/zip')
+        else:
+            print(f"Returning single file: {converted_files[0]}")
+            modules.clear_directory(app.config["UPLOAD_FOLDER"])  # Clear upload folder after process
+            return send_file(converted_files[0], as_attachment=True)
+
     else:
         print("No valid files to convert.")  # Debugging statement
         return redirect(request.url)  # Redirect or send an error message
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -45,6 +45,15 @@ function DisplayList2() {
     }
     else {
         listItem2.style.display = "flex"; // Show the forms
+        document.getElementById("jpeg_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("png_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("gif_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("bmp_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("jpeg_form").style.display = "none"; // Show the form
+        document.getElementById("png_form").style.display = "none"; // Show the form
+        document.getElementById("gif_form").style.display = "none"; // Show the form
+        document.getElementById("bmp_form").style.display = "none";
+
         }
     }
 
