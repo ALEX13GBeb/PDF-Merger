@@ -17,6 +17,8 @@ os.makedirs(app.config["MERGED_FOLDER"], exist_ok=True)
 
 @app.route("/")
 def index():
+    modules.clear_directory(app.config["UPLOAD_FOLDER"])
+    modules.clear_directory(app.config["MERGED_FOLDER"])
     logged_in=session.get("logged_in", False)
     return render_template("index.html", logged_in=logged_in)
 
@@ -272,7 +274,7 @@ def upload_file():
         print("No valid files to merge.")  # Debugging statement
         return redirect(request.url)
 
-@app.route("/WordConvert", methods=["POST", "GET"])
+@app.route("/Convert", methods=["POST", "GET"])
 def render_wordFiles():
     logged_in = session.get("logged_in")
     if "file" not in request.files:
@@ -311,16 +313,23 @@ def upload_word_file():
 
     converted_files = []
 
+
     if names:
-        for file, file_name in zip(files, names):
+        for file, name in zip(files, names):
             try:
                 docx_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file)
-                modules.convert_docx_to_pdf(docx_file_path, file_name, output_folder)
-                converted_files.append(os.path.join(output_folder, file_name + ".pdf"))
-                print(f"Conversion successful for {file_name}")
+                modules.convert_docx_to_pdf(docx_file_path, name, output_folder)
+                if name.endswith(".docx"):
+                    cleaned_name=name[:-5] + ".pdf"
+                else:
+                    cleaned_name=name+".pdf"
+                converted_files.append(os.path.join(output_folder, cleaned_name))
+                print(f"Conversion successful for {name}")
             except Exception as e:
                 print(f"Error during conversion: {e}")
                 return redirect(request.url)  # Redirect or send an error message
+
+        print(f"These are the comverted files{converted_files}")
 
         # If multiple files, zip them; if only one file, return it directly
         if len(converted_files) > 1:

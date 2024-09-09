@@ -33,7 +33,15 @@ def convert_docx_to_pdf(docx_file, rename, output_folder="merged"):
         second_split = first_split.split(os.path.sep)[-1]  # For cross-platform compatibility
 
         original_pdf_path = os.path.join(output_folder, second_split + ".pdf")
-        new_pdf_path = os.path.join(output_folder, rename + ".pdf")
+
+        if rename.endswith(".docx"):
+            # Replace '.docx' with '.pdf'
+            new_pdf_name = rename[:-5] + ".pdf"
+        else:
+            # Append '.pdf' if '.docx' is not at the end
+            new_pdf_name = rename + ".pdf"
+
+        new_pdf_path=os.path.join(output_folder, new_pdf_name)
 
         if os.path.exists(original_pdf_path):
             os.rename(original_pdf_path, new_pdf_path)  # Rename the converted PDF
@@ -42,6 +50,27 @@ def convert_docx_to_pdf(docx_file, rename, output_folder="merged"):
             print(f"File {original_pdf_path} not found.")
     finally:
         pythoncom.CoUninitialize()
+
+def sanitize_filename(filename):
+    # Define invalid characters and reserved names for different systems
+    invalid_chars = r'[\/:*?"<>|]'
+    reserved_names = ['CON', 'PRN', 'AUX', 'NUL'] + [f'COM{i}' for i in range(1, 10)] + [f'LPT{i}' for i in range(1, 10)]
+
+    # Replace invalid characters with an underscore
+    sanitized = re.sub(invalid_chars, '_', filename)
+
+    # Ensure name does not start with a period
+    if sanitized.startswith('.'):
+        sanitized = '_' + sanitized[1:]
+
+    # Avoid reserved names
+    name_parts = sanitized.split('.')
+    if name_parts[0].upper() in reserved_names:
+        name_parts[0] = '_' + name_parts[0]
+        sanitized = '.'.join(name_parts)
+
+    return sanitized
+
 
 def profile_data(list):
     session["fn_dynamic"] = list[0]
