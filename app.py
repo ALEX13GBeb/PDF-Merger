@@ -10,17 +10,17 @@ app = Flask(__name__)
 app.secret_key = "my_session_key"
 
 app.config["UPLOAD_FOLDER"] = "uploads"
-app.config["MERGED_FOLDER"] = "merged"
+app.config["OUTPUT_FOLDER"] = "output"
 app.config["ALLOWED_EXTENSIONS"] = {"pdf"}
 
 # Ensure upload and merged folders exist
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
-os.makedirs(app.config["MERGED_FOLDER"], exist_ok=True)
+os.makedirs(app.config["OUTPUT_FOLDER"], exist_ok=True)
 
 @app.route("/")
 def index():
     modules.clear_directory(app.config["UPLOAD_FOLDER"])
-    modules.clear_directory(app.config["MERGED_FOLDER"])
+    modules.clear_directory(app.config["OUTPUT_FOLDER"])
     logged_in=session.get("logged_in", False)
     return render_template("index.html", logged_in=logged_in)
 
@@ -261,17 +261,26 @@ def upload_file():
     filenames = []
     for file in files:
         if file and modules.allow_pdf(file.filename, app.config["ALLOWED_EXTENSIONS"]):
-            file_path=modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
+            file_path = modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
             filenames.append(file_path)
 
     if filenames:
-        modules.merger_pdf(filenames)
-        merged_file_path = os.path.join(app.config["MERGED_FOLDER"], merged_filename)
-        os.rename(os.path.join(app.config["MERGED_FOLDER"], "merger_output.pdf"), merged_file_path)
-        print(merged_file_path)
-        print(os.path.join(app.config["MERGED_FOLDER"], "merger_output.pdf"))
-        print(f"Merged file saved: {merged_file_path}")  # Debugging statement
-        return send_from_directory(app.config["MERGED_FOLDER"], merged_filename, as_attachment=True)
+        try:
+            modules.merger_pdf(filenames, app.config["OUTPUT_FOLDER"])
+            merged_file_path = os.path.join(app.config["OUTPUT_FOLDER"], merged_filename)
+            temp_merged_path = os.path.join(app.config["OUTPUT_FOLDER"], "merger_output.pdf")
+
+            if os.path.exists(temp_merged_path):
+                os.rename(temp_merged_path, merged_file_path)
+                print(f"Merged file saved: {merged_file_path}")  # Debugging statement
+            else:
+                print(f"Temporary merged file not found: {temp_merged_path}")  # Debugging statement
+
+            modules.clear_directory(app.config["UPLOAD_FOLDER"])
+            return send_from_directory(app.config["OUTPUT_FOLDER"], merged_filename, as_attachment=True)
+        except Exception as e:
+            print(f"Error during file processing: {e}")  # Debugging statement
+            return redirect(request.url)
     else:
         print("No valid files to merge.")  # Debugging statement
         return redirect(request.url)
@@ -311,7 +320,7 @@ def upload_word_file():
     print(f"Contents of the temp dir: {files}")
 
     # Correct output folder to place it outside upload directory
-    output_folder = app.config["MERGED_FOLDER"]  # Use MERGED_FOLDER instead of creating a new one inside upload
+    output_folder = app.config["OUTPUT_FOLDER"]  # Use MERGED_FOLDER instead of creating a new one inside upload
     os.makedirs(output_folder, exist_ok=True)  # Ensure output folder exists
 
     converted_files = []

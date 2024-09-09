@@ -5,24 +5,28 @@ import os, shutil
 import re
 from docx2pdf import convert
 import pythoncom
+import time
 
 def clear_directory(folder_path):
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
+                time.sleep(0.1)  # Small delay
                 os.unlink(file_path)
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
 
-def merger_pdf(pdf_files):
+def merger_pdf(pdf_files, output_folder):
     merger = PdfMerger()
     for pdf in pdf_files:
         merger.append(pdf)
-    with open("merged\merger_output.pdf", "wb") as output_pdf:
+    with open(output_folder+"/merger_output.pdf", "wb") as output_pdf:
         merger.write(output_pdf)
+
+    merger.close()
 
 
 def convert_docx_to_pdf(docx_file, rename, output_folder="merged"):
