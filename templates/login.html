@@ -5,137 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Page</title>
     <style>
-        /* CSS to center the box and style it */
-
-        .button {
-            padding: 10px 20px; /* Padding inside the button */
-            color: white;       /* Text color */
-            border: none;       /* Remove button border */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer;    /* Cursor changes to a pointer on hover */
-            text-decoration: none; /* Remove underline from text */
-            width: 80px;       /* Fixed width for both buttons */
-            text-align: center; /* Center text inside the button */
-            display: inline-block; /* Ensure the width and text alignment work */
-        }
-
-        .blue{
-            background-color: #6495ED;
-        }
-
         body {
-            position : relative;
+            position: relative;
+
             display: flex;
-            justify-content: center; /* Centers the box horizontally */
-            align-items: center;     /* Centers the box vertically */
-            height: 100vh;           /* Full viewport height */
-            margin: 0;               /* Removes default body margin */
-            background-color: #f0f0f0; /* Light background color for contrast */
+            justify-content: center;
+            align-items: center;
+
+            background-color: #f0f0f0;
+
+            height: 100vh;
+            margin: 0;
         }
+
 
         .home-button {
-            position:absolute;
-            display:flex;
-            border:3px solid black;
-            top:25px;
-            left:25px;
-            padding:5px 5px;
-            background-color:white;
-            color: #585858;
-            border-radius:5px;
-            cursor:pointer;
-            text-decoration:none;
+            position: absolute;
+
+            display: inline-block;
+            flex-direction: row; /* Assuming you meant to use flex properties */
+            align-items: center; /* Assuming you meant to use flex properties */
+            justify-content: center; /* Assuming you meant to use flex properties */
+
+            top: 25px;
+            left: 25px;
+
             width: 200px;
-            text-align:center;
-            display:inline-block;
-            font-weight:900;
-            font-size:20px;
+
+            padding: 5px 5px;
+            border-radius: 5px;
+            border: 3px solid black;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+            background-color: white;
+
+            color: #585858;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 900;
         }
+
 
         .home-button:hover {
             border:3px solid green;
         }
 
+
         .box {
-            width: 350px;           /* Width of the box */
-            height: 300px;          /* Height of the box */
-            border: 2px solid #4CAF50; /* Green outline */
-            border-radius: 10px;    /* Rounded corners */
-            background-color: white; /* White background inside the box */
-            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
             display: flex;
-            flex-direction:column;
-            justify-content: center; /* Center content horizontally */
-            align-items: center;     /* Center content vertically */
-            font-family: Arial, sans-serif; /* Font styling */
-            color: #333;             /* Text color */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            width: 350px;
+            height: 300px;
+
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            font-family: Arial, sans-serif;
+            color: #333;
         }
 
 
-
-        form{
+        form {
             position:relative;
         }
+
 
         .form-group{
             display: flex;
             align-items: center;
-            margin-bottom:15px;
+
             background-color: white;
+
+            margin-bottom:15px;
         }
+
 
         .form-group label{
             font-weight: bold;
             margin-right: 10px;
         }
 
+
         .form-group input{
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
+
             font-size: 14px;
             flex-grow: 1;
 
         }
 
-        .error-message{
-            position: absolute;
-            bottom: 240px; /* 10px from the bottom of the form */
-            left: 0;
-            right: 0;
-            text-align: center; /* Center the text */
-            color: red;
+
+        .password-container {
+            position: relative;
+            display:flex;
+            width: 100%
         }
+
+
+        .password-container input {
+            width: 100%;
+            padding-right: 40px;
+        }
+
+
+        .password-image {
+            position: absolute;
+
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            cursor: pointer;
+            width: 24px;
+        }
+
+
+        .button {
+            display: inline-block;
+            text-align: center;
+
+            width: 80px;
+            padding: 10px 20px;
+
+            border: none;
+            border-radius: 5px;
+            background-color: transparent; /* Add this if the background color is missing */
+
+            color: white;
+
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+
+        .button:hover {
+            background-color: #4169E1;
+        }
+
+        .blue{
+            background-color: #6495ED;
+        }
+
 
         .site-icon {
             height: 20px;
             width: 20px;
+
             margin-right:5px;
             margin-bottom:0 px;
         }
 
-        .password-container {
-            display:flex;
-            position: relative;
-            width: 100%
-        }
-
-        .password-container input {
-            width: 100%; /* Full width to fill the container */
-            padding-right: 40px; /* Space for the image */
-        }
-
-        .password-image {
+        .error-message{
             position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer; /* Optional: if you want the user to click to show/hide the password */
-            width: 24px; /* Adjust the size if needed */
-        }
 
+            bottom: 240px;
+            left: 0;
+            right: 0;
+
+            text-align: center; /* Center the text */
+            color: red;
+        }
     </style>
+
 </head>
 <body>
 
@@ -148,7 +187,6 @@
 
     <div class="box">
         <form method="post">
-
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="login_un"  required>
