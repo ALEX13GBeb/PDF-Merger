@@ -18,6 +18,17 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+function DisplayList0() {
+    var listItem0 = document.getElementById("list_item0");
+
+    if (listItem0.style.display === "flex") {
+        listItem0.style.display = "none"; // Hide the forms
+    }
+    else {
+        listItem0.style.display = "flex"; // Show the forms
+        document.getElementById("red_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("index_form").style.display = "none"; // Show the form
+        }}
 
 function DisplayList1() {
     var listItem1 = document.getElementById("list_item1");
