@@ -206,7 +206,7 @@
                 <div class="word-icon" style="background-image: url('static/images/{{ file_name.split('.')[-1] }}.png');"></div>
                 <button class="icon-button" type="button" onclick="removeFile(this)">x</button>
                 <!-- ^^^^^ type="button" so the button doesn't activate the form's action ^^^^^ -->
-                <input class="file-name" type="text" name="file_names[]" value="{{ file_name }}">
+                <input class="file-name" type="text" name="file_names[]" value="{{ file_name }}"  onkeydown="restrictFileNameInput(event)">
                 <input type="hidden" name="original_file_names[]" value="{{ file_name }}">
             </div>
             {% endfor %}

@@ -24,3 +24,15 @@ function removeFile(button) {
         alert('An error occurred');
     });
 }
+
+function restrictFileNameInput(event) {
+    const invalidChars = ['/', '\\', ':', '*', '?', '"', '|', '<', '>']; // Array of invalid characters
+    const key = event.key; // The key that was pressed
+
+    // If the pressed key is in the list of restricted characters
+    if (invalidChars.includes(key)) {
+        event.preventDefault(); // Prevent the character from being typed
+        alert(`The character "${key}" is not allowed in the file name.\nList of invalid characters: / \\ : * ? " | < >`);
+
+    }
+}
