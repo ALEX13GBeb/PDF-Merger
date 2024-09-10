@@ -7,7 +7,7 @@ from docx2pdf import convert
 import pythoncom
 import time
 import win32com.client as win32
-
+from typing import List
 
 def clear_directory(folder_path):
     for filename in os.listdir(folder_path):
@@ -21,10 +21,11 @@ def clear_directory(folder_path):
         except Exception as e:
             print(f"Failed to delete {file_path}. Reason: {e}")
 
-def natural_sort(elements):
-    def natural_key(text):
-        # Use a regex to split the string into chunks of digits and non-digits
-        return [int(chunk) if chunk.isdigit() else chunk.lower() for chunk in re.split('([0-9]+)', text)]
+def natural_sort(elements: List[str]) -> List[str]:
+    def natural_key(text: str):
+        key = [int(chunk) if chunk.isdigit() else chunk.lower() for chunk in re.split('([0-9]+)', text)]
+        print(f"Sorting key for '{text}': {key}")  # Debugging line
+        return key
 
     return sorted(elements, key=natural_key)
 
@@ -38,53 +39,65 @@ def merger_pdf(pdf_files, output_folder):
     merger.close()
 
 
-def convert_word_to_pdf(word_file, rename, output_folder):
+def convert_office_to_pdf(input_file, rename, output_folder):
     pythoncom.CoInitialize()
 
     try:
         # Get the absolute file path
-        abs_word_file = os.path.abspath(word_file) # - for word file in uploads folder
+        abs_input_file = os.path.abspath(input_file)
         abs_output_folder = os.path.abspath(output_folder)
 
         # Debugging:
-        print(f"Word file: {abs_word_file}")
+        print(f"Input file: {abs_input_file}")
         print(f"Rename: {rename}")
         print(f"Output folder: {abs_output_folder}")
 
         # Get the base name and extension
-        base_name = os.path.splitext(os.path.basename(abs_word_file))[0]
-        ext = os.path.splitext(abs_word_file)[1].lower()
+        base_name = os.path.splitext(os.path.basename(abs_input_file))[0]
+        ext = os.path.splitext(abs_input_file)[1].lower()
 
         # Debugging:
         print(f"Base name: {base_name}")
         print(f"Extension: {ext}")
 
-        if ext not in ['.doc', '.docx']:
-            raise ValueError("Unsupported file format. Only .doc and .docx are supported.")
+        if ext not in ['.doc', '.docx', '.xls', '.xlsx', ".ppt", ".pptx"]:
+            raise ValueError("Unsupported file format. Only .doc, .docx, .xls, and .xlsx are supported.")
 
         print("Performing conversion...")
 
-        # Initialize Word application
-        word_app = win32.Dispatch("Word.Application")
-        word_app.Visible = False
+        if ext in ['.doc', '.docx']:
+            # Handle Word files
+            word_app = win32.Dispatch("Word.Application")
+            word_app.Visible = False
+            doc = word_app.Documents.Open(abs_input_file)
+            pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
+            doc.SaveAs(pdf_output_path, FileFormat=17)  # 17 is the wdFormatPDF constant
+            doc.Close(SaveChanges=False)
+            word_app.Quit()
 
-        # Open the Word file
-        doc = word_app.Documents.Open(abs_word_file)
+        elif ext in ['.xls', '.xlsx']:
+            # Handle Excel files
+            excel_app = win32.Dispatch("Excel.Application")
+            excel_app.Visible = False
+            wb = excel_app.Workbooks.Open(abs_input_file)
+            pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
+            wb.ExportAsFixedFormat(0, pdf_output_path)  # 0 is xlTypePDF constant
+            wb.Close(SaveChanges=False)
+            excel_app.Quit()
 
-        # Define the PDF output path
-        pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
-
-        # Save as PDF
-        doc.SaveAs(pdf_output_path, FileFormat=17)  # 17 is the wdFormatPDF constant
-
-        # Close the document and Word app
-        doc.Close(SaveChanges=False)
-        word_app.Quit()
+        elif ext in ['.ppt', '.pptx']:
+            # Handle PowerPoint files
+            power_point_app = win32.Dispatch("PowerPoint.Application")
+            presentation = power_point_app.Presentations.Open(abs_input_file)
+            pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
+            presentation.SaveAs(pdf_output_path, FileFormat=32)  # 32 is the ppSaveAsPDF constant
+            presentation.Close()
+            power_point_app.Quit()
 
         # Handle renaming
-        if rename.endswith(".docx"):
+        if rename.endswith(".docx") or rename.endswith(".xlsx") or rename.endswith(".pptx"):
             new_name = rename[:-5] + ".pdf"
-        elif rename.endswith(".doc"):
+        elif rename.endswith(".doc") or rename.endswith(".xls") or rename.endswith(".ppt"):
             new_name = rename[:-4] + ".pdf"
         else:
             new_name = rename + ".pdf"

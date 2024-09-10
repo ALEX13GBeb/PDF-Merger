@@ -354,12 +354,12 @@ def upload_word_file():
                 docx_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file)
 
                 # Convert file and handle name correction
-                modules.convert_word_to_pdf(docx_file_path, secured_name, output_folder)
+                modules.convert_office_to_pdf(docx_file_path, secured_name, output_folder)
 
                 # Rename the file if necessary and check for conversion output
-                if secured_name.endswith(".docx"):
+                if secured_name.endswith(".docx") or secured_name.endswith(".xlsx") or secured_name.endswith(".pptx"):
                     cleaned_name = secured_name[:-5] + ".pdf"
-                elif secured_name.endswith(".doc"):
+                elif secured_name.endswith(".doc") or secured_name.endswith(".xls") or secured_name.endswith(".ppt"):
                     cleaned_name = secured_name[:-4] + ".pdf"
                 else:
                     cleaned_name = secured_name + ".pdf"
@@ -403,13 +403,9 @@ def upload_word_file():
 @app.route('/deleteFile', methods=['POST'])
 def delete_file():
     data = request.get_json()
-    print(data)
     file_name = data.get('fileName')
-    print(file_name)
     secured_filename= secure_filename(file_name)
-    print(secured_filename)
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], secured_filename)
-    print(file_path)
 
     print(f"Attempting to delete file: {file_path}")  # Debugging statement
 
@@ -419,6 +415,9 @@ def delete_file():
             print(f"Successfully deleted file: {file_path}")  # Debugging statement
             remaining_files = len(os.listdir(app.config['UPLOAD_FOLDER']))
             return jsonify({'success': True, 'file_count': remaining_files})
+
+
+
         except Exception as e:
             print(f"Error deleting file: {e}")  # Debugging statement
             return jsonify({'success': False, 'message': 'Error deleting file'}), 500
