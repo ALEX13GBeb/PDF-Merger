@@ -14,12 +14,12 @@ def clear_directory(folder_path):
         file_path = os.path.join(folder_path, filename)
         try:
             if os.path.isfile(file_path) or os.path.islink(file_path):
-                time.sleep(0.1)  # Small delay
+                time.sleep(0.1)
                 os.unlink(file_path)
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            print(f'Failed to delete {file_path}. Reason: {e}')
+            print(f"Failed to delete {file_path}. Reason: {e}")
 
 def natural_sort(elements):
     def natural_key(text):
@@ -43,10 +43,10 @@ def convert_word_to_pdf(word_file, rename, output_folder):
 
     try:
         # Get the absolute file path
-        abs_word_file = os.path.abspath(word_file)
+        abs_word_file = os.path.abspath(word_file) # - for word file in uploads folder
         abs_output_folder = os.path.abspath(output_folder)
 
-        # Sanitize file names
+        # Debugging:
         print(f"Word file: {abs_word_file}")
         print(f"Rename: {rename}")
         print(f"Output folder: {abs_output_folder}")
@@ -55,6 +55,7 @@ def convert_word_to_pdf(word_file, rename, output_folder):
         base_name = os.path.splitext(os.path.basename(abs_word_file))[0]
         ext = os.path.splitext(abs_word_file)[1].lower()
 
+        # Debugging:
         print(f"Base name: {base_name}")
         print(f"Extension: {ext}")
 
@@ -89,7 +90,6 @@ def convert_word_to_pdf(word_file, rename, output_folder):
             new_name = rename + ".pdf"
 
         new_pdf_output_path = os.path.join(abs_output_folder, new_name)
-
         if os.path.exists(pdf_output_path):
             os.rename(pdf_output_path, new_pdf_output_path)
             print(f"Renamed {pdf_output_path} to {new_pdf_output_path}")
@@ -205,6 +205,9 @@ def repeat_password(password, re_password):
         return True
     else:
         return False
+
+
+
 
 
 

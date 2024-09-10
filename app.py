@@ -287,14 +287,21 @@ def upload_file():
 
 @app.route("/Convert", methods=["POST", "GET"])
 def render_wordFiles():
-    modules.clear_directory(app.config["UPLOAD_FOLDER"])
+    if request.method == "POST":
+        # Debugging statements
+        print("Received POST request.")
+
+    data_types = ".docx, .doc"
     logged_in = session.get("logged_in")
+
+
     if "file" not in request.files:
         print("No file part in request.")  # Debugging statement
         return redirect(request.url)
 
     files = request.files.getlist("file")
     file_names = [file.filename for file in files]
+
     sorted_names=modules.natural_sort(file_names)
 
     print(f"These are the files: {files}")
@@ -310,7 +317,13 @@ def render_wordFiles():
         else:
             print(f"Invalid file format: {file.filename}")  # Debugging statement
 
-    return render_template("Convert.html", logged_in=logged_in, file_names=sorted_names)
+    file_count=len(os.listdir(app.config["UPLOAD_FOLDER"]))
+    print(os.listdir(app.config["UPLOAD_FOLDER"]))
+
+    return render_template("Convert.html", logged_in=logged_in,
+                                                            file_names=sorted_names,
+                                                            data_types=data_types,
+                                                            file_count=file_count)
 
 
 @app.route("/convertWord", methods=["POST", "GET"])
@@ -373,7 +386,6 @@ def upload_word_file():
                 for file in converted_files:
                     zipf.write(file, os.path.basename(file))
             print(f"Returning zip file: {zip_path}")
-            modules.clear_directory(app.config["UPLOAD_FOLDER"])
             return send_file(zip_path, as_attachment=True, mimetype='application/zip')
         elif converted_files:
             print(f"Returning single file: {converted_files[0]}")
@@ -391,9 +403,13 @@ def upload_word_file():
 @app.route('/deleteFile', methods=['POST'])
 def delete_file():
     data = request.get_json()
+    print(data)
     file_name = data.get('fileName')
+    print(file_name)
     secured_filename= secure_filename(file_name)
+    print(secured_filename)
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], secured_filename)
+    print(file_path)
 
     print(f"Attempting to delete file: {file_path}")  # Debugging statement
 
@@ -401,19 +417,14 @@ def delete_file():
         try:
             os.remove(file_path)
             print(f"Successfully deleted file: {file_path}")  # Debugging statement
-            return jsonify({'success': True})
+            remaining_files = len(os.listdir(app.config['UPLOAD_FOLDER']))
+            return jsonify({'success': True, 'file_count': remaining_files})
         except Exception as e:
             print(f"Error deleting file: {e}")  # Debugging statement
             return jsonify({'success': False, 'message': 'Error deleting file'}), 500
     else:
         print(f"File not found: {file_path}")  # Debugging statement
         return jsonify({'success': False, 'message': 'File not found'}), 404
-
-
-# Serve static files from the 'static' directory
-@app.route('/static/<path:filename>')
-def serve_static(filename):
-    return send_from_directory('static', filename)
 
 
 if __name__ == "__main__":
