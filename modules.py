@@ -3,11 +3,10 @@ from flask import session, redirect, request
 from werkzeug.utils import secure_filename
 import os, shutil
 import re
-from docx2pdf import convert
 import pythoncom
 import time
-import win32com.client as win32
 from typing import List
+import comtypes.client
 
 def clear_directory(folder_path):
     for filename in os.listdir(folder_path):
@@ -61,13 +60,13 @@ def convert_office_to_pdf(input_file, rename, output_folder):
         print(f"Extension: {ext}")
 
         if ext not in ['.doc', '.docx', '.xls', '.xlsx', ".ppt", ".pptx"]:
-            raise ValueError("Unsupported file format. Only .doc, .docx, .xls, and .xlsx are supported.")
+            raise ValueError("Unsupported file format. Only .doc, .docx, .xls, .xlsx, .ppt, and .pptx are supported.")
 
         print("Performing conversion...")
 
         if ext in ['.doc', '.docx']:
             # Handle Word files
-            word_app = win32.Dispatch("Word.Application")
+            word_app = comtypes.client.CreateObject("Word.Application")
             word_app.Visible = False
             doc = word_app.Documents.Open(abs_input_file)
             pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
@@ -77,7 +76,7 @@ def convert_office_to_pdf(input_file, rename, output_folder):
 
         elif ext in ['.xls', '.xlsx']:
             # Handle Excel files
-            excel_app = win32.Dispatch("Excel.Application")
+            excel_app = comtypes.client.CreateObject("Excel.Application")
             excel_app.Visible = False
             wb = excel_app.Workbooks.Open(abs_input_file)
             pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
@@ -87,8 +86,8 @@ def convert_office_to_pdf(input_file, rename, output_folder):
 
         elif ext in ['.ppt', '.pptx']:
             # Handle PowerPoint files
-            power_point_app = win32.Dispatch("PowerPoint.Application")
-            presentation = power_point_app.Presentations.Open(abs_input_file)
+            power_point_app = comtypes.client.CreateObject("PowerPoint.Application")
+            presentation = power_point_app.Presentations.Open(abs_input_file, WithWindow=False)
             pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
             presentation.SaveAs(pdf_output_path, FileFormat=32)  # 32 is the ppSaveAsPDF constant
             presentation.Close()
