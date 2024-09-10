@@ -4,6 +4,6 @@ __pycache__/
 uploads
 uploads_docPdf
 converted_docPdf
-merged
+output
 admin.csv
 login_data.csv
