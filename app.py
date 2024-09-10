@@ -295,8 +295,10 @@ def render_wordFiles():
 
     files = request.files.getlist("file")
     file_names = [file.filename for file in files]
+    sorted_names=modules.natural_sort(file_names)
 
     print(f"These are the files: {files}")
+    print(f"These are the file_names: {sorted_names}")
 
     if not files:
         print("No files selected.")  # Debugging statement
@@ -308,7 +310,7 @@ def render_wordFiles():
         else:
             print(f"Invalid file format: {file.filename}")  # Debugging statement
 
-    return render_template("Convert.html", logged_in=logged_in, file_names=file_names)
+    return render_template("Convert.html", logged_in=logged_in, file_names=sorted_names)
 
 
 @app.route("/convertWord", methods=["POST", "GET"])
@@ -320,23 +322,35 @@ def upload_word_file():
     files = [f for f in os.listdir(app.config["UPLOAD_FOLDER"]) if not f.startswith('~$')]
     print(f"Contents of the temp dir: {files}")
 
+    # Create a dictionary to map the original filenames to the new names
+    file_rename_map = dict(zip(files, names))
+    print(file_rename_map)
+
     output_folder = app.config["OUTPUT_FOLDER"]
     os.makedirs(output_folder, exist_ok=True)
 
     converted_files = []
 
     if names:
-        for file,file_name in zip(files,names):
-            secured_name = secure_filename(file_name)
-            if not secured_name.endswith(".docx"):
-                secured_name+=".docx"
+        for file in files:
             try:
+                # Get the corresponding new name from the map
+                file_name = file_rename_map.get(file)
+                secured_name = secure_filename(file_name)
+
                 docx_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file)
+
                 # Convert file and handle name correction
-                modules.convert_docx_to_pdf(docx_file_path, secured_name, output_folder)
+                modules.convert_word_to_pdf(docx_file_path, secured_name, output_folder)
 
                 # Rename the file if necessary and check for conversion output
-                cleaned_name = secured_name[:-5] + ".pdf" if secured_name.endswith(".docx") else secured_name + ".pdf"
+                if secured_name.endswith(".docx"):
+                    cleaned_name = secured_name[:-5] + ".pdf"
+                elif secured_name.endswith(".doc"):
+                    cleaned_name = secured_name[:-4] + ".pdf"
+                else:
+                    cleaned_name = secured_name + ".pdf"
+
                 output_file_path = os.path.join(output_folder, cleaned_name)
 
                 if os.path.exists(output_file_path):
@@ -351,6 +365,7 @@ def upload_word_file():
 
         print(f"Converted files: {converted_files}")
 
+        # Handle multiple or single files for download
         if len(converted_files) > 1:
             zip_filename = "converted_files.zip"
             zip_path = os.path.join(output_folder, zip_filename)

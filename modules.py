@@ -6,6 +6,8 @@ import re
 from docx2pdf import convert
 import pythoncom
 import time
+import win32com.client as win32
+
 
 def clear_directory(folder_path):
     for filename in os.listdir(folder_path):
@@ -19,6 +21,13 @@ def clear_directory(folder_path):
         except Exception as e:
             print(f'Failed to delete {file_path}. Reason: {e}')
 
+def natural_sort(elements):
+    def natural_key(text):
+        # Use a regex to split the string into chunks of digits and non-digits
+        return [int(chunk) if chunk.isdigit() else chunk.lower() for chunk in re.split('([0-9]+)', text)]
+
+    return sorted(elements, key=natural_key)
+
 def merger_pdf(pdf_files, output_folder):
     merger = PdfMerger()
     for pdf in pdf_files:
@@ -29,42 +38,70 @@ def merger_pdf(pdf_files, output_folder):
     merger.close()
 
 
-def convert_docx_to_pdf(docx_file, rename, output_folder):
+def convert_word_to_pdf(word_file, rename, output_folder):
     pythoncom.CoInitialize()
 
     try:
-        # Sanitize file names
-        print(docx_file)
-        print(rename)
+        # Get the absolute file path
+        abs_word_file = os.path.abspath(word_file)
+        abs_output_folder = os.path.abspath(output_folder)
 
+        # Sanitize file names
+        print(f"Word file: {abs_word_file}")
+        print(f"Rename: {rename}")
+        print(f"Output folder: {abs_output_folder}")
+
+        # Get the base name and extension
+        base_name = os.path.splitext(os.path.basename(abs_word_file))[0]
+        ext = os.path.splitext(abs_word_file)[1].lower()
+
+        print(f"Base name: {base_name}")
+        print(f"Extension: {ext}")
+
+        if ext not in ['.doc', '.docx']:
+            raise ValueError("Unsupported file format. Only .doc and .docx are supported.")
 
         print("Performing conversion...")
-        convert(docx_file, output_folder)
 
-        base_name = os.path.splitext(os.path.basename(docx_file))[0]
-        print(base_name)
+        # Initialize Word application
+        word_app = win32.Dispatch("Word.Application")
+        word_app.Visible = False
 
-        original_pdf_path = os.path.join(output_folder, f"{base_name}.pdf")
-        print(original_pdf_path)
+        # Open the Word file
+        doc = word_app.Documents.Open(abs_word_file)
 
+        # Define the PDF output path
+        pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
+
+        # Save as PDF
+        doc.SaveAs(pdf_output_path, FileFormat=17)  # 17 is the wdFormatPDF constant
+
+        # Close the document and Word app
+        doc.Close(SaveChanges=False)
+        word_app.Quit()
+
+        # Handle renaming
         if rename.endswith(".docx"):
-            new_pdf_name = rename[:-5] + ".pdf"
+            new_name = rename[:-5] + ".pdf"
+        elif rename.endswith(".doc"):
+            new_name = rename[:-4] + ".pdf"
         else:
-            new_pdf_name = rename + ".pdf"
+            new_name = rename + ".pdf"
 
-        new_pdf_path = os.path.join(output_folder, new_pdf_name)
+        new_pdf_output_path = os.path.join(abs_output_folder, new_name)
 
-        if os.path.exists(original_pdf_path):
-            os.rename(original_pdf_path, new_pdf_path)
-            print(f"Renamed {original_pdf_path} to {new_pdf_path}")
+        if os.path.exists(pdf_output_path):
+            os.rename(pdf_output_path, new_pdf_output_path)
+            print(f"Renamed {pdf_output_path} to {new_pdf_output_path}")
         else:
-            print(f"Converted file {original_pdf_path} not found.")
+            print(f"Converted file {pdf_output_path} not found.")
 
     except Exception as e:
-        print(f"Error during conversion or renaming: {e}")
+        print(f"Error during conversion: {e}")
 
     finally:
         pythoncom.CoUninitialize()
+
 
 def sanitize_filename(filename):
     # Replace spaces with underscores and handle other special characters
