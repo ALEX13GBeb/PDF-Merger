@@ -6,78 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <style>
+        body {
+            background-color: #f0f0f0;
+        }
+
+        h3 {
+            font-size: 27px;
+            margin: 0;
+            padding: 3px;
+        }
+
+
         .page-box {
             position: absolute;
-            background-image: url("static/images/pdf_background.jpg");
-            background-size:contain;
-            background-repeat:no-repeat;
-            background-position:center;
-            border: 3px solid #3E376C;
+
             top: 20px;
             left: 40px;
             right: 40px;
             bottom: 20px;
-            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
+
             padding: 10px;
+            border: 3px solid #3E376C;
             border-radius: 10px;
+
+            background-image: url("static/images/pdf_background.jpg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
         }
+
 
         .info {
             display: flex;
             flex-direction: column;
             justify-content: center;
-            text-align: left;
+
             height: 300px;
             width: 400px;
-            border: 3px solid #3E376C;
+
             padding: 10px;
-            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3); /* Subtle shadow for a 3D effect */
+            border: 3px solid #3E376C;
             border-radius: 10px;
+
             background-color: white;
+
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            text-align: left;
         }
+
 
         .info-item {
-            display: flex; /* Align content horizontally */
-            align-items: center; /* Center vertically */
-            margin-bottom: 5px; /* Space between rows */
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
         }
 
-        .password-image {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            width: 24px; /* Adjust the size if needed */
-        }
-
-        .info-box {
-            flex-grow: 1; /* Stretch box to fill available space */
-            height: 25px; /* Give some height for visibility */
-            border: 1px solid #3E376C;
-            margin-left: 10px; /* Space between text and box */
-            border-radius: 5px;
-            padding: 3px;
-            position: relative; /* Ensures the eye icon stays inside the box */
-        }
-
-        .info-box input {
-            width: 100%;
-            border: none;
-            background: none;
-            padding: 0;
-        }
 
         .edit-button {
-            border: none;
-            margin: 5px;
-            background: none;
-            cursor: pointer;
             display: flex;
             flex-shrink: 1;
             justify-content: right;
             align-items: center;
+
+            border: none;
+            background: none;
+            cursor: pointer;
             padding: 0;
+
+            margin: 5px;
         }
 
         .edit-icon {
@@ -89,43 +88,76 @@
             outline: none; /* Removes default outline on focus */
         }
 
-        .save-button {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background-color: #3E376C;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            display: none; /* Hidden by default */
+
+        .info-box {
+            display: flex;
+            flex-grow: 1;
+
+            height: 25px;
+
+            padding: 3px;
+            border: 1px solid #3E376C;
+            border-radius: 5px;
+
+            position: relative;
+
+            margin-left: 10px;
         }
 
-        .cancel-button {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background-color: #CC0000;
-            color: white;
+
+        .info-box input {
+            width: 100%;
+
             border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            display: none; /* Hidden by default */
+            background: none;
+            padding: 0;
         }
+
+
+        .password-image {
+            position: absolute;
+
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            cursor: pointer;
+            width: 24px;
+        }
+
 
         .button-container {
             display: flex;
             gap: 10px; /* Adjust space between buttons if needed */
         }
 
-        h3 {
-            font-size: 27px;
-            margin: 0;
-            padding: 3px;
+        .save-button {
+            display: none;
+
+            border: none;
+            border-radius: 10px;
+            background-color: #3E376C;
+            color: white;
+            cursor: pointer;
+
+            padding: 5px 10px;
+
+            margin-top: 10px;
         }
 
-        body {
-            background-color: #f0f0f0;
-        }
+        .cancel-button {
+            display: none;
 
+            border: none;
+            border-radius: 10px;
+            background-color: #CC0000;
+            color: white;
+            cursor: pointer;
+
+            padding: 5px 10px;
+
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
