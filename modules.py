@@ -47,6 +47,13 @@ import pythoncom
 from reportlab.pdfgen import canvas
 
 
+import os
+import tempfile
+import pythoncom
+import comtypes.client
+from PIL import Image
+from reportlab.pdfgen import canvas
+
 def convert_file_to_pdf(input_file, rename, output_folder):
     pythoncom.CoInitialize()
 
@@ -68,7 +75,6 @@ def convert_file_to_pdf(input_file, rename, output_folder):
         print(f"Base name: {base_name}")
         print(f"Extension: {ext}")
 
-        # Check if it's an Office file or image
         if ext in ['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']:
             print("Performing Office file conversion...")
 
@@ -98,9 +104,8 @@ def convert_file_to_pdf(input_file, rename, output_folder):
                 presentation.SaveAs(pdf_output_path, FileFormat=32)
                 presentation.Close()
                 power_point_app.Quit()
-            # ...
 
-        elif ext in ['.jpeg', '.jpg', '.png', '.bmp']:  # Now handles .bmp
+        elif ext in ['.jpeg', '.jpg', '.png', '.bmp']:
             print("Performing image conversion...")
 
             # Convert images to PDF
@@ -109,7 +114,7 @@ def convert_file_to_pdf(input_file, rename, output_folder):
 
             if rename.lower().endswith('.jpeg'):
                 new_pdf_name = rename[:-5] + ".pdf"
-            elif rename.lower().endswith(('.jpg', '.png', 'bmp')):
+            elif rename.lower().endswith(('.jpg', '.png', '.bmp')):
                 new_pdf_name = rename[:-4] + ".pdf"
 
             pdf_output_path = os.path.join(abs_output_folder, new_pdf_name)
@@ -121,14 +126,48 @@ def convert_file_to_pdf(input_file, rename, output_folder):
             c.drawImage(abs_input_file, 0, 0, width=img_width, height=img_height)
             c.save()
 
+        elif ext == '.gif':
+            print("Performing GIF conversion...")
+
+            image = Image.open(abs_input_file)
+            pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
+            c = canvas.Canvas(pdf_output_path)
+
+            # Check if it's an animated GIF
+            if getattr(image, "n_frames", 1) > 1:
+                for frame in range(image.n_frames):
+                    image.seek(frame)
+                    image_frame = image.convert('RGB')
+
+                    # Save the current frame to a temporary file
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
+                        temp_path = temp_file.name
+                        image_frame.save(temp_path)
+
+                    img_width, img_height = image_frame.size
+                    c.setPageSize((img_width, img_height))
+                    c.drawImage(temp_path, 0, 0, width=img_width, height=img_height)
+                    c.showPage()  # Add a new page for each frame
+
+                    # Clean up the temporary file
+                    os.remove(temp_path)
+            else:
+                # Static GIF (or non-animated GIF)
+                image = image.convert('RGB')
+                img_width, img_height = image.size
+                c.setPageSize((img_width, img_height))
+                c.drawImage(abs_input_file, 0, 0, width=img_width, height=img_height)
+
+            c.save()
+
         else:
             raise ValueError(
-                "Unsupported file format. Supported formats: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .jpeg, .jpg, .png, .bmp")
+                "Unsupported file format. Supported formats: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .jpeg, .jpg, .png, .bmp, .gif")
 
         # Handle renaming
         if rename.lower().endswith(('.docx', '.xlsx', '.pptx', '.jpeg')):
             new_name = rename[:-5] + ".pdf"
-        elif rename.lower().endswith(('.doc', '.xls', '.ppt', '.jpg', '.png', '.bmp')):
+        elif rename.lower().endswith(('.doc', '.xls', '.ppt', '.jpg', '.png', '.bmp', '.gif')):
             new_name = rename[:-4] + ".pdf"
         else:
             new_name = rename + ".pdf"
@@ -145,6 +184,7 @@ def convert_file_to_pdf(input_file, rename, output_folder):
 
     finally:
         pythoncom.CoUninitialize()
+
 
 
 def sanitize_filename(filename):

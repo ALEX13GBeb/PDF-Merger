@@ -359,7 +359,7 @@ def upload_word_file():
                 # Rename the file if necessary and check for conversion output
                 if secured_name.lower().endswith(('.docx', '.xlsx', '.pptx', '.jpeg')):
                     cleaned_name = secured_name[:-5] + ".pdf"
-                elif secured_name.lower().endswith(('.doc', '.xls', '.ppt', '.jpg', '.png', '.bmp')):
+                elif secured_name.lower().endswith(('.doc', '.xls', '.ppt', '.jpg', '.png', '.bmp', '.gif')):
                     cleaned_name = secured_name[:-4] + ".pdf"
                 else:
                     cleaned_name = secured_name + ".pdf"
