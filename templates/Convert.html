@@ -6,43 +6,148 @@
     <title>PDF Merger</title>
 
     <style>
+        body {
+            background-color: #f0f0f0;
+        }
+
+
+        h1 {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: flex-end;
+
+            position: relative;
+            left: -25%;
+
+            width: 49.5%;
+
+            color: #585858;
+            font-size: 52px;
+            font-family: Arial, "Times New Roman", Times, serif;
+            font-weight: 900;
+
+            margin-bottom: 16px;
+        }
+
+
         .page-box {
-            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+
             position: absolute;
-            background-image: url("static/images/PDF_Alex.png");
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            border: 3px solid #3E376C;
             top: 20px;
             left: 40px;
             right: 40px;
             bottom: 20px;
+
+            background-color: white;
+            background-image: url("static/images/PDF_Alex.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+
+            border: 3px solid #3E376C;
+            border-radius: 10px;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
             padding: 10px;
-            border-radius: 10px;
         }
+
+
+        .button-container {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+
+            font-size: 16px;
+            font-family: Arial, "Times New Roman", Times, serif;
+            font-weight: 900;
+
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .button {
+            padding: 10px 12px;
+            width: 80px;
+
+            border: none;
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        .green{
+            background-color: #4CAF50;
+        }
+
+        .green:hover {
+            background-color: #45a049;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
+        }
+
+        .red{
+            background-color: #ff4d4d;
+        }
+
+        .red:hover {
+            background-color: #e60000;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
+        }
+
+        .blue{
+            background-color: #483DBB;
+        }
+
+        .blue:hover{
+            background-color: #3E376C;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
+        }
+
+        .orange{
+            background-color: #FF8C00;
+        }
+
+        .orange:hover{
+            background-color: #FF6A00;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
+        }
+
 
         .addConvert-button {
             position: fixed;
-            align-items: center;
             top: 80px;
             left: 50%;
             transform: translateX(-50%);
+            align-items: center;
+
+            width: 44px;
+            height: 44px;
             padding: 10px 12px;
-            color: white;
+            line-height: 44px;
             border: none;
             border-radius: 50%;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            background-color: #FF4433;
+            color: white;
             cursor: pointer;
             text-decoration: none;
-            height: 40px;
-            width: 40px;
-            line-height: 40px;
             text-align: center;
-            font-size: 56px;
+
+            font-size: 58px;
             font-weight: 900;
-            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
-            background-color: #FF4433;
         }
 
         .addConvert-button input {
@@ -51,139 +156,140 @@
 
         .addConvert-button:hover {
             background-color: #FF0000;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
         }
+
 
         #file-count {
             position: fixed;
             top: 70px;
             left: 50%;
             transform: translateX(-100%);
-            display: flex; /* Use Flexbox for centering */
-            align-items: center; /* Vertically center text */
-            justify-content: center; /* Horizontally center text */
-            color: white;
-            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 27px;
+            height: 27px;
+            border: 5px solid #FF4433;
             border-radius: 50%;
-            height: 27px; /* Increased height */
-            width: 27px;  /* Increased width */
+            background-color: black;
+            color: white;
+            text-align: center;
+
             font-size: 16px;
             font-family: Arial, sans-serif;
             font-weight: 900;
-            background-color: black;
-            text-align: center;
-            border:5px solid #FF4433;
+            border: none;
         }
 
-        .button {
-            padding: 10px 12px;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            text-decoration: none;
-            width: 80px;
-            text-align: center;
+
+        .site-icon {
+            height: 60px;
+            width: 60px;
+
+            margin-right: 15px;
             margin-bottom: 10px;
         }
 
-        .button:last-child {
-            margin-bottom: 0;
-        }
-
-        .green:hover {
-            background-color: #45a049;
-        }
-
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            position: fixed;
-            top: 30px;
-            right: 50px;
-        }
-
-        .green {
-            background-color: #4CAF50;
-        }
-
-        .blue {
-            background-color: #483DBB;
-        }
-
-        .blue:hover {
-            background-color: #3E376C;
-        }
-
-        body {
-            background-color: #f0f0f0;
-        }
-
-        h1 {
-            color: #585858;
-            font-size: 56px;
-            font-family: Arial, "Times New Roman", Times, serif;
-            font-weight: 900;
-            margin-bottom: 15px;
-
-        }
-
-        .site-icon {
-            height: 50px;
-            width: 50px;
-            margin-right: 15px;
-        }
 
         .icons-container {
             display: flex;
             flex-direction: row;
             justify-content: center;
-            flex-wrap: wrap;
             align-items: center;
+            flex-wrap: wrap;
+
+            position: relative;
+
             margin-top: 20px;
         }
 
         .icon-item {
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
+
+            position: relative;
+
             margin: 10px;
-            position: relative; /* Make this the reference for absolute positioning */
         }
 
-        .word-icon {
+        .pptx-icon,
+        .ppt-icon,
+        .docx-icon,
+        .doc-icon,
+        .xslx-icon,
+        .xls-icon,
+        .jpeg-icon,
+        .jpg-icon,
+        .JPG-icon,
+        .gif-icon,
+        .png-icon,
+        .bmp-icon{
             display: flex;
             flex-direction: row;
             justify-content: center;
-            width: 100px;
-            height: 100px;
-            margin: 10px;
+
+            width: 120px;
+            height: 120px;
+            margin: 12px;
+            border: 5px solid black;
+            border-radius: 10px;
+            box-shadow: 2px 2px 1px 2px rgba(0, 0, 0, 0.7);
             background-color: white;
             background-size: 90% 90%;
             background-position: center;
             background-repeat: no-repeat;
-            border: 3px solid black;
-            border-radius: 10px;
-            box-shadow: 2px 2px 1px 2px rgba(0, 0, 0, 0.7);
         }
 
+        .doc-icon:hover,
+        .docx-icon:hover {
+            border: 5px solid #485FBB;
+        }
 
-        .word-icon:hover {
-            border: 3px solid #485FBB;
+        .xls-icon:hover,
+        .xlsx-icon:hover {
+            border: 5px solid #008000;
+        }
+
+        .ppt-icon:hover,
+        .pptx-icon:hover {
+            border: 5px solid #FF6743;
+        }
+
+        .JPG-icon:hover,
+        .jpg-icon:hover,
+        .jpeg-icon:hover {
+            border: 5px solid #FF8C00;
+        }
+
+        .gif-icon:hover {
+            border: 5px solid #00308F;
+        }
+
+        .png-icon:hover {
+            border: 5px solid #32C984;
+        }
+
+        .bmp-icon:hover {
+            border: 5px solid #6B2282;
         }
 
         .icon-button {
             position: absolute;
-            top: 0px; /* Adjust as needed */
-            right: 0px; /* Adjust as needed */
+            top: 0px;
+            right: 0px;
+
             background-color: black;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            font-size:16px;
+            font-size: 20px;
             box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
@@ -197,47 +303,71 @@
 
         .file-name {
             text-align: center;
-            font-size: 12px;
+            font-size: 16px;
+
             width: 100px;
+
             border-radius: 5px;
+
             box-shadow: 2px 1px 1px 2px rgba(0, 0, 0, 0.7);
         }
 
+
         .convert-button-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
+            position: fixed;
+            bottom: 5%;
+
             text-align: center;
         }
 
         .convert-button {
             padding: 10px 12px;
+            height: 110px;
+            width: 440px;
+
             color: white;
             border: none;
             border-radius: 15px;
             cursor: pointer;
             text-decoration: none;
-            height: 100px;
-            width: 400px;
             text-align: center;
-            margin-bottom: 10px;
             background-color: #FF4433;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 900;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            margin-bottom: 10px;
+            margin-top: 10px;
+            margin-right: 10px;
+            margin-left: 10px;
         }
 
         .convert-button:hover {
             background-color: #FF0000;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
         }
 
     </style>
 </head>
 <body>
     <div class="page-box">
-        <h1><img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">Convert-To-PDF</h1>
+
+        <h1><img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">
+            Convert-TO-PDF
+            <div class="button-container">
+                {% if not logged_in %}
+                <a href="/login" class="button blue">Log in</a>
+                <a href="/signup" class="button green">Sign up</a>
+                {% endif %}
+
+                {% if logged_in %}
+                <a href="/profile" class="button orange">Profile</a>
+                <a href="/signout" class="button red">Sign Out</a>
+                {% endif %}
+            </div>
+
+        </h1>
+
 
         <form id="addform" action="/addFile" method="post" enctype="multipart/form-data">
             <label class="addConvert-button">
@@ -252,35 +382,24 @@
         </div>
         {% endif %}
 
-        <div class="button-container">
-            {% if not logged_in %}
-            <a href="/login" class="button green">Log in</a>
-            <a href="/signup" class="button green">Sign up</a>
-            {% endif %}
-
-            {% if logged_in %}
-            <a href="/profile" class="button blue">Profile</a>
-            <a href="/signout" class="button blue">Sign Out</a>
-            {% endif %}
-        </div>
 
         <form action="/convertWord" method="post" enctype="multipart/form-data">
-        <div class="icons-container">
-            {% for file_name in file_names %}
-            <div class="icon-item" data-file-name="{{ file_name }}">
-                <div class="word-icon" style="background-image: url('static/images/{{ file_name.split('.')[-1] }}.png');"></div>
-                <button class="icon-button" type="button" onclick="removeFile(this)">x</button>
-                <!-- ^^^^^ type="button" so the button doesn't activate the form's action ^^^^^ -->
-                <input class="file-name" type="text" name="file_names[]" value="{{ file_name }}"  onkeydown="restrictFileNameInput(event)">
-                <input type="hidden" name="original_file_names[]" value="{{ file_name }}">
+            <div class="icons-container">
+                {% for file_name in file_names %}
+                <div class="icon-item" data-file-name="{{ file_name }}">
+                    <div class="{{ file_name.split('.')[-1] }}-icon" style="background-image: url('static/images/{{ file_name.split('.')[-1] }}.png');"></div>
+                    <button class="icon-button" type="button" onclick="removeFile(this)">x</button>
+                    <!-- ^^^^^ type="button" so the button doesn't activate the form's action ^^^^^ -->
+                    <input class="file-name" type="text" name="file_names[]" value="{{ file_name }}"  onkeydown="restrictFileNameInput(event)">
+                    <input type="hidden" name="original_file_names[]" value="{{ file_name }}">
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+        </form>
 
         <div class="convert-button-container">
             <button class="convert-button" type="submit">Convert to PDF ></button>
         </div>
-        </div>
-        </form>
     </div>
 
     <script src="static/CS_Convert.js"></script>

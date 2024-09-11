@@ -289,11 +289,11 @@ def upload_file():
 
 @app.route("/Convert", methods=["POST", "GET"])
 def render_wordFiles():
+
     if request.method == "POST":
         # Debugging statements
         print("Received POST request.")
     logged_in = session.get("logged_in")
-
 
     if "file" not in request.files:
         print("No file part in request.")  # Debugging statement
@@ -319,14 +319,14 @@ def render_wordFiles():
         data_types = ".bmp"
 
     if not files:
-        print("No files selected.")  # Debugging statement
+        print("No files selected.")
         return redirect(request.url)
 
     for file in files:
         if file:
             file_path = modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
         else:
-            print(f"Invalid file format: {file.filename}")  # Debugging statement
+            print(f"Invalid file format: {file.filename}")
 
     file_count=len(os.listdir(app.config["UPLOAD_FOLDER"]))
     print(os.listdir(app.config["UPLOAD_FOLDER"]))
@@ -413,6 +413,7 @@ def upload_word_file():
 
 @app.route('/addFile', methods=['POST'])
 def add_file():
+
     print("Activated Path")
     if 'file' not in request.files:
         return 'No file part', 400
@@ -447,7 +448,6 @@ def add_file():
     elif sorted_names[0].lower().endswith(".bmp"):
         data_types = ".bmp"
 
-
     logged_in = session.get("logged_in")
 
     print(f"Files uploaded successfully: {file_paths}")  # Debug statement
@@ -455,7 +455,6 @@ def add_file():
                                                              file_names=sorted_names,
                                                              data_types=data_types,
                                                              file_count=file_count)
-
 
 
 @app.route('/deleteFile', methods=['POST'])

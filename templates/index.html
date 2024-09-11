@@ -53,8 +53,8 @@
             justify-content: center;
             align-items: flex-end;
 
-            left: 350px;
-            top: 55px;
+            left: 21%;
+            top: 7%;
 
             font-size: 16px;
             font-family: Arial, "Times New Roman", Times, serif;
@@ -195,7 +195,7 @@
             cursor: pointer;
             margin-right: 5px;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
-            border: 2px solid black;
+            border: 3px solid black;
             background-color: white;
 
             text-align: center;
@@ -204,70 +204,70 @@
             font-weight: 900;
         }
 
+        .red-rec { border: 3px solid #DD0000; }
+        .orange-rec { border: 3px solid #FF6743; }
+        .blue-rec { border: 3px solid #485FBB; }
+        .green-rec { border: 3px solid #008000; }
 
-        .orange-rec { border: 2px solid #FF6743; }
-        .red-rec { border: 2px solid #DD0000; }
-        .blue-rec { border: 2px solid #485FBB; }
-        .green-rec { border: 2px solid #008000; }
-
-        .orange-rec:hover {
-            background-color: #FF5733;
+        .red-rec:hover {
+            background-color: #DD0000;
             color: white;
         }
 
-        .red-rec:hover {
-            background-color: #C70000;
+        .orange-rec:hover {
+            background-color: #FF6743;
             color: white;
         }
 
         .blue-rec:hover {
-            background-color: #3C4F9B;
+            background-color: #485FBB;
             color: white;
         }
 
         .green-rec:hover {
-            background-color: #006400;
+            background-color: #008000;
             color: white;
         }
 
 
-        .jpeg-rec { border: 2px solid #FF8C00; }
-        .png-rec { border: 2px solid #32C984; }
-        .gif-rec { border: 2px solid #00308F; }
-        .bmp-rec { border: 2px solid #6B2282; }
+        .jpeg-rec { border: 3px solid #FF8C00; }
+        .png-rec { border: 3px solid #32C984; }
+        .gif-rec { border: 3px solid #00308F; }
+        .bmp-rec { border: 3px solid #6B2282; }
 
         .jpeg-rec:hover {
-            background-color: #EE6900;
+            background-color: #FF8C00;
             color: white;
         }
 
         .png-rec:hover {
-            background-color: #11AA11;
+            background-color: #32C984;
             color: white;
         }
 
         .gif-rec:hover {
-            background-color: #003077;
+            background-color: #00308F;
             color: white;
         }
 
         .bmp-rec:hover {
-            background-color: #4B0082;
+            background-color: #6B2282;
             color: white;
 
         }
 
 
         form {
-            display: none;
+            display: flex;
             position: relative;
             flex-direction: column;
             align-items: center;
-
+            justify-content: flex-end;
 
             width: 10%;
             max-width: 400px;
             min-width: 200px;
+            height: 100%;
 
             border: 3px solid black;
             border-radius: 10px;
@@ -282,24 +282,23 @@
         form input {
             width: 100%;
 
-            padding:10px;
-            box-sizing:border-box;
+            padding: 10px;
+            box-sizing: border-box;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
         }
 
 
-        form input[type="file"]{
+        form input[type="file"] {
             width: 100%;
 
-            padding:10px;
             box-sizing:border-box;
             box-shadow: none;
         }
 
 
         .site-icon {
-            height: 40px;
-            width: 40px;
+            height: 50px;
+            width: 50px;
 
             margin-right: 15px;
             margin-bottom:0 px;
@@ -311,12 +310,6 @@
             margin-right: 5px;
         }
 
-
-        .error-message{
-            color: red;
-            text-align: left;
-            margin-top: 10px;
-        }
     </style>
 
 </head>
@@ -325,6 +318,7 @@
     <div class="page-box">
 
         <h1><img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">PDF ALEX
+
             <div class="button-container">
                 {% if not logged_in %}
                 <a href="/login" class="button blue">Log in</a>
@@ -336,6 +330,7 @@
                 <a href="/signout" class="button red">Sign Out</a>
                 {% endif %}
             </div>
+
         </h1>
 
         <br>
@@ -353,14 +348,14 @@
             <div id="red_rectangle" class="rectangle red-rec" onclick="showPdfForm()">
                 <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF Merger
             </div>
-            <form action="/upload" style="border: 2px solid #DD0000" id="index_form" method="post" enctype="multipart/form-data">
+            <form action="/upload" style="border: 3px solid #DD0000" id="index_form" method="post" enctype="multipart/form-data">
                 <div>
                     <input type="file" name="file" id="inputfiles" accept=".pdf" multiple required>
                 </div>
                 <br>
                 <div>
                     <input type="text" name="merged_filename" placeholder="Enter merged file name..." required>
-                    <input type="submit" id="submit_button" value="Upload and Merge">
+                    <input type="submit" id="submit_button" class="" value="Upload and Merge">
                 </div>
                     <p class="error-message" id="error_number_files"></p>
             </form>
@@ -373,7 +368,7 @@
 
 
         <div class="tools-box" >
-            <h3>Word-to-PDF / Excel-to-PDF / PowerPoint-to-PDF</h3>
+            <h3>PowerPoint-to-PDF / Word-to-PDF / Excel-to-PDF</h3>
             <button class="list-button" onclick="DisplayList1()">
                 <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
             </button>
@@ -387,15 +382,8 @@
             <div id="orange_rectangle" class="rectangle orange-rec" onclick="showPPForm()">
                 <img src="{{ url_for('static', filename='images/pptx.png') }}" class="document-icon">PowerPoint to PDF
             </div>
-            <form action="/Convert" style="border: 2px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
-                <div>
+            <form action="/Convert" style="border: 3px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
                     <input type="file" name="file" id="ppfiles" accept=".pptx, .ppt" multiple required>
-                </div>
-                <br>
-                <div>
-                    <input type="submit" id="pp_convert" value="Convert to PDF">
-                </div>
-                    <p class="error-message" id="error_number_pp_files"></p>
             </form>
 
             <br>
@@ -403,15 +391,10 @@
             <div id="blue_rectangle" class="rectangle blue-rec" onclick="showWordForm()">
                 <img src="{{ url_for('static', filename='images/docx.png') }}" class="document-icon">Word to PDF
             </div>
-            <form action="/Convert" style="border: 2px solid #485FBB" id="word_form" method="post" enctype="multipart/form-data">
+            <form action="/Convert" style="border: 3px solid #485FBB" id="word_form" method="post" enctype="multipart/form-data">
                 <div>
                     <input type="file" name="file" id="wordfiles" accept=".docx, .doc" multiple required>
                 </div>
-                <br>
-                <div>
-                    <input type="submit" id="word_convert" value="Convert to PDF">
-                </div>
-                    <p class="error-message" id="error_number_word_files"></p>
             </form>
 
             <br>
@@ -419,15 +402,10 @@
             <div id="green_rectangle" class="rectangle green-rec" onclick="showExcelForm()">
                 <img src="{{ url_for('static', filename='images/xlsx.png') }}" class="document-icon">Excel to PDF
             </div>
-            <form action="/Convert" style="border: 2px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
+            <form action="/Convert" style="border: 3px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
                 <div>
                     <input type="file" name="file" id="excelfiles" accept=".xlsx, .xls" multiple required>
                 </div>
-                <br>
-                <div>
-                    <input type="submit" id="excel_convert" value="Convert to PDF">
-                </div>
-                    <p class="error-message" id="error_number_excel_files"></p>
             </form>
 
         </div>
@@ -439,7 +417,7 @@
 
 
         <div class="tools-box" >
-            <h3>JPEG / PNG / GIF / BMP --> TO PDF</h3>
+            <h3>JPEG / GIF / PNG / BMP --> TO PDF</h3>
             <button class="list-button" onclick="DisplayList2()">
                 <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
             </button>
@@ -452,15 +430,10 @@
             <div id="jpeg_rectangle" class="rectangle jpeg-rec" onclick="showJPEGForm()">
                 <img src="{{ url_for('static', filename='images/jpeg.png') }}" class="document-icon">JPEG Converter
             </div>
-            <form action="/Convert" style="border: 2px solid #FF8C00" id="jpeg_form" method="post" enctype="multipart/form-data">
+            <form action="/Convert" style="border: 3px solid #FF8C00" id="jpeg_form" method="post" enctype="multipart/form-data">
                 <div>
-                    <input type="file" name="file" id="inputjpegfiles" accept=".jpeg, .jpg" multiple required>
+                    <input type="file" name="file" id="jpegfiles" accept=".jpeg, .jpg" multiple required>
                 </div>
-                <br>
-                <div>
-                    <input type="submit" id="submit_jpeg_button" value="Convert to PDF">
-                </div>
-                    <p class="error-message" id="error_number_jpeg_files"></p>
             </form>
 
             <br>
@@ -468,15 +441,10 @@
             <div id="gif_rectangle" class="rectangle gif-rec" onclick="showGIFForm()">
                 <img src="{{ url_for('static', filename='images/gif.png') }}" class="document-icon">GIF Converter
             </div>
-            <form action="/Convert" style="border: 2px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
+            <form action="/Convert" style="border: 3px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
                 <div>
                     <input type="file" name="file" id="giffiles" accept=".gif" multiple required>
                 </div>
-                <br>
-                <div>
-                    <input type="submit" id="gif_convert" value="Convert to PDF">
-                </div>
-                    <p class="error-message" id="error_number_gif_files"></p>
             </form>
 
                 <br>
@@ -484,15 +452,10 @@
              <div id="png_rectangle" class="rectangle png-rec" onclick="showPNGForm()">
                 <img src="{{ url_for('static', filename='images/png.png') }}" class="document-icon">PNG Converter
             </div>
-            <form action="/Convert" style="border: 2px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
+            <form action="/Convert" style="border: 3px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
                 <div>
                     <input type="file" name="file" id="pngfiles" accept=".png" multiple required>
                 </div>
-                <br>
-                <div>
-                    <input type="submit" id="png_convert" value="Convert to PDF">
-                </div>
-                    <p class="error-message" id="error_number_png_files"></p>
             </form>
 
             <br>
@@ -500,15 +463,10 @@
             <div id="bmp_rectangle" class="rectangle bmp-rec" onclick="showBMPForm()">
                 <img src="{{ url_for('static', filename='images/bmp.png') }}" class="document-icon">BMP Converter
             </div>
-            <form action="/Convert" style="border: 2px solid #6B2282" id="bmp_form" method="post" enctype="multipart/form-data">
+            <form action="/Convert" style="border: 3px solid #6B2282" id="bmp_form" method="post" enctype="multipart/form-data">
                 <div>
                     <input type="file" name="file" id="bmpfiles" accept=".bmp" multiple required>
                 </div>
-                <br>
-                <div>
-                    <input type="submit" id="bmp_convert" value="Convert to PDF">
-                </div>
-                    <p class="error-message" id="error_number_bmp_files"></p>
             </form>
         </div>
 

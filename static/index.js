@@ -142,3 +142,33 @@ function showPPForm() {
     document.getElementById("excel_form").style.display = "none"; // Show the form
     document.getElementById("pp_form").style.display = "flex";
 }
+
+
+document.getElementById('ppfiles').addEventListener('change', function() {
+    document.getElementById('pp_form').submit();
+});
+
+document.getElementById('wordfiles').addEventListener('change', function() {
+    document.getElementById('word_form').submit();
+});
+
+document.getElementById('excelfiles').addEventListener('change', function() {
+    document.getElementById('excel_form').submit();
+});
+
+document.getElementById('jpegfiles').addEventListener('change', function() {
+    document.getElementById('jpeg_form').submit();
+});
+
+document.getElementById('giffiles').addEventListener('change', function() {
+    document.getElementById('gif_form').submit();
+});
+
+document.getElementById('pngfiles').addEventListener('change', function() {
+    document.getElementById('png_form').submit();
+});
+
+document.getElementById('bmpfiles').addEventListener('change', function() {
+    document.getElementById('bmp_form').submit();
+});
+

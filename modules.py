@@ -9,6 +9,7 @@ from typing import List
 import comtypes.client
 from PIL import Image
 from reportlab.pdfgen import canvas
+import tempfile
 
 def clear_directory(folder_path):
     for filename in os.listdir(folder_path):
@@ -38,21 +39,6 @@ def merger_pdf(pdf_files, output_folder):
         merger.write(output_pdf)
 
     merger.close()
-
-
-import os
-from PIL import Image
-import comtypes.client
-import pythoncom
-from reportlab.pdfgen import canvas
-
-
-import os
-import tempfile
-import pythoncom
-import comtypes.client
-from PIL import Image
-from reportlab.pdfgen import canvas
 
 def convert_file_to_pdf(input_file, rename, output_folder):
     pythoncom.CoInitialize()
