@@ -3,7 +3,9 @@ import os
 import csv
 import modules
 import zipfile
+import requests
 from werkzeug.utils import secure_filename
+
 
 
 app = Flask(__name__)
@@ -290,8 +292,6 @@ def render_wordFiles():
     if request.method == "POST":
         # Debugging statements
         print("Received POST request.")
-
-    data_types = ".docx, .doc"
     logged_in = session.get("logged_in")
 
 
@@ -301,11 +301,22 @@ def render_wordFiles():
 
     files = request.files.getlist("file")
     file_names = [file.filename for file in files]
+    sorted_names = modules.natural_sort(file_names)
 
-    sorted_names=modules.natural_sort(file_names)
-
-    print(f"These are the files: {files}")
-    print(f"These are the file_names: {sorted_names}")
+    if file_names[0].lower().endswith((".docx", ".doc")):
+        data_types = ".docx, .doc"
+    elif file_names[0].lower().endswith((".xlsx", ".xls")):
+        data_types = ".xlsx, .xls"
+    elif file_names[0].lower().endswith((".pptx", ".ppt")):
+        data_types = ".pptx, .ppt"
+    elif file_names[0].lower().endswith((".jpeg", ".jpg")):
+        data_types = ".jpeg, .jpg"
+    elif file_names[0].lower().endswith(".gif"):
+        data_types = ".gif"
+    elif file_names[0].lower().endswith(".png"):
+        data_types = ".png"
+    elif file_names[0].lower().endswith(".bmp"):
+        data_types = ".bmp"
 
     if not files:
         print("No files selected.")  # Debugging statement
@@ -398,6 +409,53 @@ def upload_word_file():
     else:
         print("No file names provided.")
         return redirect(request.url)
+
+
+@app.route('/addFile', methods=['POST'])
+def add_file():
+    print("Activated Path")
+    if 'file' not in request.files:
+        return 'No file part', 400
+
+    files = request.files.getlist('file')
+    file_names = [file.filename for file in files]
+    file_paths = []
+
+    for file in files:
+        if file:
+            try:
+                file_path = modules.get_filepaths(file, app.config['UPLOAD_FOLDER'])
+                file_paths.append(file_path)
+            except Exception as e:
+                return f"An error occurred: {e}", 500
+
+    file_count = len(os.listdir(app.config["UPLOAD_FOLDER"]))
+    sorted_names = modules.natural_sort(os.listdir(app.config['UPLOAD_FOLDER']))
+
+    if sorted_names[0].lower().endswith((".docx", ".doc")):
+        data_types = ".docx, .doc"
+    elif sorted_names[0].lower().endswith((".xlsx", ".xls")):
+        data_types = ".xlsx, .xls"
+    elif sorted_names[0].lower().endswith((".pptx", ".ppt")):
+        data_types = ".pptx, .ppt"
+    elif sorted_names[0].lower().endswith((".jpeg", ".jpg")):
+        data_types = ".jpeg, .jpg"
+    elif sorted_names[0].lower().endswith(".gif"):
+        data_types = ".gif"
+    elif sorted_names[0].lower().endswith(".png"):
+        data_types = ".png"
+    elif sorted_names[0].lower().endswith(".bmp"):
+        data_types = ".bmp"
+
+
+    logged_in = session.get("logged_in")
+
+    print(f"Files uploaded successfully: {file_paths}")  # Debug statement
+    return render_template("Convert.html", logged_in=logged_in,
+                                                             file_names=sorted_names,
+                                                             data_types=data_types,
+                                                             file_count=file_count)
+
 
 
 @app.route('/deleteFile', methods=['POST'])

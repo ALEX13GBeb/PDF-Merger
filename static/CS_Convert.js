@@ -1,3 +1,7 @@
+document.getElementById('fileInput').addEventListener('change', function() {
+    document.getElementById('addform').submit();
+});
+
 function removeFile(button) {
     const iconItem = button.closest('.icon-item');
     const fileName = iconItem.getAttribute('data-file-name');
@@ -32,6 +36,7 @@ function removeFile(button) {
         alert('An error occurred');
     });
 }
+
 
 function restrictFileNameInput(event) {
     const invalidChars = ['/', '\\', ':', '*', '?', '"', '|', '<', '>']; // Array of invalid characters
