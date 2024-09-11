@@ -354,12 +354,12 @@ def upload_word_file():
                 docx_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file)
 
                 # Convert file and handle name correction
-                modules.convert_office_to_pdf(docx_file_path, secured_name, output_folder)
+                modules.convert_file_to_pdf(docx_file_path, secured_name, output_folder)
 
                 # Rename the file if necessary and check for conversion output
-                if secured_name.endswith(".docx") or secured_name.endswith(".xlsx") or secured_name.endswith(".pptx"):
+                if secured_name.lower().endswith(('.docx', '.xlsx', '.pptx', '.jpeg')):
                     cleaned_name = secured_name[:-5] + ".pdf"
-                elif secured_name.endswith(".doc") or secured_name.endswith(".xls") or secured_name.endswith(".ppt"):
+                elif secured_name.lower().endswith(('.doc', '.xls', '.ppt', '.jpg', '.png', '.bmp')):
                     cleaned_name = secured_name[:-4] + ".pdf"
                 else:
                     cleaned_name = secured_name + ".pdf"

@@ -7,6 +7,8 @@ import pythoncom
 import time
 from typing import List
 import comtypes.client
+from PIL import Image
+from reportlab.pdfgen import canvas
 
 def clear_directory(folder_path):
     for filename in os.listdir(folder_path):
@@ -38,7 +40,14 @@ def merger_pdf(pdf_files, output_folder):
     merger.close()
 
 
-def convert_office_to_pdf(input_file, rename, output_folder):
+import os
+from PIL import Image
+import comtypes.client
+import pythoncom
+from reportlab.pdfgen import canvas
+
+
+def convert_file_to_pdf(input_file, rename, output_folder):
     pythoncom.CoInitialize()
 
     try:
@@ -59,44 +68,67 @@ def convert_office_to_pdf(input_file, rename, output_folder):
         print(f"Base name: {base_name}")
         print(f"Extension: {ext}")
 
-        if ext not in ['.doc', '.docx', '.xls', '.xlsx', ".ppt", ".pptx"]:
-            raise ValueError("Unsupported file format. Only .doc, .docx, .xls, .xlsx, .ppt, and .pptx are supported.")
+        # Check if it's an Office file or image
+        if ext in ['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']:
+            print("Performing Office file conversion...")
 
-        print("Performing conversion...")
+            # Convert Office files to PDF (handling for Word, Excel, PowerPoint is the same as before)
+            if ext in ['.doc', '.docx']:
+                word_app = comtypes.client.CreateObject("Word.Application")
+                word_app.Visible = False
+                doc = word_app.Documents.Open(abs_input_file)
+                pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
+                doc.SaveAs(pdf_output_path, FileFormat=17)
+                doc.Close(SaveChanges=False)
+                word_app.Quit()
 
-        if ext in ['.doc', '.docx']:
-            # Handle Word files
-            word_app = comtypes.client.CreateObject("Word.Application")
-            word_app.Visible = False
-            doc = word_app.Documents.Open(abs_input_file)
-            pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
-            doc.SaveAs(pdf_output_path, FileFormat=17)  # 17 is the wdFormatPDF constant
-            doc.Close(SaveChanges=False)
-            word_app.Quit()
+            elif ext in ['.xls', '.xlsx']:
+                excel_app = comtypes.client.CreateObject("Excel.Application")
+                excel_app.Visible = False
+                wb = excel_app.Workbooks.Open(abs_input_file)
+                pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
+                wb.ExportAsFixedFormat(0, pdf_output_path)
+                wb.Close(SaveChanges=False)
+                excel_app.Quit()
 
-        elif ext in ['.xls', '.xlsx']:
-            # Handle Excel files
-            excel_app = comtypes.client.CreateObject("Excel.Application")
-            excel_app.Visible = False
-            wb = excel_app.Workbooks.Open(abs_input_file)
-            pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
-            wb.ExportAsFixedFormat(0, pdf_output_path)  # 0 is xlTypePDF constant
-            wb.Close(SaveChanges=False)
-            excel_app.Quit()
+            elif ext in ['.ppt', '.pptx']:
+                power_point_app = comtypes.client.CreateObject("PowerPoint.Application")
+                presentation = power_point_app.Presentations.Open(abs_input_file, WithWindow=False)
+                pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
+                presentation.SaveAs(pdf_output_path, FileFormat=32)
+                presentation.Close()
+                power_point_app.Quit()
+            # ...
 
-        elif ext in ['.ppt', '.pptx']:
-            # Handle PowerPoint files
-            power_point_app = comtypes.client.CreateObject("PowerPoint.Application")
-            presentation = power_point_app.Presentations.Open(abs_input_file, WithWindow=False)
-            pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
-            presentation.SaveAs(pdf_output_path, FileFormat=32)  # 32 is the ppSaveAsPDF constant
-            presentation.Close()
-            power_point_app.Quit()
+        elif ext in ['.jpeg', '.jpg', '.png', '.bmp']:  # Now handles .bmp
+            print("Performing image conversion...")
+
+            # Convert images to PDF
+            image = Image.open(abs_input_file)
+            image = image.convert('RGB')  # Convert image to RGB
+
+            if rename.lower().endswith('.jpeg'):
+                new_pdf_name = rename[:-5] + ".pdf"
+            elif rename.lower().endswith(('.jpg', '.png', 'bmp')):
+                new_pdf_name = rename[:-4] + ".pdf"
+
+            pdf_output_path = os.path.join(abs_output_folder, new_pdf_name)
+
+            # Create a PDF using ReportLab
+            c = canvas.Canvas(pdf_output_path)
+            img_width, img_height = image.size
+            c.setPageSize((img_width, img_height))
+            c.drawImage(abs_input_file, 0, 0, width=img_width, height=img_height)
+            c.save()
+
+        else:
+            raise ValueError(
+                "Unsupported file format. Supported formats: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .jpeg, .jpg, .png, .bmp")
 
         # Handle renaming
-        if rename.endswith(".docx") or rename.endswith(".xlsx") or rename.endswith(".pptx"):
+        if rename.lower().endswith(('.docx', '.xlsx', '.pptx', '.jpeg')):
             new_name = rename[:-5] + ".pdf"
-        elif rename.endswith(".doc") or rename.endswith(".xls") or rename.endswith(".ppt"):
+        elif rename.lower().endswith(('.doc', '.xls', '.ppt', '.jpg', '.png', '.bmp')):
             new_name = rename[:-4] + ".pdf"
         else:
             new_name = rename + ".pdf"
