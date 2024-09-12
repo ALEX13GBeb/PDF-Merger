@@ -10,30 +10,45 @@
             background-color:#f0f0f0;
         }
 
+        h1 {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
 
-        h1{
+            position: relative;
+
+            width: 49.5%;
+
             color: #585858;
-            font-size:48px;
+            font-size: 52px;
             font-family: Arial, "Times New Roman", Times, serif;
-            font-weight:900;
+            font-weight: 900;
 
-            margin-bottom:15px;
+            border: none;
+
+            margin-bottom: 16px;
+        }
+
+        .site-icon {
+            height: 60px;
+            width: 60px;
+
+            margin-right: 15px;
         }
 
 
-        .page-box{
+        .page-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+
             position: absolute;
-
-            display: block; /* Add this if the display property is missing */
-
             top: 20px;
             left: 40px;
             right: 40px;
             bottom: 20px;
-
-            padding: 10px;
-            border: 3px solid #3E376C;
-            border-radius: 10px;
 
             background-color: white;
             background-image: url("static/images/PDF_Alex.png");
@@ -41,31 +56,27 @@
             background-repeat: no-repeat;
             background-position: center;
 
+            border: 5px solid #3E376C;
+            border-radius: 10px;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+            padding: 10px;
         }
 
 
-        h1 .button-container {
-            position: absolute;
-
+        .button-container {
+            position: relative;
             display: flex;
             flex-direction: row;
             justify-content: center;
-            align-items: flex-end;
-
-            left: 21%;
-            top: 7%;
 
             font-size: 16px;
             font-family: Arial, "Times New Roman", Times, serif;
             font-weight: 900;
 
-            margin-bottom: 15px;
+            border: none;
         }
 
-
         .button {
-
             padding: 10px 12px;
             width: 80px;
 
@@ -77,11 +88,11 @@
             color: white;
             text-align: center;
             text-decoration: none;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
 
-            margin-bottom: 10px;
             margin-right: 10px;
+            margin-left: 10px;
         }
-
 
         .green{
             background-color: #4CAF50;
@@ -89,6 +100,7 @@
 
         .green:hover {
             background-color: #45a049;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
         }
 
         .red{
@@ -97,6 +109,7 @@
 
         .red:hover {
             background-color: #e60000;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
         }
 
         .blue{
@@ -105,6 +118,7 @@
 
         .blue:hover{
             background-color: #3E376C;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
         }
 
         .orange{
@@ -113,14 +127,30 @@
 
         .orange:hover{
             background-color: #FF6A00;
+            box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
         }
 
+        .tool-box-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+
+            position:relative;
+
+            width: 30%;
+            padding: 5px;
+
+        }
 
         .tools-box {
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
+
+            border:10px solid black;
 
             padding: 5px;
             border-radius: 10px;
@@ -130,7 +160,7 @@
 
             max-width: 500px;
             max-height: 50px;
-            width: 50%;
+            width: 100%;
         }
 
 
@@ -139,7 +169,7 @@
 
             margin: 0;
 
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 900;
         }
 
@@ -296,19 +326,66 @@
         }
 
 
-        .site-icon {
-            height: 50px;
-            width: 50px;
-
-            margin-right: 15px;
-            margin-bottom:0 px;
-        }
-
-
         .document-icon {
             width: 20px;
             margin-right: 5px;
         }
+
+        .instructions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: flex-start; /* Align the text at the top */
+
+            width: 100%;
+            height: 18%;
+
+            padding: 10px 0; /* Adjust padding as necessary */
+            background: #303030;
+            color: white;
+        }
+
+        .instructions h4 {
+            font-size: 20px;
+            font-weight: 900;
+            text-align: center;
+
+        }
+
+        .instructions p {
+            font-size: 16px;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .instructions div {
+            padding-top: 0px;
+            padding-right: 40px; /* Adjust padding as necessary */
+            padding-bottom: 0px;
+            padding-left: 40px
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center; /* Align image and header vertically */
+            justify-content: center;
+            margin-bottom: 5px;
+            margin-top: 0px;
+
+        }
+
+        .header-icon {
+            height: 30px; /* Match the image height to the header */
+            width: auto; /* Maintain aspect ratio */
+            margin-right: 10px; /* Add space between the image and header */
+
+        }
+
 
     </style>
 
@@ -335,140 +412,174 @@
 
         <br>
 
-        <div class="tools-box">
-            <h3>PDF Merger</h3>
-            <button class="list-button" onclick="DisplayList0()">
-                <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
-            </button>
-        </div>
+        <div class="tool-box-container">
 
-        <br>
-
-        <div id="list_item0">
-            <div id="red_rectangle" class="rectangle red-rec" onclick="showPdfForm()">
-                <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF Merger
+            <div class="tools-box">
+                <h3>PDF Merger</h3>
+                <button class="list-button" onclick="DisplayList0()">
+                    <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon"></button>
             </div>
-            <form action="/upload" style="border: 3px solid #DD0000" id="index_form" method="post" enctype="multipart/form-data">
-                <div>
-                    <input type="file" name="file" id="inputfiles" accept=".pdf" multiple required>
-                </div>
-                <br>
-                <div>
-                    <input type="text" name="merged_filename" placeholder="Enter merged file name..." required>
-                    <input type="submit" id="submit_button" class="" value="Upload and Merge">
-                </div>
-                    <p class="error-message" id="error_number_files"></p>
-            </form>
-        </div>
-
-
-        <br>
-
-
-
-
-        <div class="tools-box" >
-            <h3>PowerPoint-to-PDF / Word-to-PDF / Excel-to-PDF</h3>
-            <button class="list-button" onclick="DisplayList1()">
-                <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
-            </button>
-        </div>
-
-        <br>
-
-        <div id="list_item1">
-
-
-            <div id="orange_rectangle" class="rectangle orange-rec" onclick="showPPForm()">
-                <img src="{{ url_for('static', filename='images/pptx.png') }}" class="document-icon">PowerPoint to PDF
-            </div>
-            <form action="/Convert" style="border: 3px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
-                    <input type="file" name="file" id="ppfiles" accept=".pptx, .ppt" multiple required>
-            </form>
 
             <br>
 
-            <div id="blue_rectangle" class="rectangle blue-rec" onclick="showWordForm()">
-                <img src="{{ url_for('static', filename='images/docx.png') }}" class="document-icon">Word to PDF
-            </div>
-            <form action="/Convert" style="border: 3px solid #485FBB" id="word_form" method="post" enctype="multipart/form-data">
-                <div>
-                    <input type="file" name="file" id="wordfiles" accept=".docx, .doc" multiple required>
+            <div id="list_item0">
+                <div id="red_rectangle" class="rectangle red-rec" onclick="showPdfForm()">
+                    <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF Merger
                 </div>
-            </form>
+                <form action="/upload" style="border: 3px solid #DD0000" id="index_form" method="post" enctype="multipart/form-data">
+                    <div>
+                        <input type="file" name="file" id="inputfiles" accept=".pdf" multiple required>
+                    </div>
+                    <br>
+                    <div>
+                        <input type="text" name="merged_filename" placeholder="Enter merged file name..." required>
+                        <input type="submit" id="submit_button" class="" value="Upload and Merge">
+                    </div>
+                        <p class="error-message" id="error_number_files"></p>
+                </form>
+            </div>
+
 
             <br>
 
-            <div id="green_rectangle" class="rectangle green-rec" onclick="showExcelForm()">
-                <img src="{{ url_for('static', filename='images/xlsx.png') }}" class="document-icon">Excel to PDF
+
+
+
+            <div class="tools-box" >
+                <h3>PowerPoint-to-PDF / Word-to-PDF / Excel-to-PDF</h3>
+                <button class="list-button" onclick="DisplayList1()">
+                    <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
+                </button>
             </div>
-            <form action="/Convert" style="border: 3px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
-                <div>
-                    <input type="file" name="file" id="excelfiles" accept=".xlsx, .xls" multiple required>
-                </div>
-            </form>
-
-        </div>
-
-
-
-        <br>
-
-
-
-        <div class="tools-box" >
-            <h3>JPEG / GIF / PNG / BMP --> TO PDF</h3>
-            <button class="list-button" onclick="DisplayList2()">
-                <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
-            </button>
-        </div>
-
-        <br>
-
-        <div id="list_item2">
-
-            <div id="jpeg_rectangle" class="rectangle jpeg-rec" onclick="showJPEGForm()">
-                <img src="{{ url_for('static', filename='images/jpeg.png') }}" class="document-icon">JPEG Converter
-            </div>
-            <form action="/Convert" style="border: 3px solid #FF8C00" id="jpeg_form" method="post" enctype="multipart/form-data">
-                <div>
-                    <input type="file" name="file" id="jpegfiles" accept=".jpeg, .jpg" multiple required>
-                </div>
-            </form>
 
             <br>
 
-            <div id="gif_rectangle" class="rectangle gif-rec" onclick="showGIFForm()">
-                <img src="{{ url_for('static', filename='images/gif.png') }}" class="document-icon">GIF Converter
-            </div>
-            <form action="/Convert" style="border: 3px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
-                <div>
-                    <input type="file" name="file" id="giffiles" accept=".gif" multiple required>
+            <div id="list_item1">
+
+
+                <div id="orange_rectangle" class="rectangle orange-rec" onclick="showPPForm()">
+                    <img src="{{ url_for('static', filename='images/pptx.png') }}" class="document-icon">PowerPoint to PDF
                 </div>
-            </form>
+                <form action="/Convert" style="border: 3px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
+                        <input type="file" name="file" id="ppfiles" accept=".pptx, .ppt" multiple required>
+                </form>
 
                 <br>
 
-             <div id="png_rectangle" class="rectangle png-rec" onclick="showPNGForm()">
-                <img src="{{ url_for('static', filename='images/png.png') }}" class="document-icon">PNG Converter
-            </div>
-            <form action="/Convert" style="border: 3px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
-                <div>
-                    <input type="file" name="file" id="pngfiles" accept=".png" multiple required>
+                <div id="blue_rectangle" class="rectangle blue-rec" onclick="showWordForm()">
+                    <img src="{{ url_for('static', filename='images/docx.png') }}" class="document-icon">Word to PDF
                 </div>
-            </form>
+                <form action="/Convert" style="border: 3px solid #485FBB" id="word_form" method="post" enctype="multipart/form-data">
+                    <div>
+                        <input type="file" name="file" id="wordfiles" accept=".docx, .doc" multiple required>
+                    </div>
+                </form>
+
+                <br>
+
+                <div id="green_rectangle" class="rectangle green-rec" onclick="showExcelForm()">
+                    <img src="{{ url_for('static', filename='images/xlsx.png') }}" class="document-icon">Excel to PDF
+                </div>
+                <form action="/Convert" style="border: 3px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
+                    <div>
+                        <input type="file" name="file" id="excelfiles" accept=".xlsx, .xls" multiple required>
+                    </div>
+                </form>
+
+            </div>
+
+
 
             <br>
 
-            <div id="bmp_rectangle" class="rectangle bmp-rec" onclick="showBMPForm()">
-                <img src="{{ url_for('static', filename='images/bmp.png') }}" class="document-icon">BMP Converter
+
+
+            <div class="tools-box" >
+                <h3>JPEG / GIF / PNG / BMP --> TO PDF</h3>
+                <button class="list-button" onclick="DisplayList2()">
+                    <img src="{{ url_for('static', filename='images/List_Arrow.png') }}" alt="List Icon">
+                </button>
             </div>
-            <form action="/Convert" style="border: 3px solid #6B2282" id="bmp_form" method="post" enctype="multipart/form-data">
-                <div>
-                    <input type="file" name="file" id="bmpfiles" accept=".bmp" multiple required>
+
+            <br>
+
+            <div id="list_item2">
+
+                <div id="jpeg_rectangle" class="rectangle jpeg-rec" onclick="showJPEGForm()">
+                    <img src="{{ url_for('static', filename='images/jpeg.png') }}" class="document-icon">JPEG Converter
                 </div>
-            </form>
+                <form action="/Convert" style="border: 3px solid #FF8C00" id="jpeg_form" method="post" enctype="multipart/form-data">
+                    <div>
+                        <input type="file" name="file" id="jpegfiles" accept=".jpeg, .jpg" multiple required>
+                    </div>
+                </form>
+
+                <br>
+
+                <div id="gif_rectangle" class="rectangle gif-rec" onclick="showGIFForm()">
+                    <img src="{{ url_for('static', filename='images/gif.png') }}" class="document-icon">GIF Converter
+                </div>
+                <form action="/Convert" style="border: 3px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
+                    <div>
+                        <input type="file" name="file" id="giffiles" accept=".gif" multiple required>
+                    </div>
+                </form>
+
+                    <br>
+
+                 <div id="png_rectangle" class="rectangle png-rec" onclick="showPNGForm()">
+                    <img src="{{ url_for('static', filename='images/png.png') }}" class="document-icon">PNG Converter
+                </div>
+                <form action="/Convert" style="border: 3px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
+                    <div>
+                        <input type="file" name="file" id="pngfiles" accept=".png" multiple required>
+                    </div>
+                </form>
+
+                <br>
+
+                <div id="bmp_rectangle" class="rectangle bmp-rec" onclick="showBMPForm()">
+                    <img src="{{ url_for('static', filename='images/bmp.png') }}" class="document-icon">BMP Converter
+                </div>
+                <form action="/Convert" style="border: 3px solid #6B2282" id="bmp_form" method="post" enctype="multipart/form-data">
+                    <div>
+                        <input type="file" name="file" id="bmpfiles" accept=".bmp" multiple required>
+                    </div>
+                </form>
+            </div>
         </div>
+
+
+        <div class="instructions">
+    <div>
+        <div class="header-container">
+            <img src="static/index_images/accessibility.png" style="height: 50px;" alt="Accessibility Icon" class="header-icon">
+            <h4>Accessibility</h4>
+        </div>
+        <p>Our platform is designed for ease of use.
+            Simply choose the file operation from the list above,
+            upload the files you want to work on, select the desired output name, and execute your action.
+            Whether you're converting, merging, or editing files, the process is straightforward and quick.</p>
+    </div>
+
+    <div>
+        <div class="header-container">
+            <img src="static/index_images/security.png" alt="Safety Icon" class="header-icon">
+            <h4>Safety</h4>
+        </div>
+        <p>Your files are handled with care. We minimize the time they stay on our servers,
+            ensuring they are deleted right after you've completed your task, whether it's converting, editing, or merging files.
+            Rest assured, your data is secure and processed only for the time necessary to perform your requested operation.</p>
+    </div>
+
+    <div>
+        <div class="header-container">
+            <img src="static/index_images/compatibility.png" alt="Compatibility Icon" class="header-icon">
+            <h4>Compatibility</h4>
+        </div>
+        <p>We support a wide range of file types, giving you the flexibility to convert, edit, or merge files effortlessly.
+            No special skills are required—just follow the steps, and you'll have the result you need in moments.</p>
+    </div>
 
     </div>
 

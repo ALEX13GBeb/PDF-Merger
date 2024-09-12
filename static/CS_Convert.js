@@ -2,6 +2,10 @@ document.getElementById('fileInput').addEventListener('change', function() {
     document.getElementById('addform').submit();
 });
 
+document.getElementById('convert_button').addEventListener('click', function() {
+    document.getElementById('convert_form').submit();
+});
+
 function removeFile(button) {
     const iconItem = button.closest('.icon-item');
     const fileName = iconItem.getAttribute('data-file-name');

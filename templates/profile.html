@@ -16,6 +16,51 @@
             padding: 3px;
         }
 
+        h1 {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+
+            position: relative;
+
+            width: 100%;
+
+            border: none;
+
+        }
+
+        h2 {
+            border: none;
+
+            color: #585858;
+            font-size: 52px;
+            font-family: Arial, "Times New Roman", Times, serif;
+            font-weight: 900;
+
+            margin: 0px;
+        }
+
+        #bring-home {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+
+            cursor: pointer;
+
+            border: none;
+            margin:5px;
+
+            background-color: transparent;
+        }
+
+        .site-icon {
+            height: 60px;
+            width: 60px;
+
+            margin-right: 15px;
+        }
 
         .page-box {
             position: absolute;
@@ -26,10 +71,11 @@
             bottom: 20px;
 
             padding: 10px;
-            border: 3px solid #3E376C;
+            border: 5px solid #3E376C;
             border-radius: 10px;
 
-            background-image: url("static/images/pdf_background.jpg");
+            background-color: white;
+            background-image: url("static/images/PDF_Alex.png");
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
@@ -162,7 +208,15 @@
 </head>
 <body>
     <div class="page-box">
-        <h1>Welcome {{fn_dynamic}}</h1>
+
+        <h1>
+            <form action="/">
+                <button id="bring-home" type="submit">
+                    <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">
+                    <h2>Welcome, {{fn_dynamic}}</h2>
+                </button>
+            </form>
+        </h1>
 
         <div class="info">
             <div class="info-item">
@@ -173,14 +227,15 @@
             </div>
 
             <div class="info-item">
+                <p>First Name:</p>
+                <div class="info-box"><input type="text" id="first_name" value="{{fn_dynamic}}" disabled></div>
+            </div>
+
+            <div class="info-item">
                 <p>Last Name:</p>
                 <div class="info-box"><input type="text" id="last_name" value="{{ln_dynamic}}" disabled></div>
             </div>
 
-            <div class="info-item">
-                <p>First Name:</p>
-                <div class="info-box"><input type="text" id="first_name" value="{{fn_dynamic}}" disabled></div>
-            </div>
 
             <div class="info-item">
                 <p>Username:</p>

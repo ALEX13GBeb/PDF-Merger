@@ -15,21 +15,48 @@
             display: flex;
             flex-direction: row;
             justify-content: flex-start;
-            align-items: flex-end;
+            align-items: center;
 
             position: relative;
-            left: -25%;
+            left: -26.2%;
 
             width: 49.5%;
+
+            border: none;
+
+        }
+
+        h2 {
+            border: none;
 
             color: #585858;
             font-size: 52px;
             font-family: Arial, "Times New Roman", Times, serif;
             font-weight: 900;
 
-            margin-bottom: 16px;
+            margin: 0px;
         }
 
+        #bring-home {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+
+            cursor: pointer;
+
+            border: none;
+            margin:5px;
+
+            background-color: transparent;
+        }
+
+        .site-icon {
+            height: 60px;
+            width: 60px;
+
+            margin-right: 15px;
+        }
 
         .page-box {
             display: flex;
@@ -49,7 +76,7 @@
             background-repeat: no-repeat;
             background-position: center;
 
-            border: 3px solid #3E376C;
+            border: 5px solid #3E376C;
             border-radius: 10px;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
             padding: 10px;
@@ -66,8 +93,7 @@
             font-family: Arial, "Times New Roman", Times, serif;
             font-weight: 900;
 
-            margin-bottom: 10px;
-            margin-top: 10px;
+            border: none;
         }
 
         .button {
@@ -85,7 +111,6 @@
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
 
             margin-right: 10px;
-            margin-left: 10px;
         }
 
         .green{
@@ -127,7 +152,7 @@
 
         .addConvert-button {
             position: fixed;
-            top: 80px;
+            top: 60px;
             left: 50%;
             transform: translateX(-50%);
             align-items: center;
@@ -162,7 +187,7 @@
 
         #file-count {
             position: fixed;
-            top: 70px;
+            top: 50px;
             left: 50%;
             transform: translateX(-100%);
             display: flex;
@@ -181,15 +206,6 @@
             font-family: Arial, sans-serif;
             font-weight: 900;
             border: none;
-        }
-
-
-        .site-icon {
-            height: 60px;
-            width: 60px;
-
-            margin-right: 15px;
-            margin-bottom: 10px;
         }
 
 
@@ -352,8 +368,14 @@
 <body>
     <div class="page-box">
 
-        <h1><img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">
-            Convert-TO-PDF
+        <h1>
+            <form action="/">
+                <button id="bring-home" type="submit">
+                    <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">
+                    <h2>Convert-TO-PDF</h2>
+                </button>
+            </form>
+
             <div class="button-container">
                 {% if not logged_in %}
                 <a href="/login" class="button blue">Log in</a>
@@ -383,7 +405,7 @@
         {% endif %}
 
 
-        <form action="/convertWord" method="post" enctype="multipart/form-data">
+        <form action="/convertWord" id="convert_form" method="post" enctype="multipart/form-data">
             <div class="icons-container">
                 {% for file_name in file_names %}
                 <div class="icon-item" data-file-name="{{ file_name }}">
@@ -398,7 +420,7 @@
         </form>
 
         <div class="convert-button-container">
-            <button class="convert-button" type="submit">Convert to PDF ></button>
+            <button class="convert-button" type="submit" id="convert_button">Convert to PDF ></button>
         </div>
     </div>
 
