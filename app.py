@@ -15,6 +15,7 @@ app.secret_key = "my_session_key"
 app.config["SCHEMA_QUERY"] = "queries/create_schema.sql"
 app.config["USERS_TABLE_QUERY"] = "queries/create_users.sql"
 app.config["INSERT_USERS"] = "queries/insert_into_users.sql"
+app.config["PROFILE_INFO"] = "queries/profile_info.sql"
 
 app.config["UPLOAD_FOLDER"] = "uploads"
 app.config["OUTPUT_FOLDER"] = "output"
@@ -150,31 +151,38 @@ def update_user():
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
+    try:
+        myDatabase = modules.sql_connection()
+    except mysql.connector.Error as err:
+        print(f"Error :{err}")
+
+    mycursor = myDatabase.cursor()
+    mycursor.execute("SELECT username, password FROM users")
+    user_list = mycursor.fetchall()
+
 
     if request.method == "POST":
-        try_login = [request.form.get("login_un"), request.form.get("login_password")]
+        try_login = (request.form.get("login_un"), request.form.get("login_password"))
 
-        login_file_path = "login_data.csv"
-        admin_file_path = "admin.csv"
+        with open(app.config["PROFILE_INFO"], "r") as query:
+            profile_query = query.read()
 
-        if os.path.isfile(admin_file_path):
-            with open(admin_file_path, "r", newline="", encoding="utf-8") as Ladmin_file:
-                admin_rows = csv.reader(Ladmin_file)
-                next(admin_rows)  # Skip the header row if there is one
+        for user_credentials in user_list:
+            if user_credentials == try_login:
+                session.pop("error", None)  # Clear any existing error messages
+                session["logged_in"] = True
 
-                for row in admin_rows:
-                    available_login = [row[2], row[4]]
-                    if try_login == available_login:
-                        session.pop("error", None)# Clear any existing error messages
-                        ########################
-                        session["logged_in"]=True
-                        ########################
-                        modules.profile_data(row) # Stores the profile data for the profile page
-                        return redirect(url_for("index"))  # Redirect to the index or another page
+                mycursor.execute(profile_query, user_credentials)
+                profile_data = mycursor.fetchall()
+
+                modules.profile_data(profile_data[0])
+                mycursor.close()
+                myDatabase.close()
+                return redirect(url_for("index"))
 
         # Set an error message in session if login fails
         session["error"] = "Invalid username or password"
-        return redirect(url_for("login_page"))  # Redirect to the login page to display the error
+        return redirect(url_for("login_page"))
 
     # For GET requests, or if login fails, render the login page
     return render_template("login.html", error=session.pop("error", None))
@@ -191,9 +199,7 @@ def signup_page():
     with open(app.config["INSERT_USERS"], "r") as query:
         insert_user = query.read()
 
-
     if request.method == "POST":
-        # Collect user data from the form
         user_data = {
             "first_name": request.form.get("signup_fn"),
             "last_name": request.form.get("signup_ln"),
@@ -202,86 +208,55 @@ def signup_page():
             "password": request.form.get("signup_password"),
         }
 
-        login_data = {
-            "username": request.form.get("signup_un"),
-            "password": request.form.get("signup_password")
-        }
-
         re_password=request.form.get("signup_re_password")
 
+        eroare=""
+        write = True
+
+        mycursor.execute("SELECT username, email FROM users")
+        admin_check = mycursor.fetchall()
+
+        if modules.is_user_registered(user_data,admin_check):
+            pass
+        else:
+            eroare =eroare + "Username Or Email Already Registered" +"\n"
+            write=False
+
+        if modules.is_valid_email_syntax(user_data["email"]):
+            pass
+        else:
+            eroare = eroare + "Invalid Email" +"\n"
+            write=False
+
+        if modules.pass_too_short(user_data["password"]):
+            pass
+        else:
+            eroare = eroare + "Password Too Short" +"\n"
+            write=False
+
+        if modules.repeat_password(user_data["password"],re_password):
+            pass
+        else:
+            eroare=eroare+"Passwords Don't Match"+"\n"
+            write=False
 
 
-        # Define the path to the CSV file
-        Aadmin_file_path = "admin.csv"
-        Alogin_file_path = "login_data.csv"
-
-        # Write user_data to CSV file
-        admin_exists = os.path.isfile(Aadmin_file_path)
-        with open(Aadmin_file_path, mode="a", newline="", encoding="utf-8") as admin_append_file:
-            # newline - ensures blank lines are handled consistently between platforms
-            admin_writer = csv.DictWriter(admin_append_file, fieldnames=user_data.keys())
-            # Write header if file is empty
-            if not admin_exists:
-                admin_writer.writeheader()
-
-
-            with open(Aadmin_file_path, mode="r", newline="", encoding="utf-8") as admin_read_file:
-                admin_check = csv.reader(admin_read_file)
-                try:
-                    next(admin_check)
-                except StopIteration:
-                    pass
-
-                eroare=""
-                write = True
-
-                if modules.is_user_registered(user_data,admin_check):
-                    pass
-                else:
-                    eroare =eroare + "Username Or Email Already Registered" +"\n"
-                    write=False
-
-                if modules.is_valid_email_syntax(user_data["email"]):
-                    pass
-                else:
-                    eroare = eroare + "Invalid Email" +"\n"
-                    write=False
-
-                if modules.pass_too_short(user_data["password"]):
-                    pass
-                else:
-                    eroare = eroare + "Password Too Short" +"\n"
-                    write=False
-
-                if modules.repeat_password(user_data["password"],re_password):
-                    pass
-                else:
-                    eroare=eroare+"Passwords Don't Match"+"\n"
-                    write=False
-
-
-                if write==True:
-                    admin_writer.writerow(user_data)
-                    mycursor.execute(insert_user, (
-                                            user_data['username'],
-                                            user_data['password'],
-                                            user_data['email'],
-                                            user_data['first_name'],
-                                            user_data['last_name'])
-                                     )
-                    myDatabase.commit()
-                    mycursor.close()
-                    myDatabase.close()
-                else:
-                    session["error"]=eroare
-                    return redirect(url_for("signup_page"))
-
-            login_exists = os.path.isfile(Alogin_file_path)
-            with open(Alogin_file_path, "a", newline="", encoding="utf-8") as login_file:
-                login_writer = csv.DictWriter(login_file, fieldnames=login_data.keys())
-                if not login_exists:
-                    login_writer.writeheader()
-                login_writer.writerow(login_data)
+        if write==True:
+            print("Am reusit?")
+            print((user_data['username'],user_data['password'],user_data['email'],user_data['first_name'],user_data['last_name']))
+            mycursor.execute(insert_user, (
+                                    user_data['username'],
+                                    user_data['password'],
+                                    user_data['email'],
+                                    user_data['first_name'],
+                                    user_data['last_name'])
+                             )
+            myDatabase.commit()
+            mycursor.close()
+            myDatabase.close()
+        else:
+            session["error"]=eroare
+            return redirect(url_for("signup_page"))
 
         session["logged_in"] = True
         session["fn_dynamic"] = user_data["first_name"]

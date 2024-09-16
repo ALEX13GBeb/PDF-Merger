@@ -8,4 +8,4 @@ output
 admin.csv
 login_data.csv
 .env
-queries
+queries/

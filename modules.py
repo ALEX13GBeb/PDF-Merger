@@ -230,12 +230,11 @@ def get_filepaths(file, upload_folder):
 
 
 
-
 def is_user_registered(user_data, user_database):
     valid = True  # Initialize valid to True
 
     for row in user_database:
-        if user_data["email"] == row[3] or user_data["username"] == row[2]:
+        if user_data["email"] == row[1] or user_data["username"] == row[0]:
             valid = False
             break
 
