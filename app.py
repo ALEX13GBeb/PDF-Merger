@@ -28,10 +28,9 @@ os.makedirs(app.config["OUTPUT_FOLDER"], exist_ok=True)
 
 try:
     myDatabase = modules.sql_connection()
+    mycursor = myDatabase.cursor()
 except mysql.connector.Error as err:
-    print(f"Error :{err}")
-
-mycursor = myDatabase.cursor()
+    print(f"Database connection error:{err}")
 
 with open(app.config["USERS_TABLE_QUERY"], "r") as query:
     users_creation=query.read()
@@ -77,77 +76,61 @@ def profile_page():
 
 @app.route('/update_user', methods=['POST'])
 def update_user():
-    try:
-        updated_data = request.json
-        original_email = session.get('email_dynamic')  # Retrieve original email from session
-        original_username = session.get("un_dynamic")
-        if not original_email:
-            return jsonify({'error': 'Original email is required for update.'}), 400
+        try:
+            myDatabase = modules.sql_connection()
+            mycursor = myDatabase.cursor()
+        except mysql.connector.Error as err:
+            print(f"Database connection error: {err}")
+            return jsonify({'error': 'Failed to connect to the database.'}), 500
 
-        csv_adminFile = "admin.csv"
-        csv_loginFile = "login_data.csv"
-        rows = []
-        login_rows = []
-        user_updated = False
+        try:
+            with open("queries/update_user.sql", "r") as query:
+                update_user_query = query.read()
 
-        # Read admin data
-        with open(csv_adminFile, 'r') as admin_file:
-            csv_reader = csv.DictReader(admin_file)
-            rows = [row for row in csv_reader]  # Read all rows into memory
+            updated_data = request.json
+            original_username = session.get("un_dynamic")
 
-        # Read login data
-        with open(csv_loginFile, 'r') as login_file:
-            csv_loginReader = csv.DictReader(login_file)
-            login_rows = [row for row in csv_loginReader]  # Read all rows into memory
+            if not original_username:
+                raise ValueError("Original username not found in session.")
 
-        # Update admin data
-        for row in rows:
-            if row["username"] == original_username:
-                # Update the user information
-                row['first_name'] = updated_data['firstName']
-                row['last_name'] = updated_data['lastName']
-                row['username'] = updated_data['username']
-                row['email'] = updated_data['email']
-                row['password'] = updated_data['password']
-                user_updated = True
-                break  # Exit loop once we update the row
+            update_info = (
+                updated_data.get("username"),
+                updated_data.get('password'),
+                updated_data.get('email'),
+                updated_data.get('firstName'),
+                updated_data.get('lastName'),
+                original_username
+            )
 
-        # Update login data
-        for login_row in login_rows:
-            if login_row["username"] == original_username:
-                login_row['username'] = updated_data['username']
-                login_row['password'] = updated_data['password']
-                break  # Exit loop once we update the row
-
-        if user_updated:
-            # Write updated admin data back to file
-            with open(csv_adminFile, 'w', newline='') as file:
-                fieldnames = ['first_name', 'last_name', 'username', 'email', 'password']
-                csv_writer = csv.DictWriter(file, fieldnames=fieldnames)
-                csv_writer.writeheader()
-                csv_writer.writerows(rows)
-
-            # Write updated login data back to file
-            with open(csv_loginFile, 'w', newline='') as login_file:
-                fieldnames = ['username', 'password']
-                csv_writer = csv.DictWriter(login_file, fieldnames=fieldnames)
-                csv_writer.writeheader()
-                csv_writer.writerows(login_rows)
+            mycursor.execute(update_user_query, update_info)
+            myDatabase.commit()
 
             # Update session data
-            session['fn_dynamic'] = updated_data['firstName']
-            session['ln_dynamic'] = updated_data['lastName']
-            session['un_dynamic'] = updated_data['username']
-            session['email_dynamic'] = updated_data['email']
-            session['pw_dynamic'] = updated_data['password']
+            session['fn_dynamic'] = updated_data.get('firstName')
+            session['ln_dynamic'] = updated_data.get('lastName')
+            session['un_dynamic'] = updated_data.get('username')
+            session['email_dynamic'] = updated_data.get('email')
+            session['pw_dynamic'] = updated_data.get('password')
 
             return jsonify({'message': 'User info updated successfully!'})
-        else:
-            return jsonify({'error': 'User not found.'}), 404
 
-    except Exception as e:
-        print(f"Error: {e}")  # This will log the error in the Flask console
-        return jsonify({'error': 'An error occurred while updating the user info.'}), 500
+        except mysql.connector.Error as err:
+            myDatabase.rollback()
+            print(f"SQL execution error: {err}")
+            return jsonify({'error': 'An error occurred while updating the user info.'}), 500
+
+        except ValueError as ve:
+            print(f"Value error: {ve}")
+            return jsonify({'error': str(ve)}), 400
+
+        except Exception as e:
+            myDatabase.rollback()
+            print(f"Unexpected error: {e}")
+            return jsonify({'error': 'An unexpected error occurred.'}), 500
+
+        finally:
+            mycursor.close()
+            myDatabase.close()
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
