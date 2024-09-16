@@ -29,21 +29,21 @@ os.makedirs(app.config["OUTPUT_FOLDER"], exist_ok=True)
 try:
     myDatabase = modules.sql_connection()
     mycursor = myDatabase.cursor()
+
+    with open(app.config["USERS_TABLE_QUERY"], "r") as query:
+        mycursor.execute(query.read())
+
+    with open(app.config["SCHEMA_QUERY"], "r") as query:
+        mycursor.execute(query.read())
+
+    myDatabase.commit()
+
 except mysql.connector.Error as err:
-    print(f"Database connection error:{err}")
+    print(f"Database error: {err}")
 
-with open(app.config["USERS_TABLE_QUERY"], "r") as query:
-    users_creation=query.read()
-
-with open(app.config["SCHEMA_QUERY"], "r") as query:
-    schema_creation=query.read()
-
-mycursor.execute(schema_creation)
-mycursor.execute(users_creation)
-
-myDatabase.commit()
-mycursor.close()
-myDatabase.close()
+finally:
+    mycursor.close()
+    myDatabase.close()
 
 @app.route("/")
 def index():
@@ -136,38 +136,34 @@ def update_user():
 def login_page():
     try:
         myDatabase = modules.sql_connection()
-    except mysql.connector.Error as err:
-        print(f"Error :{err}")
+        mycursor = myDatabase.cursor()
+        mycursor.execute("SELECT username, password FROM users")
+        user_list = mycursor.fetchall()
 
-    mycursor = myDatabase.cursor()
-    mycursor.execute("SELECT username, password FROM users")
-    user_list = mycursor.fetchall()
+        if request.method == "POST":
+            try_login = (request.form.get("login_un"), request.form.get("login_password"))
 
+            with open(app.config["PROFILE_INFO"], "r") as query:
+                profile_query = query.read()
 
-    if request.method == "POST":
-        try_login = (request.form.get("login_un"), request.form.get("login_password"))
+            for user_credentials in user_list:
+                if user_credentials == try_login:
+                    session.pop("error", None)
+                    session["logged_in"] = True
 
-        with open(app.config["PROFILE_INFO"], "r") as query:
-            profile_query = query.read()
+                    mycursor.execute(profile_query, user_credentials)
+                    profile_data = mycursor.fetchall()
 
-        for user_credentials in user_list:
-            if user_credentials == try_login:
-                session.pop("error", None)  # Clear any existing error messages
-                session["logged_in"] = True
+                    modules.profile_data(profile_data[0])
+                    return redirect(url_for("index"))
 
-                mycursor.execute(profile_query, user_credentials)
-                profile_data = mycursor.fetchall()
+            session["error"] = "Invalid username or password"
+            return redirect(url_for("login_page"))
 
-                modules.profile_data(profile_data[0])
-                mycursor.close()
-                myDatabase.close()
-                return redirect(url_for("index"))
+    finally:
+        mycursor.close()
+        myDatabase.close()
 
-        # Set an error message in session if login fails
-        session["error"] = "Invalid username or password"
-        return redirect(url_for("login_page"))
-
-    # For GET requests, or if login fails, render the login page
     return render_template("login.html", error=session.pop("error", None))
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -175,12 +171,24 @@ def signup_page():
     try:
         myDatabase = modules.sql_connection()
     except mysql.connector.Error as err:
-        print(f"Error :{err}")
+        print(f"Database connection error: {err}")
+        return render_template("signup.html", error="Database connection failed")
 
-    mycursor = myDatabase.cursor()
+    try:
+        mycursor = myDatabase.cursor()
+    except mysql.connector.Error as err:
+        print(f"Cursor creation error: {err}")
+        return render_template("signup.html", error="Unable to process request")
 
-    with open(app.config["INSERT_USERS"], "r") as query:
-        insert_user = query.read()
+    try:
+        with open(app.config["INSERT_USERS"], "r") as query:
+            insert_user = query.read()
+    except FileNotFoundError as fnf_error:
+        print(f"File not found: {fnf_error}")
+        return render_template("signup.html", error="Internal server error")
+    except Exception as e:
+        print(f"Error reading query file: {e}")
+        return render_template("signup.html", error="Internal server error")
 
     if request.method == "POST":
         user_data = {
@@ -191,54 +199,61 @@ def signup_page():
             "password": request.form.get("signup_password"),
         }
 
-        re_password=request.form.get("signup_re_password")
-
-        eroare=""
+        re_password = request.form.get("signup_re_password")
+        eroare = ""
         write = True
 
-        mycursor.execute("SELECT username, email FROM users")
-        admin_check = mycursor.fetchall()
+        try:
+            mycursor.execute("SELECT username, email FROM users")
+            admin_check = mycursor.fetchall()
+        except mysql.connector.Error as err:
+            print(f"Database query error: {err}")
+            return render_template("signup.html", error="Failed to validate user information")
 
-        if modules.is_user_registered(user_data,admin_check):
+        if modules.is_user_registered(user_data, admin_check):
             pass
         else:
-            eroare =eroare + "Username Or Email Already Registered" +"\n"
-            write=False
+            eroare += "Username or Email already registered\n"
+            write = False
 
         if modules.is_valid_email_syntax(user_data["email"]):
             pass
         else:
-            eroare = eroare + "Invalid Email" +"\n"
-            write=False
+            eroare += "Invalid Email\n"
+            write = False
 
         if modules.pass_too_short(user_data["password"]):
             pass
         else:
-            eroare = eroare + "Password Too Short" +"\n"
-            write=False
+            eroare += "Password Too Short\n"
+            write = False
 
-        if modules.repeat_password(user_data["password"],re_password):
+        if modules.repeat_password(user_data["password"], re_password):
             pass
         else:
-            eroare=eroare+"Passwords Don't Match"+"\n"
-            write=False
+            eroare += "Passwords don't match\n"
+            write = False
 
+        if write:
+            try:
+                mycursor.execute(insert_user, (
+                    user_data['username'],
+                    user_data['password'],
+                    user_data['email'],
+                    user_data['first_name'],
+                    user_data['last_name']
+                ))
+                myDatabase.commit()
+            except mysql.connector.Error as err:
+                print(f"Insert user error: {err}")
+                mycursor.close()
+                myDatabase.close()
+                return render_template("signup.html", error="User registration failed")
 
-        if write==True:
-            print("Am reusit?")
-            print((user_data['username'],user_data['password'],user_data['email'],user_data['first_name'],user_data['last_name']))
-            mycursor.execute(insert_user, (
-                                    user_data['username'],
-                                    user_data['password'],
-                                    user_data['email'],
-                                    user_data['first_name'],
-                                    user_data['last_name'])
-                             )
-            myDatabase.commit()
             mycursor.close()
             myDatabase.close()
         else:
-            session["error"]=eroare
+            session["error"] = eroare
             return redirect(url_for("signup_page"))
 
         session["logged_in"] = True
@@ -248,7 +263,7 @@ def signup_page():
         session["email_dynamic"] = user_data["email"]
         session["pw_dynamic"] = user_data["password"]
 
-        return redirect(url_for("index"))  # Redirects back to the index page
+        return redirect(url_for("index"))
 
     error = session.pop("error", None)
     return render_template("signup.html", error=error)
