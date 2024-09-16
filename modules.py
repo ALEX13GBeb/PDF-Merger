@@ -10,6 +10,20 @@ import comtypes.client
 from PIL import Image
 from reportlab.pdfgen import canvas
 import tempfile
+import mysql.connector
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def sql_connection():
+    database = mysql.connector.connect(
+        host=os.getenv('MYSQL_HOST'),
+        user=os.getenv('MYSQL_USER'),
+        password=os.getenv('MYSQL_PASSWORD'),
+        port=os.getenv('MYSQL_PORT'),
+        database=os.getenv('MYSQL_DB')
+    )
+    return database
 
 def clear_directory(folder_path):
     for filename in os.listdir(folder_path):

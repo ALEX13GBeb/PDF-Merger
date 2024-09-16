@@ -172,3 +172,15 @@ document.getElementById('bmpfiles').addEventListener('change', function() {
     document.getElementById('bmp_form').submit();
 });
 
+document.addEventListener('scroll', function() {
+        var footer = document.querySelector('footer');
+        var scrollPosition = window.scrollY + window.innerHeight;
+        var documentHeight = document.documentElement.scrollHeight;
+
+        // Show footer when scrolling down past 80% of the page
+        if (scrollPosition > documentHeight * 0.8) {
+            footer.classList.add('show');
+        } else {
+            footer.classList.remove('show');
+        }
+    });

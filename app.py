@@ -5,11 +5,16 @@ import modules
 import zipfile
 import requests
 from werkzeug.utils import secure_filename
-
+import mysql.connector
 
 
 app = Flask(__name__)
 app.secret_key = "my_session_key"
+
+
+app.config["SCHEMA_QUERY"] = "queries/create_schema.sql"
+app.config["USERS_TABLE_QUERY"] = "queries/create_users.sql"
+app.config["INSERT_USERS"] = "queries/insert_into_users.sql"
 
 app.config["UPLOAD_FOLDER"] = "uploads"
 app.config["OUTPUT_FOLDER"] = "output"
@@ -18,6 +23,27 @@ app.config["ALLOWED_EXTENSIONS"] = {"pdf"}
 # Ensure upload and merged folders exist
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 os.makedirs(app.config["OUTPUT_FOLDER"], exist_ok=True)
+
+
+try:
+    myDatabase = modules.sql_connection()
+except mysql.connector.Error as err:
+    print(f"Error :{err}")
+
+mycursor = myDatabase.cursor()
+
+with open(app.config["USERS_TABLE_QUERY"], "r") as query:
+    users_creation=query.read()
+
+with open(app.config["SCHEMA_QUERY"], "r") as query:
+    schema_creation=query.read()
+
+mycursor.execute(schema_creation)
+mycursor.execute(users_creation)
+
+myDatabase.commit()
+mycursor.close()
+myDatabase.close()
 
 @app.route("/")
 def index():
@@ -155,6 +181,17 @@ def login_page():
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup_page():
+    try:
+        myDatabase = modules.sql_connection()
+    except mysql.connector.Error as err:
+        print(f"Error :{err}")
+
+    mycursor = myDatabase.cursor()
+
+    with open(app.config["INSERT_USERS"], "r") as query:
+        insert_user = query.read()
+
+
     if request.method == "POST":
         # Collect user data from the form
         user_data = {
@@ -171,6 +208,8 @@ def signup_page():
         }
 
         re_password=request.form.get("signup_re_password")
+
+
 
         # Define the path to the CSV file
         Aadmin_file_path = "admin.csv"
@@ -223,6 +262,16 @@ def signup_page():
 
                 if write==True:
                     admin_writer.writerow(user_data)
+                    mycursor.execute(insert_user, (
+                                            user_data['username'],
+                                            user_data['password'],
+                                            user_data['email'],
+                                            user_data['first_name'],
+                                            user_data['last_name'])
+                                     )
+                    myDatabase.commit()
+                    mycursor.close()
+                    myDatabase.close()
                 else:
                     session["error"]=eroare
                     return redirect(url_for("signup_page"))
