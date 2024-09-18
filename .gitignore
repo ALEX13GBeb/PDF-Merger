@@ -2,10 +2,5 @@
 __pycache__/
 .idea/
 uploads
-uploads_docPdf
-converted_docPdf
 output
-admin.csv
-login_data.csv
 .env
-queries/
