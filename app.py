@@ -8,6 +8,8 @@ import zipfile
 import requests
 from werkzeug.utils import secure_filename
 import mysql.connector
+import bcrypt
+import ast
 
 
 app = Flask(__name__)
@@ -65,14 +67,12 @@ def profile_page():
     ln_dynamic = session.get("ln_dynamic", "none")
     un_dynamic = session.get("un_dynamic", "none")
     email_dynamic = session.get("email_dynamic", "none")
-    pw_dynamic = session.get("pw_dynamic", "none")
 
     return render_template("profile.html",
                            fn_dynamic=fn_dynamic,
                            ln_dynamic=ln_dynamic,
                            un_dynamic=un_dynamic,
                            email_dynamic=email_dynamic,
-                           pw_dynamic=pw_dynamic
                            )
 
 
@@ -95,26 +95,36 @@ def update_user():
             if not original_username:
                 raise ValueError("Original username not found in session.")
 
-            update_info = (
-                updated_data.get("username"),
-                updated_data.get('password'),
-                updated_data.get('email'),
-                updated_data.get('firstName'),
-                updated_data.get('lastName'),
-                original_username
-            )
+            valid=True
+            eroare=""
 
-            mycursor.execute(update_user_query, update_info)
-            myDatabase.commit()
+            if not modules.is_valid_email_syntax(updated_data.get('email')):
+                eroare += "Invalid Email\n"
+                valid = False
 
-            # Update session data
-            session['fn_dynamic'] = updated_data.get('firstName')
-            session['ln_dynamic'] = updated_data.get('lastName')
-            session['un_dynamic'] = updated_data.get('username')
-            session['email_dynamic'] = updated_data.get('email')
-            session['pw_dynamic'] = updated_data.get('password')
 
-            return jsonify({'message': 'User info updated successfully!'})
+            if valid == True:
+                update_info = (
+                    updated_data.get("username"),
+                    updated_data.get('email'),
+                    updated_data.get('firstName'),
+                    updated_data.get('lastName'),
+                    original_username
+                )
+
+                mycursor.execute(update_user_query, update_info)
+                myDatabase.commit()
+
+                # Update session data
+                session['fn_dynamic'] = updated_data.get('firstName')
+                session['ln_dynamic'] = updated_data.get('lastName')
+                session['un_dynamic'] = updated_data.get('username')
+                session['email_dynamic'] = updated_data.get('email')
+
+                return jsonify({'message': 'User info updated successfully!'})
+
+            else:
+                return render_template("signup.html", error=eroare)
 
         except mysql.connector.Error as err:
             myDatabase.rollback()
@@ -141,15 +151,20 @@ def login_page():
         mycursor = myDatabase.cursor()
         mycursor.execute("SELECT username, password FROM users")
         user_list = mycursor.fetchall()
-
+        print(user_list)
         if request.method == "POST":
-            try_login = (request.form.get("login_un"), request.form.get("login_password"))
+            user_log = request.form.get("login_un")
+            pass_log = request.form.get("login_password").encode("UTF-8")
+            print(pass_log)
 
             with open(app.config["PROFILE_INFO"], "r") as query:
                 profile_query = query.read()
 
             for user_credentials in user_list:
-                if user_credentials == try_login:
+                stored_hashed_password = ast.literal_eval(user_credentials[1])
+                print(stored_hashed_password)
+
+                if user_credentials[0] == user_log and bcrypt.checkpw(pass_log, stored_hashed_password):
                     session.pop("error", None)
                     session["logged_in"] = True
 
@@ -192,13 +207,16 @@ def signup_page():
         print(f"Error reading query file: {e}")
         return render_template("signup.html", error="Internal server error")
 
+
+
     if request.method == "POST":
+        crypted_pw = bcrypt.hashpw(request.form.get("signup_password").encode("UTF-8"), bcrypt.gensalt(rounds=14))
         user_data = {
             "first_name": request.form.get("signup_fn"),
             "last_name": request.form.get("signup_ln"),
             "username": request.form.get("signup_un"),
             "email": request.form.get("signup_email"),
-            "password": request.form.get("signup_password"),
+            "password": crypted_pw,
             "gender": request.form.get("gender")
         }
 
@@ -225,13 +243,7 @@ def signup_page():
             eroare += "Invalid Email\n"
             write = False
 
-        if modules.pass_too_short(user_data["password"]):
-            pass
-        else:
-            eroare += "Password Too Short\n"
-            write = False
-
-        if modules.repeat_password(user_data["password"], re_password):
+        if modules.repeat_password(request.form.get("signup_password"), re_password):
             pass
         else:
             eroare += "Passwords don't match\n"

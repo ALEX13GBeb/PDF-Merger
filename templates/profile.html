@@ -263,6 +263,13 @@
             <button class="save-button" id="save_button">Save Changes</button>
             <button class="cancel-button" id="cancel_button">Cancel</button>
         </div>
+
+        {% if error %}
+            <div>
+                <pre class="error-message">{{ error }}</pre>
+            </div>
+        {% endif %}
+
     </div>
 
                 <script src="static/profile.js"></script>

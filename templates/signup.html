@@ -200,7 +200,7 @@
             <div class="form-group">
                 <label for="password">Password:</label>
                 <div class="password-container">
-                    <input type="password" id="password" name="signup_password" required>
+                    <input type="password" id="password" minlength="8" name="signup_password" required>
                     <img src="{{ url_for('static', filename='images/eye-close.png') }}" alt="Password Hidden" id="pass_img" class="password-image"
                     data-eye-open="{{ url_for('static', filename='images/eye-open.png') }}"
                     data-eye-close="{{ url_for('static', filename='images/eye-close.png') }}">

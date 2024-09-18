@@ -47,6 +47,7 @@ cancelButton.addEventListener("click", function(){
     saveButton.style.display = 'none'; // Hide the save button again
     cancelButton.style.display = 'none'; // Hide the cancel button
 })
+
 const passwordEye = document.getElementById("pass_img");
 const passwordInput = document.getElementById("password");
 
