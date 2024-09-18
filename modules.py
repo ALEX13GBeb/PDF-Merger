@@ -229,7 +229,6 @@ def get_filepaths(file, upload_folder):
     return file_path
 
 
-
 def is_user_registered(user_data, user_database):
     valid = True  # Initialize valid to True
 

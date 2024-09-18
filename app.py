@@ -1,6 +1,8 @@
-from flask import Flask, request, redirect, url_for, send_from_directory, render_template, session, jsonify, send_file
+from flask import ( Flask, request, redirect, url_for,
+                    send_from_directory, render_template,
+                    session, jsonify, send_file, after_this_request
+                   )
 import os
-import csv
 import modules
 import zipfile
 import requests
@@ -12,8 +14,8 @@ app = Flask(__name__)
 app.secret_key = "my_session_key"
 
 
-app.config["SCHEMA_QUERY"] = "queries/create_schema.sql"
-app.config["USERS_TABLE_QUERY"] = "queries/create_users.sql"
+app.config["SCHEMA_QUERY"] = "queries/Create_queries/create_schema.sql"
+app.config["USERS_TABLE_QUERY"] = "queries/Create_queries/create_users.sql"
 app.config["INSERT_USERS"] = "queries/insert_into_users.sql"
 app.config["PROFILE_INFO"] = "queries/profile_info.sql"
 
@@ -197,6 +199,7 @@ def signup_page():
             "username": request.form.get("signup_un"),
             "email": request.form.get("signup_email"),
             "password": request.form.get("signup_password"),
+            "gender": request.form.get("gender")
         }
 
         re_password = request.form.get("signup_re_password")
@@ -241,7 +244,8 @@ def signup_page():
                     user_data['password'],
                     user_data['email'],
                     user_data['first_name'],
-                    user_data['last_name']
+                    user_data['last_name'],
+                    user_data['gender']
                 ))
                 myDatabase.commit()
             except mysql.connector.Error as err:
@@ -271,13 +275,13 @@ def signup_page():
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
-        print("No file part in request.")  # Debugging statement
+        print("No file part in request.")
         return redirect(request.url)
 
     files = request.files.getlist("file")
 
     if not files:
-        print("No files selected.")  # Debugging statement
+        print("No files selected.")
         return redirect(request.url)
 
     merged_filename = modules.get_pdf_name(request.form.get("merged_filename"))
@@ -352,7 +356,16 @@ def render_wordFiles():
 
     file_count=len(os.listdir(app.config["UPLOAD_FOLDER"]))
     print(os.listdir(app.config["UPLOAD_FOLDER"]))
+    print(sorted_names)
+    for i in range(len(sorted_names)):
+        try:
+            if sorted_names[i].split(".")[0] == sorted_names[i+1].split(".")[0] + " - Copy":
+                print("YES")
+                sorted_names[i], sorted_names[i+1] = sorted_names[i+1], sorted_names[i]
+        except IndexError:
+            break
 
+    print(sorted_names)
     return render_template("Convert.html", logged_in=logged_in,
                                                             file_names=sorted_names,
                                                             data_types=data_types,
