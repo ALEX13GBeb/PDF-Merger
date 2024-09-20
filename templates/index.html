@@ -405,6 +405,10 @@
 
     </style>
 
+    <script>
+        window.loggedIn = {{ 'true' if logged_in else 'false'}};
+    </script>
+
 </head>
 <body>
 
@@ -522,6 +526,7 @@
                 <div id="jpeg_rectangle" class="rectangle jpeg-rec" onclick="showJPEGForm()">
                     <img src="{{ url_for('static', filename='images/jpeg.png') }}" class="document-icon">JPEG Converter
                 </div>
+
                 <form action="/Convert" style="border: 3px solid #FF8C00" id="jpeg_form" method="post" enctype="multipart/form-data">
                     <div>
                         <input type="file" name="file" id="jpegfiles" accept=".jpeg, .jpg" multiple required>

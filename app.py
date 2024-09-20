@@ -10,6 +10,9 @@ from werkzeug.utils import secure_filename
 import mysql.connector
 import bcrypt
 import ast
+import threading
+import time
+
 
 
 app = Flask(__name__)
@@ -51,8 +54,19 @@ finally:
 
 @app.route("/")
 def index():
-    modules.clear_directory(app.config["UPLOAD_FOLDER"])
-    modules.clear_directory(app.config["OUTPUT_FOLDER"])
+    try:
+        usable_id = session.get("user_id", "none")
+
+        upload_folder = usable_id+"_"+app.config["UPLOAD_FOLDER"]
+        output_folder = usable_id + "_"+app.config["OUTPUT_FOLDER"]
+
+        modules.clear_directory(upload_folder)
+        modules.clear_directory(output_folder)
+        os.removedirs(upload_folder)
+        os.removedirs(output_folder)
+    except FileNotFoundError:
+        pass
+
     logged_in=session.get("logged_in", False)
     return render_template("index.html", logged_in=logged_in)
 
@@ -161,12 +175,16 @@ def login_page():
                 profile_query = query.read()
 
             for user_credentials in user_list:
-                stored_hashed_password = ast.literal_eval(user_credentials[1])
+                stored_hashed_password = user_credentials[1].encode("UTF-8")
                 print(stored_hashed_password)
 
                 if user_credentials[0] == user_log and bcrypt.checkpw(pass_log, stored_hashed_password):
                     session.pop("error", None)
                     session["logged_in"] = True
+
+                    mycursor.execute("SELECT id FROM users WHERE username = %s", (user_log,))
+                    login_id = mycursor.fetchall()
+                    session["user_id"] = str(login_id[0][0])
 
                     mycursor.execute(profile_query, user_credentials)
                     profile_data = mycursor.fetchall()
@@ -257,9 +275,14 @@ def signup_page():
                     user_data['email'],
                     user_data['first_name'],
                     user_data['last_name'],
-                    user_data['gender']
+                    user_data['gender'],
                 ))
                 myDatabase.commit()
+
+                mycursor.execute("SELECT id FROM users WHERE username = %s", (user_data['username'],))
+                signup_id = mycursor.fetchall()
+                session["user_id"] = str(signup_id[0][0])
+
             except mysql.connector.Error as err:
                 print(f"Insert user error: {err}")
                 mycursor.close()
@@ -286,6 +309,15 @@ def signup_page():
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
+    usable_id = session.get("user_id", "none")
+    print(usable_id)
+
+    upload_folder = usable_id+"_"+app.config["UPLOAD_FOLDER"]
+    output_folder = usable_id+"_"+app.config["OUTPUT_FOLDER"]
+
+    os.makedirs(upload_folder, exist_ok = True)
+    os.makedirs(output_folder, exist_ok = True)
+
     if "file" not in request.files:
         print("No file part in request.")
         return redirect(request.url)
@@ -301,14 +333,14 @@ def upload_file():
     filenames = []
     for file in files:
         if file and modules.allow_pdf(file.filename, app.config["ALLOWED_EXTENSIONS"]):
-            file_path = modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
+            file_path = modules.get_filepaths(file, upload_folder)
             filenames.append(file_path)
 
     if filenames:
         try:
-            modules.merger_pdf(filenames, app.config["OUTPUT_FOLDER"])
-            merged_file_path = os.path.join(app.config["OUTPUT_FOLDER"], merged_filename)
-            temp_merged_path = os.path.join(app.config["OUTPUT_FOLDER"], "merger_output.pdf")
+            modules.merger_pdf(filenames, output_folder)
+            merged_file_path = os.path.join(output_folder, merged_filename)
+            temp_merged_path = os.path.join(output_folder, "merger_output.pdf")
 
             if os.path.exists(temp_merged_path):
                 os.rename(temp_merged_path, merged_file_path)
@@ -316,8 +348,11 @@ def upload_file():
             else:
                 print(f"Temporary merged file not found: {temp_merged_path}")  # Debugging statement
 
-            modules.clear_directory(app.config["UPLOAD_FOLDER"])
-            return send_from_directory(app.config["OUTPUT_FOLDER"], merged_filename, as_attachment=True)
+            cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
+                                                                                     output_folder))
+            cleanup_thread.start()
+
+            return send_from_directory(usable_id+"_"+app.config["OUTPUT_FOLDER"], merged_filename, as_attachment=True)
         except Exception as e:
             print(f"Error during file processing: {e}")  # Debugging statement
             return redirect(request.url)
@@ -327,7 +362,6 @@ def upload_file():
 
 @app.route("/Convert", methods=["POST", "GET"])
 def render_wordFiles():
-
     if request.method == "POST":
         # Debugging statements
         print("Received POST request.")
@@ -336,6 +370,13 @@ def render_wordFiles():
     if "file" not in request.files:
         print("No file part in request.")  # Debugging statement
         return redirect(request.url)
+
+    usable_id = session.get("user_id", "none")
+    upload_folder = usable_id + "_" + app.config["UPLOAD_FOLDER"]
+    output_folder = usable_id + "_" + app.config["OUTPUT_FOLDER"]
+
+    os.makedirs(upload_folder, exist_ok=True)
+    os.makedirs(output_folder, exist_ok=True)
 
     files = request.files.getlist("file")
     file_names = [file.filename for file in files]
@@ -362,13 +403,12 @@ def render_wordFiles():
 
     for file in files:
         if file:
-            file_path = modules.get_filepaths(file, app.config["UPLOAD_FOLDER"])
+            file_path = modules.get_filepaths(file, upload_folder)
         else:
             print(f"Invalid file format: {file.filename}")
 
-    file_count=len(os.listdir(app.config["UPLOAD_FOLDER"]))
-    print(os.listdir(app.config["UPLOAD_FOLDER"]))
-    print(sorted_names)
+    file_count=len(os.listdir(upload_folder))
+
     for i in range(len(sorted_names)):
         try:
             if sorted_names[i].split(".")[0] == sorted_names[i+1].split(".")[0] + " - Copy":
@@ -377,7 +417,6 @@ def render_wordFiles():
         except IndexError:
             break
 
-    print(sorted_names)
     return render_template("Convert.html", logged_in=logged_in,
                                                             file_names=sorted_names,
                                                             data_types=data_types,
@@ -389,15 +428,22 @@ def upload_word_file():
     names = request.form.getlist("file_names[]")
     print(f"New names: {names}")
 
+    usable_id = session.get("user_id", "none")
+
+    upload_folder = usable_id + "_" + app.config["UPLOAD_FOLDER"]
+    output_folder = usable_id + "_" + app.config["OUTPUT_FOLDER"]
+
+    os.makedirs(upload_folder, exist_ok=True)
+    os.makedirs(output_folder, exist_ok=True)
+
     # List files in the upload directory and filter out temp files
-    files = [f for f in os.listdir(app.config["UPLOAD_FOLDER"]) if not f.startswith('~$')]
+    files = [f for f in os.listdir(upload_folder) if not f.startswith('~$')]
     print(f"Contents of the temp dir: {files}")
 
     # Create a dictionary to map the original filenames to the new names
     file_rename_map = dict(zip(files, names))
     print(file_rename_map)
 
-    output_folder = app.config["OUTPUT_FOLDER"]
     os.makedirs(output_folder, exist_ok=True)
 
     converted_files = []
@@ -409,7 +455,7 @@ def upload_word_file():
                 file_name = file_rename_map.get(file)
                 secured_name = secure_filename(file_name)
 
-                docx_file_path = os.path.join(app.config["UPLOAD_FOLDER"], file)
+                docx_file_path = os.path.join(upload_folder, file)
 
                 # Convert file and handle name correction
                 modules.convert_file_to_pdf(docx_file_path, secured_name, output_folder)
@@ -443,11 +489,20 @@ def upload_word_file():
             with zipfile.ZipFile(zip_path, "w") as zipf:
                 for file in converted_files:
                     zipf.write(file, os.path.basename(file))
+
+            cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
+                                                                                     output_folder))
+            cleanup_thread.start()
+
             print(f"Returning zip file: {zip_path}")
             return send_file(zip_path, as_attachment=True, mimetype='application/zip')
         elif converted_files:
+
+            cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
+                                                                                     output_folder))
+            cleanup_thread.start()
+
             print(f"Returning single file: {converted_files[0]}")
-            modules.clear_directory(app.config["UPLOAD_FOLDER"])
             return send_file(converted_files[0], as_attachment=True)
         else:
             print("No valid files were converted.")
@@ -469,16 +524,22 @@ def add_file():
     file_names = [file.filename for file in files]
     file_paths = []
 
+    usable_id = session.get("user_id", "none")
+
+    upload_folder = usable_id + "_" + app.config["UPLOAD_FOLDER"]
+
+    os.makedirs(upload_folder, exist_ok=True)
+
     for file in files:
         if file:
             try:
-                file_path = modules.get_filepaths(file, app.config['UPLOAD_FOLDER'])
+                file_path = modules.get_filepaths(file, upload_folder)
                 file_paths.append(file_path)
             except Exception as e:
                 return f"An error occurred: {e}", 500
 
-    file_count = len(os.listdir(app.config["UPLOAD_FOLDER"]))
-    sorted_names = modules.natural_sort(os.listdir(app.config['UPLOAD_FOLDER']))
+    file_count = len(os.listdir(upload_folder))
+    sorted_names = modules.natural_sort(os.listdir(upload_folder))
 
     if sorted_names[0].lower().endswith((".docx", ".doc")):
         data_types = ".docx, .doc"
@@ -509,7 +570,14 @@ def delete_file():
     data = request.get_json()
     file_name = data.get('fileName')
     secured_filename= secure_filename(file_name)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], secured_filename)
+
+    usable_id = session.get("user_id", "none")
+
+    upload_folder = usable_id + "_" + app.config["UPLOAD_FOLDER"]
+
+    os.makedirs(upload_folder, exist_ok=True)
+
+    file_path = os.path.join(upload_folder, secured_filename)
 
     print(f"Attempting to delete file: {file_path}")  # Debugging statement
 
@@ -517,7 +585,7 @@ def delete_file():
         try:
             os.remove(file_path)
             print(f"Successfully deleted file: {file_path}")  # Debugging statement
-            remaining_files = len(os.listdir(app.config['UPLOAD_FOLDER']))
+            remaining_files = len(os.listdir(upload_folder))
             return jsonify({'success': True, 'file_count': remaining_files})
 
 

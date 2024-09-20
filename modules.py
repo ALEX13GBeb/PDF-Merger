@@ -12,6 +12,8 @@ from reportlab.pdfgen import canvas
 import tempfile
 import mysql.connector
 from dotenv import load_dotenv
+import threading
+import time
 
 load_dotenv()
 
@@ -36,6 +38,18 @@ def clear_directory(folder_path):
                 shutil.rmtree(file_path)
         except Exception as e:
             print(f"Failed to delete {file_path}. Reason: {e}")
+
+def deferred_cleanup(directory1, directory2):
+    print("starting delay")
+    time.sleep(5)
+    clear_directory(directory1)
+    os.removedirs(directory1)
+    print("Done with the first")
+
+    clear_directory(directory2)
+    os.removedirs(directory2)
+    print("Done with the second")
+
 
 def natural_sort(elements: List[str]) -> List[str]:
     def natural_key(text: str):

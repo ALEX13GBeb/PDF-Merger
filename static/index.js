@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+
+
 function DisplayList0() {
     var listItem0 = document.getElementById("list_item0");
 
@@ -65,6 +67,20 @@ function DisplayList2() {
 
         }
     }
+
+
+window.onload = function() {
+    if (!window.loggedIn) {
+        console.log("Page fully loaded");
+        console.log("User logged in status:", window.loggedIn);
+        const forms = document.querySelectorAll("form");
+        forms.forEach(form => {
+            const inputs = form.querySelectorAll("input");
+            inputs.forEach(input => input.disabled = true);
+        });
+    }
+};
+
 
 function showJPEGForm() {
     document.getElementById("jpeg_rectangle").style.display = "none"; // Hide the rectangle
