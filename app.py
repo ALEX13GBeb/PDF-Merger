@@ -60,10 +60,7 @@ def index():
         upload_folder = usable_id+"_"+app.config["UPLOAD_FOLDER"]
         output_folder = usable_id + "_"+app.config["OUTPUT_FOLDER"]
 
-        modules.clear_directory(upload_folder)
-        modules.clear_directory(output_folder)
-        os.removedirs(upload_folder)
-        os.removedirs(output_folder)
+        modules.deferred_cleanup(upload_folder, output_folder)
     except FileNotFoundError:
         pass
 
@@ -386,8 +383,8 @@ def render_wordFiles():
         data_types = ".docx, .doc"
     elif file_names[0].lower().endswith((".xlsx", ".xls")):
         data_types = ".xlsx, .xls"
-    elif file_names[0].lower().endswith((".pptx", ".ppt")):
-        data_types = ".pptx, .ppt"
+    elif file_names[0].lower().endswith((".pptx", ".ppt", ".pps")):
+        data_types = ".pptx, .ppt, .pps"
     elif file_names[0].lower().endswith((".jpeg", ".jpg")):
         data_types = ".jpeg, .jpg"
     elif file_names[0].lower().endswith(".gif"):
@@ -463,7 +460,7 @@ def upload_word_file():
                 # Rename the file if necessary and check for conversion output
                 if secured_name.lower().endswith(('.docx', '.xlsx', '.pptx', '.jpeg')):
                     cleaned_name = secured_name[:-5] + ".pdf"
-                elif secured_name.lower().endswith(('.doc', '.xls', '.ppt', '.jpg', '.png', '.bmp', '.gif')):
+                elif secured_name.lower().endswith(('.doc', '.xls', '.ppt', '.pps', '.jpg', '.png', '.bmp', '.gif')):
                     cleaned_name = secured_name[:-4] + ".pdf"
                 else:
                     cleaned_name = secured_name + ".pdf"
@@ -545,8 +542,8 @@ def add_file():
         data_types = ".docx, .doc"
     elif sorted_names[0].lower().endswith((".xlsx", ".xls")):
         data_types = ".xlsx, .xls"
-    elif sorted_names[0].lower().endswith((".pptx", ".ppt")):
-        data_types = ".pptx, .ppt"
+    elif sorted_names[0].lower().endswith((".pptx", ".ppt", ".pps")):
+        data_types = ".pptx, .ppt, .pps"
     elif sorted_names[0].lower().endswith((".jpeg", ".jpg")):
         data_types = ".jpeg, .jpg"
     elif sorted_names[0].lower().endswith(".gif"):

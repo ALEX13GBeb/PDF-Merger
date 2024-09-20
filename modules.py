@@ -40,15 +40,11 @@ def clear_directory(folder_path):
             print(f"Failed to delete {file_path}. Reason: {e}")
 
 def deferred_cleanup(directory1, directory2):
-    print("starting delay")
-    time.sleep(5)
     clear_directory(directory1)
     os.removedirs(directory1)
-    print("Done with the first")
 
     clear_directory(directory2)
     os.removedirs(directory2)
-    print("Done with the second")
 
 
 def natural_sort(elements: List[str]) -> List[str]:
@@ -89,7 +85,7 @@ def convert_file_to_pdf(input_file, rename, output_folder):
         print(f"Base name: {base_name}")
         print(f"Extension: {ext}")
 
-        if ext in ['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']:
+        if ext in ['.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.pps']:
             print("Performing Office file conversion...")
 
             # Convert Office files to PDF (handling for Word, Excel, PowerPoint is the same as before)
@@ -111,7 +107,7 @@ def convert_file_to_pdf(input_file, rename, output_folder):
                 wb.Close(SaveChanges=False)
                 excel_app.Quit()
 
-            elif ext in ['.ppt', '.pptx']:
+            elif ext in ['.ppt', '.pptx', '.pps']:
                 power_point_app = comtypes.client.CreateObject("PowerPoint.Application")
                 presentation = power_point_app.Presentations.Open(abs_input_file, WithWindow=False)
                 pdf_output_path = os.path.join(abs_output_folder, f"{base_name}.pdf")
@@ -176,12 +172,12 @@ def convert_file_to_pdf(input_file, rename, output_folder):
 
         else:
             raise ValueError(
-                "Unsupported file format. Supported formats: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .jpeg, .jpg, .png, .bmp, .gif")
+                "Unsupported file format. Supported formats: .doc, .docx, .xls, .xlsx, .ppt, .pptx, .pps, .jpeg, .jpg, .png, .bmp, .gif")
 
         # Handle renaming
         if rename.lower().endswith(('.docx', '.xlsx', '.pptx', '.jpeg')):
             new_name = rename[:-5] + ".pdf"
-        elif rename.lower().endswith(('.doc', '.xls', '.ppt', '.jpg', '.png', '.bmp', '.gif')):
+        elif rename.lower().endswith(('.doc', '.xls', '.ppt', '.pps', '.jpg', '.png', '.bmp', '.gif')):
             new_name = rename[:-4] + ".pdf"
         else:
             new_name = rename + ".pdf"
