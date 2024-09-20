@@ -3,7 +3,10 @@ document.getElementById('fileInput').addEventListener('change', function() {
 });
 
 document.getElementById('convert_button').addEventListener('click', function() {
+    document.getElementById("convert_button").disabled = true;
     document.getElementById('convert_form').submit();
+    document.getElementById('convert_form').remove();
+    document.getElementById("file-count").style.display = "none";
 });
 
 function removeFile(button) {
@@ -29,6 +32,7 @@ function removeFile(button) {
                 fileCounter.textContent = data.file_count;}
             else {
                 countContainer.style.display = "none";
+                document.getElementById("convert_button").disabled = true;
             }
         } else {
             alert('Failed to delete the file');
@@ -40,7 +44,6 @@ function removeFile(button) {
         alert('An error occurred');
     });
 }
-
 
 function restrictFileNameInput(event) {
     const invalidChars = ['/', '\\', ':', '*', '?', '"', '|', '<', '>']; // Array of invalid characters

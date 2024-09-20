@@ -51,6 +51,10 @@
             background-color: transparent;
         }
 
+        #bring-home:hover h2 {
+            color: #383838;
+        }
+
         .site-icon {
             height: 60px;
             width: 60px;
@@ -360,9 +364,20 @@
             margin-left: 10px;
         }
 
+        button:disabled {
+            background-color: #B0B0B0;
+            color: #FFFFFF; /* White text for contrast */
+            cursor: not-allowed; /* Change cursor to indicate disabled state */
+        }
+
         .convert-button:hover {
             background-color: #FF0000;
             box-shadow: 4px 4px 8px rgba(1, 1, 1, 0.6);
+        }
+
+        button:disabled:hover {
+            background-color: #B0B0B0;
+            color: #FFFFFF;
         }
 
     </style>
@@ -372,7 +387,7 @@
 
         <h1>
             <form action="/">
-                <button id="bring-home" type="submit">
+                <button id="bring-home" type="submit" onmouseover="hoverH2(this)">
                     <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Site_Logo" class="site-icon">
                     <h2>Convert-TO-PDF</h2>
                 </button>
