@@ -63,12 +63,12 @@
         }
 
         .page-box {
-            position: absolute;
+            position: relative;
 
-            top: 20px;
-            left: 40px;
-            right: 40px;
-            bottom: 20px;
+            width: calc(100% - 115px);
+            height: calc(100vh - 75px);
+
+            margin: 20px 40px;
 
             padding: 10px;
             border: 5px solid #3E376C;
@@ -101,6 +101,27 @@
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
 
             text-align: left;
+        }
+
+        .pass-change {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            height: 100px;
+            width: 400px;
+
+            padding: 10px;
+            border: 3px solid #3E376C;
+            border-radius: 10px;
+
+            background-color: white;
+
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            text-align: left;
+
+            margin-top: 10px;
         }
 
 
@@ -171,7 +192,6 @@
             width: 24px;
         }
 
-
         .button-container {
             display: flex;
             gap: 10px; /* Adjust space between buttons if needed */
@@ -185,10 +205,17 @@
             background-color: #3E376C;
             color: white;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
 
-            padding: 5px 10px;
+            padding: 10px 15px;
 
             margin-top: 10px;
+        }
+
+        .save-button:hover {
+            background-color: #2C274E;
         }
 
         .cancel-button {
@@ -199,11 +226,65 @@
             background-color: #CC0000;
             color: white;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
 
-            padding: 5px 10px;
+            padding:10px 15px;
 
             margin-top: 10px;
         }
+
+        .cancel-button:hover {
+            background-color: #990000;
+        }
+
+        .deleteAccount-button{
+            position: absolute;
+
+            bottom: 5px;
+            right: 5px;
+
+            padding: 10px;
+            background-color: #CC0000;
+            color: white;
+            font-weight: 900;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            margin-top: 10px;
+        }
+
+        .deleteAccount-button:hover {
+            background-color: #990000;
+
+        }
+
+        .changePassword-button{
+            position: relative;
+
+            padding: 10px;
+            background-color: #3E376C;
+            color: white;
+            font-weight: 900;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            margin-top: 10px;
+        }
+
+        .changePassword-button:hover {
+            background-color: #2C274E;
+        }
+
+        #changePasswordForm {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -247,16 +328,6 @@
                 <div class="info-box"><input type="email" id="email" value="{{email_dynamic}}" disabled></div>
             </div>
 
-            <div class="info-item">
-                <p>Password:</p>
-                <div class="info-box">
-                    <input type="password" id="password" value="{{pw_dynamic}}" disabled>
-                    <img src="{{ url_for('static', filename='images/eye-close.png') }}" alt="Password Hidden" id="pass_img" class="password-image"
-                        data-eye-open="{{ url_for('static', filename='images/eye-open.png') }}"
-                        data-eye-close="{{ url_for('static', filename='images/eye-close.png') }}">
-                </div>
-            </div>
-
         </div>
 
         <div class="button-container">
@@ -269,6 +340,48 @@
                 <pre class="error-message">{{ error }}</pre>
             </div>
         {% endif %}
+
+        <button type="button" class="changePassword-button" id="changePass" onclick="displayChangePassword()">
+            Change Password
+        </button>
+
+        <form action="changePassword" method="post" id="changePasswordForm">
+            <div class="pass-change">
+
+                <div class="info-item">
+                    <p>Password:</p>
+                    <div class="info-box">
+                        <input type="password" id="password" name="updated_password">
+                        <img src="{{ url_for('static', filename='images/eye-close.png') }}" alt="Password Hidden" id="pass_img" class="password-image"
+                            data-eye-open="{{ url_for('static', filename='images/eye-open.png') }}"
+                            data-eye-close="{{ url_for('static', filename='images/eye-close.png') }}">
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <p>Repeat Password:</p>
+                    <div class="info-box">
+                        <input type="password" id="re_password">
+                        <img src="{{ url_for('static', filename='images/eye-close.png') }}" alt="Password Hidden" id="re_pass_img" class="password-image"
+                            data-eye-open="{{ url_for('static', filename='images/eye-open.png') }}"
+                            data-eye-close="{{ url_for('static', filename='images/eye-close.png') }}">
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <div class="button-container">
+            <button class="save-button" id="submit_pass_button">Submit</button>
+            <button class="cancel-button" id="cancel_pass_button">Cancel</button>
+        </div>
+
+
+        <form action="deleteAccount" method="POST" id="deleteAccountForm">
+            <button type="button" class="deleteAccount-button" onclick="confirmDelete()">
+                Delete Account
+            </button>
+        </form>
 
     </div>
 

@@ -595,5 +595,57 @@ def delete_file():
         return jsonify({'success': False, 'message': 'File not found'}), 404
 
 
+@app.route("/changePassword", methods=['POST'])
+def change_password():
+    usable_id = session.get("user_id")  # Get user ID from session
+    updated_crypted_pw = bcrypt.hashpw(request.form.get("updated_password").encode("UTF-8"), bcrypt.gensalt(rounds=14))
+    if usable_id is None:
+        return jsonify({'error': 'User not logged in.'}), 403  # Handle case if user is not logged in
+    try:
+        myDatabase = modules.sql_connection()  # Establish a database connection
+        mycursor = myDatabase.cursor()
+        mycursor.execute("UPDATE users SET password = %s WHERE id = %s", (updated_crypted_pw, usable_id))
+        myDatabase.commit()  # Commit the changes
+
+        return '', 204
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  # Handle any database errors
+
+    finally:
+        if mycursor:
+            mycursor.close()  # Ensure cursor is closed
+        if myDatabase:
+            myDatabase.close()  # Ensure database connection is closed
+
+@app.route("/deleteAccount", methods=['POST'])
+def delete_account():
+    usable_id = session.get("user_id")  # Get user ID from session
+    if usable_id is None:
+        return jsonify({'error': 'User not logged in.'}), 403  # Handle case if user is not logged in
+
+    try:
+        myDatabase = modules.sql_connection()  # Establish a database connection
+        mycursor = myDatabase.cursor()
+
+        # Load the delete query from the SQL file
+        with open("queries/delete_account.sql", "r") as query_file:
+            delete_query = query_file.read()
+
+        # Execute the delete query
+        mycursor.execute(delete_query, (usable_id,))
+        myDatabase.commit()  # Commit the transaction
+
+
+    finally:
+        if mycursor:
+            mycursor.close()  # Ensure cursor is closed
+        if myDatabase:
+            myDatabase.close()  # Ensure database connection is closed
+
+    session.pop("logged_in", None)  # Remove user from session
+    session.pop("user_id", None)  # Remove user_id from session
+    return redirect(url_for("index"))  # Redirect to the index page
+
 if __name__ == "__main__":
     app.run(debug=True)
