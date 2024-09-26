@@ -78,12 +78,14 @@ def profile_page():
     ln_dynamic = session.get("ln_dynamic", "none")
     un_dynamic = session.get("un_dynamic", "none")
     email_dynamic = session.get("email_dynamic", "none")
+    points_dynamic = session.get("points_dynamic", "none")
 
     return render_template("profile.html",
                            fn_dynamic=fn_dynamic,
                            ln_dynamic=ln_dynamic,
                            un_dynamic=un_dynamic,
                            email_dynamic=email_dynamic,
+                           points_dynamic=points_dynamic
                            )
 
 
@@ -298,6 +300,7 @@ def signup_page():
         session["un_dynamic"] = user_data["username"]
         session["email_dynamic"] = user_data["email"]
         session["pw_dynamic"] = user_data["password"]
+        session["points_dynamic"] = 0
 
         return redirect(url_for("index"))
 
@@ -344,6 +347,26 @@ def upload_file():
                 print(f"Merged file saved: {merged_file_path}")  # Debugging statement
             else:
                 print(f"Temporary merged file not found: {temp_merged_path}")  # Debugging statement
+
+            try:
+                print("Adding points!")
+                myDatabase = modules.sql_connection()  # Establish a database connection
+                mycursor = myDatabase.cursor()
+                mycursor.execute("UPDATE users SET points = points + 10 WHERE id = %s", (usable_id,))
+                mycursor.execute("SELECT points FROM users WHERE id = %s", (usable_id,))
+                session["points_dynamic"] = str(mycursor.fetchall()[0][0])
+                myDatabase.commit()  # Commit the changes
+                print("points added!")
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500  # Handle any database errors
+
+            finally:
+                if mycursor:
+                    mycursor.close()  # Ensure cursor is closed
+                if myDatabase:
+                    myDatabase.close()  # Ensure database connection is closed
+
+
 
             cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
                                                                                      output_folder))
@@ -479,6 +502,25 @@ def upload_word_file():
 
         print(f"Converted files: {converted_files}")
 
+        usable_id = session.get("user_id")
+        try:
+            print("Adding points!")
+            myDatabase = modules.sql_connection()  # Establish a database connection
+            mycursor = myDatabase.cursor()
+            mycursor.execute("UPDATE users SET points = points + 10 WHERE id = %s", (usable_id,))
+            mycursor.execute("SELECT points FROM users WHERE id = %s", (usable_id,))
+            session["points_dynamic"] = str(mycursor.fetchall()[0][0])
+            myDatabase.commit()  # Commit the changes
+            print("points added!")
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500  # Handle any database errors
+
+        finally:
+            if mycursor:
+                mycursor.close()  # Ensure cursor is closed
+            if myDatabase:
+                myDatabase.close()  # Ensure database connection is closed
+
         # Handle multiple or single files for download
         if len(converted_files) > 1:
             zip_filename = "converted_files.zip"
@@ -490,6 +532,8 @@ def upload_word_file():
             cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
                                                                                      output_folder))
             cleanup_thread.start()
+
+
 
             print(f"Returning zip file: {zip_path}")
             return send_file(zip_path, as_attachment=True, mimetype='application/zip')

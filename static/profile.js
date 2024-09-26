@@ -125,5 +125,17 @@ cancelPassButton.addEventListener("click", function(){
     }
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    const points = parseInt(document.getElementById('points').value);
+    const premiumButton = document.getElementById('premium-button');
+
+    // Check if points are 1000 or more
+    if (points >= 1000) {
+        premiumButton.disabled = false;
+        premiumButton.classList.add('enabled');
+        premiumButton.style.cursor = "pointer";
+    }
+});
+
 
 

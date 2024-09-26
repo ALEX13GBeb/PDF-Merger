@@ -84,6 +84,13 @@
         }
 
 
+        .info-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+
         .info {
             display: flex;
             flex-direction: column;
@@ -102,6 +109,92 @@
 
             text-align: left;
         }
+
+
+
+        .points-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            height: 100px;
+            width: 200px; /* Adjust width as needed */
+
+            padding: 10px;
+            border: 3px solid #3E376C;
+            border-radius: 10px;
+
+            background-color: white;
+
+            box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
+
+            text-align: left;
+            font-size: 20px;
+            font-weight: 900;
+
+            margin-bottom: 0px;
+        }
+
+
+        .premium-btn {
+            background-color: #3E92CC; /* Use the same blue as other buttons */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: not-allowed; /* Disabled state */
+            position: relative;
+            width: 100%;
+            opacity: 0.6;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+        }
+
+        .premium-btn.enabled {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .premium-btn.enabled:hover {
+            background-color: #3178A5;
+        }
+
+        .premium-tooltip {
+            display: none; /* Initially hidden */
+            position: absolute;
+            bottom: 120%; /* Position above the button */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3E376C;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 12px;
+            height: 65px;
+            width: 200px; /* Adjust width as needed */
+            text-align: center;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+            z-index: 10; /* Ensure it's above other content */
+            opacity: 0; /* Initially hidden for fade effect */
+            margin-top: 5px;
+        }
+
+
+        .premium-btn.enabled:hover + .premium-tooltip {
+            display: block;
+            opacity: 1;
+        }
+
+        .button-container {
+            position: relative;
+            text-align: center;
+        }
+
+        /* Tooltip for the premium button */
+        .button-container .premium-tooltip {
+            top: 100%;
+        }
+
 
         .pass-change {
             display: flex;
@@ -155,6 +248,30 @@
             outline: none; /* Removes default outline on focus */
         }
 
+        .info-tooltip {
+            display: none; /* Initially hidden */
+            position: absolute;
+            bottom: 120%; /* Position above the icon */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3E376C;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            width: 200px; /* Adjust width as needed */
+            text-align: center;
+            font-size: 12px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+            z-index: 10; /* Ensure it's above other content */
+            opacity: 0;
+        }
+
+        /* Show tooltip on hover */
+        .info-icon:hover + .info-tooltip {
+            display: block;
+            opacity: 1;
+        }
+
 
         .info-box {
             display: flex;
@@ -182,6 +299,17 @@
 
 
         .password-image {
+            position: absolute;
+
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+
+            cursor: pointer;
+            width: 24px;
+        }
+
+        .info-icon {
             position: absolute;
 
             right: 10px;
@@ -299,35 +427,53 @@
             </form>
         </h1>
 
-        <div class="info">
-            <div class="info-item">
-                <h3 style="flex-grow:1;"><b>Information:</b></h3>
-                <button class="edit-button" id="info_edit" aria-label="Edit Button">
-                    <img src="{{ url_for('static', filename='images/Edit_icon.png') }}" alt="Edit Icon" class="edit-icon">
-                </button>
+        <div class="info-container">
+            <div class="info">
+                <div class="info-item">
+                    <h3 style="flex-grow:1;"><b>Information:</b></h3>
+                    <button class="edit-button" id="info_edit" aria-label="Edit Button">
+                        <img src="{{ url_for('static', filename='images/Edit_icon.png') }}" alt="Edit Icon" class="edit-icon">
+                    </button>
+                </div>
+
+                <div class="info-item">
+                    <p>First Name:</p>
+                    <div class="info-box"><input type="text" id="first_name" value="{{fn_dynamic}}" disabled></div>
+                </div>
+
+                <div class="info-item">
+                    <p>Last Name:</p>
+                    <div class="info-box"><input type="text" id="last_name" value="{{ln_dynamic}}" disabled></div>
+                </div>
+
+
+                <div class="info-item">
+                    <p>Username:</p>
+                    <div class="info-box"><input type="text" id="username" value="{{un_dynamic}}" disabled></div>
+                </div>
+
+                <div class="info-item">
+                    <p>Email:</p>
+                    <div class="info-box"><input type="email" id="email" value="{{email_dynamic}}" disabled></div>
+                </div>
             </div>
 
-            <div class="info-item">
-                <p>First Name:</p>
-                <div class="info-box"><input type="text" id="first_name" value="{{fn_dynamic}}" disabled></div>
+            <div class="points-box">
+
+                <div class="info-item">
+                    <p>Points:</p>
+                    <div class="info-box"><input type="text" id="points" value="{{points_dynamic}}" disabled>
+                    <img src="static/images/info.png" class="info-icon">
+                    <div class="info-tooltip">You get 10 points for every merger, conversion, etc. of files. You can use the points to upgrade your account.</div>
+                    </div>
+                </div>
+
+                <div class="button-container">
+                    <button id="premium-button" class="premium-btn" disabled>7 Days Premium</button>
+                    <div class="premium-tooltip">Earn 1000 points to unlock a 7-day premium account (unlimited files, unlimited operations, unlimited file size).</div>
+                </div>
+
             </div>
-
-            <div class="info-item">
-                <p>Last Name:</p>
-                <div class="info-box"><input type="text" id="last_name" value="{{ln_dynamic}}" disabled></div>
-            </div>
-
-
-            <div class="info-item">
-                <p>Username:</p>
-                <div class="info-box"><input type="text" id="username" value="{{un_dynamic}}" disabled></div>
-            </div>
-
-            <div class="info-item">
-                <p>Email:</p>
-                <div class="info-box"><input type="email" id="email" value="{{email_dynamic}}" disabled></div>
-            </div>
-
         </div>
 
         <div class="button-container">
