@@ -210,7 +210,12 @@ def profile_data(list):
     session["email_dynamic"] = list[3]
     session["pw_dynamic"] = list[4]
     session["points_dynamic"] = list[5]
-    return (session["fn_dynamic"],session["ln_dynamic"],session["un_dynamic"],session["email_dynamic"],session["pw_dynamic"])
+    return (session["fn_dynamic"],
+            session["ln_dynamic"],
+            session["un_dynamic"],
+            session["email_dynamic"],
+            session["pw_dynamic"],
+            session["points_dynamic"])
 
 def allow_pdf(filename, allowed_extensions="pdf"):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions

@@ -28,10 +28,6 @@ app.config["UPLOAD_FOLDER"] = "uploads"
 app.config["OUTPUT_FOLDER"] = "output"
 app.config["ALLOWED_EXTENSIONS"] = {"pdf"}
 
-# Ensure upload and merged folders exist
-os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
-os.makedirs(app.config["OUTPUT_FOLDER"], exist_ok=True)
-
 
 try:
     myDatabase = modules.sql_connection()
@@ -162,20 +158,17 @@ def login_page():
     try:
         myDatabase = modules.sql_connection()
         mycursor = myDatabase.cursor()
-        mycursor.execute("SELECT username, password FROM users")
+        mycursor.execute("SELECT username, password FROM users WHERE username != '-'")
         user_list = mycursor.fetchall()
-        print(user_list)
         if request.method == "POST":
             user_log = request.form.get("login_un")
             pass_log = request.form.get("login_password").encode("UTF-8")
-            print(pass_log)
 
             with open(app.config["PROFILE_INFO"], "r") as query:
                 profile_query = query.read()
 
             for user_credentials in user_list:
                 stored_hashed_password = user_credentials[1].encode("UTF-8")
-                print(stored_hashed_password)
 
                 if user_credentials[0] == user_log and bcrypt.checkpw(pass_log, stored_hashed_password):
                     session.pop("error", None)
@@ -184,9 +177,11 @@ def login_page():
                     mycursor.execute("SELECT id FROM users WHERE username = %s", (user_log,))
                     login_id = mycursor.fetchall()
                     session["user_id"] = str(login_id[0][0])
-
-                    mycursor.execute(profile_query, user_credentials)
+                    print(str(login_id[0][0]))
+                    mycursor.execute( profile_query, (str(login_id[0][0]),) )
                     profile_data = mycursor.fetchall()
+
+                    print(profile_data)
 
                     modules.profile_data(profile_data[0])
                     return redirect(url_for("index"))
@@ -268,6 +263,8 @@ def signup_page():
 
         if write:
             try:
+                mycursor.execute("START TRANSACTION")
+                print("Incercam macar?")
                 mycursor.execute(insert_user, (
                     user_data['username'],
                     user_data['password'],
@@ -276,8 +273,16 @@ def signup_page():
                     user_data['last_name'],
                     user_data['gender'],
                 ))
-                myDatabase.commit()
+                print("Am incercat?")
+                mycursor.execute("SET @user_id = LAST_INSERT_ID()")
 
+                # Insert into subscriptions using the user_id
+                mycursor.execute("""
+                    INSERT INTO subscriptions (user_id)
+                    VALUES (@user_id)
+                """)
+                myDatabase.commit()
+                print("Am si reusit?")
                 mycursor.execute("SELECT id FROM users WHERE username = %s", (user_data['username'],))
                 signup_id = mycursor.fetchall()
                 session["user_id"] = str(signup_id[0][0])
@@ -352,8 +357,8 @@ def upload_file():
                 print("Adding points!")
                 myDatabase = modules.sql_connection()  # Establish a database connection
                 mycursor = myDatabase.cursor()
-                mycursor.execute("UPDATE users SET points = points + 10 WHERE id = %s", (usable_id,))
-                mycursor.execute("SELECT points FROM users WHERE id = %s", (usable_id,))
+                mycursor.execute("UPDATE subscriptions SET points = points + 10 WHERE user_id = %s", (usable_id,))
+                mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
                 session["points_dynamic"] = str(mycursor.fetchall()[0][0])
                 myDatabase.commit()  # Commit the changes
                 print("points added!")
@@ -507,8 +512,8 @@ def upload_word_file():
             print("Adding points!")
             myDatabase = modules.sql_connection()  # Establish a database connection
             mycursor = myDatabase.cursor()
-            mycursor.execute("UPDATE users SET points = points + 10 WHERE id = %s", (usable_id,))
-            mycursor.execute("SELECT points FROM users WHERE id = %s", (usable_id,))
+            mycursor.execute("UPDATE subscriptions SET points = points + 10 WHERE user_id = %s", (usable_id,))
+            mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
             session["points_dynamic"] = str(mycursor.fetchall()[0][0])
             myDatabase.commit()  # Commit the changes
             print("points added!")
@@ -648,8 +653,8 @@ def premium_trial():
     try:
         myDatabase = modules.sql_connection()  # Establish a database connection
         mycursor = myDatabase.cursor()
-        mycursor.execute("UPDATE users SET points = points - 1000, account_type = 'Premium' WHERE id = %s", (usable_id,))
-        mycursor.execute("SELECT points FROM users WHERE id = %s", (usable_id,))
+        mycursor.execute("UPDATE subscriptions SET points = points - 1000, account_type = 'Premium' WHERE user_id = %s", (usable_id,))
+        mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
         session["points_dynamic"] = str(mycursor.fetchall()[0][0])
         myDatabase.commit()
         return redirect(url_for("profile_page"))

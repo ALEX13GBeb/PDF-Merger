@@ -1,9 +1,10 @@
-SELECT first_name,
-        last_name,
-        username,
-        email,
-        password,
-        points
-FROM users
-WHERE username = %s AND
-        password = %s;
+SELECT u.first_name,
+        u.last_name,
+        u.username,
+        u.email,
+        u.password,
+        s.points
+FROM users u
+JOIN subscriptions s
+ON u.id = s.user_id
+WHERE u.id = %s
