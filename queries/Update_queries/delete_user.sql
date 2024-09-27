@@ -4,6 +4,5 @@ SET
     password = "-" ,
     first_name = "-",
     last_name = "-",
-    gender = DEFAULT,
-    account_type = "Deleted"
+    gender = DEFAULT
 WHERE id = %s;

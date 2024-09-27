@@ -1,18 +1,15 @@
-from flask import ( Flask, request, redirect, url_for,
-                    send_from_directory, render_template,
-                    session, jsonify, send_file, after_this_request
-                   )
+from flask import (
+      Flask, request, redirect, url_for,
+      send_from_directory, render_template,
+      session, jsonify, send_file
+)
 import os
 import modules
 import zipfile
-import requests
 from werkzeug.utils import secure_filename
 import mysql.connector
 import bcrypt
-import ast
 import threading
-import time
-
 
 
 app = Flask(__name__)
@@ -21,8 +18,16 @@ app.secret_key = "my_session_key"
 
 app.config["SCHEMA_QUERY"] = "queries/Create_queries/create_schema.sql"
 app.config["USERS_TABLE_QUERY"] = "queries/Create_queries/create_users.sql"
-app.config["INSERT_USERS"] = "queries/insert_into_users.sql"
-app.config["PROFILE_INFO"] = "queries/profile_info.sql"
+app.config["SUBSCRIPTIONS_TABLE_QUERY"] = "queries/Create_queries/create_subscriptions.sql"
+
+app.config["UPDATE_USERS"] = "queries/Update_queries/update_user.sql"
+app.config["INSERT_USERS"] = "queries/Update_queries/insert_into_users.sql"
+app.config["BUY_7DAYPREMIUM"] = "queries/Update_queries/buy_7dayPremium_query.sql"
+app.config["DELETE_USER"] = "queries/Update_queries/delete_user.sql"
+app.config["DELETE_SUBSCRIPTION"] = "queries/Update_queries/delete_subscription.sql"
+
+app.config["PROFILE_INFO"] = "queries/Get_info_queries/profile_info.sql"
+app.config["LOGIN_INFO"] = "queries/Get_info_queries/get_login_info.sql"
 
 app.config["UPLOAD_FOLDER"] = "uploads"
 app.config["OUTPUT_FOLDER"] = "output"
@@ -37,6 +42,9 @@ try:
         mycursor.execute(query.read())
 
     with open(app.config["SCHEMA_QUERY"], "r") as query:
+        mycursor.execute(query.read())
+
+    with open(app.config["SUBSCRIPTIONS_TABLE_QUERY"], "r") as query:
         mycursor.execute(query.read())
 
     myDatabase.commit()
@@ -95,7 +103,7 @@ def update_user():
             return jsonify({'error': 'Failed to connect to the database.'}), 500
 
         try:
-            with open("queries/update_user.sql", "r") as query:
+            with open(app.config["UPDATE_USERS"], "r") as query:
                 update_user_query = query.read()
 
             updated_data = request.json
@@ -111,7 +119,6 @@ def update_user():
                 eroare += "Invalid Email\n"
                 valid = False
 
-
             if valid == True:
                 update_info = (
                     updated_data.get("username"),
@@ -124,7 +131,6 @@ def update_user():
                 mycursor.execute(update_user_query, update_info)
                 myDatabase.commit()
 
-                # Update session data
                 session['fn_dynamic'] = updated_data.get('firstName')
                 session['ln_dynamic'] = updated_data.get('lastName')
                 session['un_dynamic'] = updated_data.get('username')
@@ -158,8 +164,11 @@ def login_page():
     try:
         myDatabase = modules.sql_connection()
         mycursor = myDatabase.cursor()
-        mycursor.execute("SELECT username, password FROM users WHERE username != '-'")
-        user_list = mycursor.fetchall()
+
+        with open(app.config["LOGIN_INFO"], 'r') as query:
+            mycursor.execute(query.read())
+            user_list = mycursor.fetchall()
+
         if request.method == "POST":
             user_log = request.form.get("login_un")
             pass_log = request.form.get("login_password").encode("UTF-8")
@@ -176,14 +185,13 @@ def login_page():
 
                     mycursor.execute("SELECT id FROM users WHERE username = %s", (user_log,))
                     login_id = mycursor.fetchall()
+
                     session["user_id"] = str(login_id[0][0])
-                    print(str(login_id[0][0]))
+
                     mycursor.execute( profile_query, (str(login_id[0][0]),) )
                     profile_data = mycursor.fetchall()
-
-                    print(profile_data)
-
                     modules.profile_data(profile_data[0])
+
                     return redirect(url_for("index"))
 
             session["error"] = "Invalid username or password"
@@ -219,10 +227,9 @@ def signup_page():
         print(f"Error reading query file: {e}")
         return render_template("signup.html", error="Internal server error")
 
-
-
     if request.method == "POST":
         crypted_pw = bcrypt.hashpw(request.form.get("signup_password").encode("UTF-8"), bcrypt.gensalt(rounds=14))
+
         user_data = {
             "first_name": request.form.get("signup_fn"),
             "last_name": request.form.get("signup_ln"),
@@ -264,7 +271,7 @@ def signup_page():
         if write:
             try:
                 mycursor.execute("START TRANSACTION")
-                print("Incercam macar?")
+
                 mycursor.execute(insert_user, (
                     user_data['username'],
                     user_data['password'],
@@ -273,16 +280,15 @@ def signup_page():
                     user_data['last_name'],
                     user_data['gender'],
                 ))
-                print("Am incercat?")
+
                 mycursor.execute("SET @user_id = LAST_INSERT_ID()")
 
-                # Insert into subscriptions using the user_id
                 mycursor.execute("""
                     INSERT INTO subscriptions (user_id)
                     VALUES (@user_id)
                 """)
                 myDatabase.commit()
-                print("Am si reusit?")
+
                 mycursor.execute("SELECT id FROM users WHERE username = %s", (user_data['username'],))
                 signup_id = mycursor.fetchall()
                 session["user_id"] = str(signup_id[0][0])
@@ -315,7 +321,6 @@ def signup_page():
 @app.route("/upload", methods=["POST"])
 def upload_file():
     usable_id = session.get("user_id", "none")
-    print(usable_id)
 
     upload_folder = usable_id+"_"+app.config["UPLOAD_FOLDER"]
     output_folder = usable_id+"_"+app.config["OUTPUT_FOLDER"]
@@ -349,29 +354,26 @@ def upload_file():
 
             if os.path.exists(temp_merged_path):
                 os.rename(temp_merged_path, merged_file_path)
-                print(f"Merged file saved: {merged_file_path}")  # Debugging statement
+                print(f"Merged file saved: {merged_file_path}")
             else:
-                print(f"Temporary merged file not found: {temp_merged_path}")  # Debugging statement
+                print(f"Temporary merged file not found: {temp_merged_path}")
 
             try:
-                print("Adding points!")
-                myDatabase = modules.sql_connection()  # Establish a database connection
+                myDatabase = modules.sql_connection()
                 mycursor = myDatabase.cursor()
                 mycursor.execute("UPDATE subscriptions SET points = points + 10 WHERE user_id = %s", (usable_id,))
                 mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
                 session["points_dynamic"] = str(mycursor.fetchall()[0][0])
-                myDatabase.commit()  # Commit the changes
+                myDatabase.commit()
                 print("points added!")
             except Exception as e:
-                return jsonify({'error': str(e)}), 500  # Handle any database errors
+                return jsonify({'error': str(e)}), 500
 
             finally:
                 if mycursor:
-                    mycursor.close()  # Ensure cursor is closed
+                    mycursor.close()
                 if myDatabase:
-                    myDatabase.close()  # Ensure database connection is closed
-
-
+                    myDatabase.close()
 
             cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
                                                                                      output_folder))
@@ -379,21 +381,21 @@ def upload_file():
 
             return send_from_directory(usable_id+"_"+app.config["OUTPUT_FOLDER"], merged_filename, as_attachment=True)
         except Exception as e:
-            print(f"Error during file processing: {e}")  # Debugging statement
+            print(f"Error during file processing: {e}")
             return redirect(request.url)
     else:
-        print("No valid files to merge.")  # Debugging statement
+        print("No valid files to merge.")
         return redirect(request.url)
 
 @app.route("/Convert", methods=["POST", "GET"])
 def render_wordFiles():
     if request.method == "POST":
-        # Debugging statements
         print("Received POST request.")
+
     logged_in = session.get("logged_in")
 
     if "file" not in request.files:
-        print("No file part in request.")  # Debugging statement
+        print("No file part in request.")
         return redirect(request.url)
 
     usable_id = session.get("user_id", "none")
@@ -509,7 +511,6 @@ def upload_word_file():
 
         usable_id = session.get("user_id")
         try:
-            print("Adding points!")
             myDatabase = modules.sql_connection()  # Establish a database connection
             mycursor = myDatabase.cursor()
             mycursor.execute("UPDATE subscriptions SET points = points + 10 WHERE user_id = %s", (usable_id,))
@@ -538,8 +539,6 @@ def upload_word_file():
                                                                                      output_folder))
             cleanup_thread.start()
 
-
-
             print(f"Returning zip file: {zip_path}")
             return send_file(zip_path, as_attachment=True, mimetype='application/zip')
         elif converted_files:
@@ -561,8 +560,6 @@ def upload_word_file():
 
 @app.route('/addFile', methods=['POST'])
 def add_file():
-
-    print("Activated Path")
     if 'file' not in request.files:
         return 'No file part', 400
 
@@ -634,8 +631,6 @@ def delete_file():
             remaining_files = len(os.listdir(upload_folder))
             return jsonify({'success': True, 'file_count': remaining_files})
 
-
-
         except Exception as e:
             print(f"Error deleting file: {e}")  # Debugging statement
             return jsonify({'success': False, 'message': 'Error deleting file'}), 500
@@ -653,7 +648,10 @@ def premium_trial():
     try:
         myDatabase = modules.sql_connection()  # Establish a database connection
         mycursor = myDatabase.cursor()
-        mycursor.execute("UPDATE subscriptions SET points = points - 1000, account_type = 'Premium' WHERE user_id = %s", (usable_id,))
+
+        with open(app.config["BUY_7DAYPREMIUM"], 'r') as query:
+            mycursor.execute(query.read(), (usable_id,))
+
         mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
         session["points_dynamic"] = str(mycursor.fetchall()[0][0])
         myDatabase.commit()
@@ -669,6 +667,7 @@ def premium_trial():
 def change_password():
     usable_id = session.get("user_id")  # Get user ID from session
     updated_crypted_pw = bcrypt.hashpw(request.form.get("updated_password").encode("UTF-8"), bcrypt.gensalt(rounds=14))
+
     if usable_id is None:
         return jsonify({'error': 'User not logged in.'}), 403  # Handle case if user is not logged in
     try:
@@ -700,13 +699,13 @@ def delete_account():
         mycursor = myDatabase.cursor()
 
         # Load the delete query from the SQL file
-        with open("queries/delete_account.sql", "r") as query_file:
-            delete_query = query_file.read()
+        with open(app.config["DELETE_USER"], "r") as query:
+            mycursor.execute(query.read(), (usable_id,))
 
-        # Execute the delete query
-        mycursor.execute(delete_query, (usable_id,))
+        with open(app.config["DELETE_SUBSCRIPTION"], "r") as query:
+            mycursor.execute(query.read(), (usable_id,))
+
         myDatabase.commit()  # Commit the transaction
-
 
     finally:
         if mycursor:

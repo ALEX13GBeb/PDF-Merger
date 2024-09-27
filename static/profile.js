@@ -102,7 +102,8 @@ function displayChangePassword(button) {
 };
 
 submitPassButton.addEventListener("click", function() {
-    if (document.getElementById("password").value == document.getElementById("re_password").value) {
+    if (document.getElementById("password").value == document.getElementById("re_password").value
+         && document.getElementById("password").value.length >=8) {
         passForm.submit();
         changePassButton.style.display = "block";
         submitPassButton.style.display = 'none'; // Hide the save button again
@@ -113,7 +114,7 @@ submitPassButton.addEventListener("click", function() {
         document.getElementById("password").value = "";
         document.getElementById("re_password").value = "";
     }
-    else {alert("The passwords don't match!")};
+    else {alert("The passwords don't match or the password is too short (It must be at least 8 characters long)!")};
 });
 
 cancelPassButton.addEventListener("click", function(){

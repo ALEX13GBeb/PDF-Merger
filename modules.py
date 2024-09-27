@@ -4,7 +4,6 @@ from werkzeug.utils import secure_filename
 import os, shutil
 import re
 import pythoncom
-import time
 from typing import List
 import comtypes.client
 from PIL import Image
@@ -12,7 +11,6 @@ from reportlab.pdfgen import canvas
 import tempfile
 import mysql.connector
 from dotenv import load_dotenv
-import threading
 import time
 
 load_dotenv()
@@ -25,6 +23,7 @@ def sql_connection():
         port=os.getenv('MYSQL_PORT'),
         database=os.getenv('MYSQL_DB')
     )
+
     return database
 
 def clear_directory(folder_path):
