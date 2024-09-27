@@ -143,7 +143,6 @@
             border: none;
             border-radius: 5px;
             font-size: 14px;
-            cursor: not-allowed; /* Disabled state */
             position: relative;
             width: 100%;
             opacity: 0.6;
@@ -181,6 +180,11 @@
 
 
         .premium-btn.enabled:hover + .premium-tooltip {
+            display: block;
+            opacity: 1;
+        }
+
+        .premium-btn:hover + .premium-tooltip {
             display: block;
             opacity: 1;
         }
@@ -413,6 +417,38 @@
             display: none;
         }
 
+        .premium-upgrade-button {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            width: 30%; /* Adjust width as needed */
+            height: 12%;
+            padding: 15px 20px;
+
+            background-image: url("static/images/Up.png");
+            background-size: cover;
+            background-position: center;
+
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-size 0.3s ease;
+        }
+
+        .premium-upgrade-button:hover {
+
+            transform: translateX(-50%) scale(1.1);
+        }
+
     </style>
 </head>
 <body>
@@ -468,10 +504,12 @@
                     </div>
                 </div>
 
-                <div class="button-container">
-                    <button id="premium-button" class="premium-btn" disabled>7 Days Premium</button>
-                    <div class="premium-tooltip">Earn 1000 points to unlock a 7-day premium account (unlimited files, unlimited operations, unlimited file size).</div>
-                </div>
+                <form action="pointsForPremium" method="post">
+                    <div class="button-container">
+                        <button id="premium-button" class="premium-btn" disabled>7 Days Premium</button>
+                        <div class="premium-tooltip">Earn 1000 points to unlock a 7-day premium account (unlimited files, unlimited operations, unlimited file size).</div>
+                    </div>
+                </form>
 
             </div>
         </div>
@@ -528,6 +566,8 @@
                 Delete Account
             </button>
         </form>
+
+        <button class="premium-upgrade-button" onclick="window.location.href='/upgrade'"></button>
 
     </div>
 

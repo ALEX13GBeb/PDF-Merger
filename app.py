@@ -639,6 +639,27 @@ def delete_file():
         return jsonify({'success': False, 'message': 'File not found'}), 404
 
 
+@app.route("/pointsForPremium", methods=["POST"])
+def premium_trial():
+    usable_id = session.get("user_id")  # Get user ID from session
+    print(usable_id)
+    if usable_id is None:
+        return jsonify({'error': 'User not logged in.'}), 403  # Handle case if user is not logged in
+    try:
+        myDatabase = modules.sql_connection()  # Establish a database connection
+        mycursor = myDatabase.cursor()
+        mycursor.execute("UPDATE users SET points = points - 1000, account_type = 'Premium' WHERE id = %s", (usable_id,))
+        mycursor.execute("SELECT points FROM users WHERE id = %s", (usable_id,))
+        session["points_dynamic"] = str(mycursor.fetchall()[0][0])
+        myDatabase.commit()
+        return redirect(url_for("profile_page"))
+
+    finally:
+        if mycursor:
+            mycursor.close()  # Ensure cursor is closed
+        if myDatabase:
+            myDatabase.close()  # Ensure database connection is closed
+
 @app.route("/changePassword", methods=['POST'])
 def change_password():
     usable_id = session.get("user_id")  # Get user ID from session
@@ -646,6 +667,7 @@ def change_password():
     if usable_id is None:
         return jsonify({'error': 'User not logged in.'}), 403  # Handle case if user is not logged in
     try:
+
         myDatabase = modules.sql_connection()  # Establish a database connection
         mycursor = myDatabase.cursor()
         mycursor.execute("UPDATE users SET password = %s WHERE id = %s", (updated_crypted_pw, usable_id))
