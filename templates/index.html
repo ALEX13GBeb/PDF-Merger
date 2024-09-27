@@ -444,7 +444,7 @@
                 <div id="red_rectangle" class="rectangle red-rec" onclick="showPdfForm()">
                     <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF Merger
                 </div>
-                <form action="/upload" style="border: 3px solid #DD0000" id="index_form" method="post" enctype="multipart/form-data">
+                <form action="/mergePDF" style="border: 3px solid #DD0000" id="index_form" method="post" enctype="multipart/form-data">
                     <div>
                         <input type="file" name="file" id="inputfiles" accept=".pdf" multiple required>
                     </div>
@@ -478,7 +478,7 @@
                 <div id="orange_rectangle" class="rectangle orange-rec" onclick="showPPForm()">
                     <img src="{{ url_for('static', filename='images/pptx.png') }}" class="document-icon">PowerPoint to PDF
                 </div>
-                <form action="/Convert" style="border: 3px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
+                <form action="/convertPage" style="border: 3px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
                         <input type="file" name="file" id="ppfiles" accept=".pptx, .ppt, .pps" multiple required>
                 </form>
 
@@ -487,7 +487,7 @@
                 <div id="blue_rectangle" class="rectangle blue-rec" onclick="showWordForm()">
                     <img src="{{ url_for('static', filename='images/docx.png') }}" class="document-icon">Word to PDF
                 </div>
-                <form action="/Convert" style="border: 3px solid #485FBB" id="word_form" method="post" enctype="multipart/form-data">
+                <form action="/convertPage" style="border: 3px solid #485FBB" id="word_form" method="post" enctype="multipart/form-data">
                     <div>
                         <input type="file" name="file" id="wordfiles" accept=".docx, .doc" multiple required>
                     </div>
@@ -498,7 +498,7 @@
                 <div id="green_rectangle" class="rectangle green-rec" onclick="showExcelForm()">
                     <img src="{{ url_for('static', filename='images/xlsx.png') }}" class="document-icon">Excel to PDF
                 </div>
-                <form action="/Convert" style="border: 3px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
+                <form action="/convertPage" style="border: 3px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
                     <div>
                         <input type="file" name="file" id="excelfiles" accept=".xlsx, .xls" multiple required>
                     </div>
@@ -527,7 +527,7 @@
                     <img src="{{ url_for('static', filename='images/jpeg.png') }}" class="document-icon">JPEG Converter
                 </div>
 
-                <form action="/Convert" style="border: 3px solid #FF8C00" id="jpeg_form" method="post" enctype="multipart/form-data">
+                <form action="/convertPage" style="border: 3px solid #FF8C00" id="jpeg_form" method="post" enctype="multipart/form-data">
                     <div>
                         <input type="file" name="file" id="jpegfiles" accept=".jpeg, .jpg" multiple required>
                     </div>
@@ -538,7 +538,7 @@
                 <div id="gif_rectangle" class="rectangle gif-rec" onclick="showGIFForm()">
                     <img src="{{ url_for('static', filename='images/gif.png') }}" class="document-icon">GIF Converter
                 </div>
-                <form action="/Convert" style="border: 3px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
+                <form action="/convertPage" style="border: 3px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
                     <div>
                         <input type="file" name="file" id="giffiles" accept=".gif" multiple required>
                     </div>
@@ -549,7 +549,7 @@
                  <div id="png_rectangle" class="rectangle png-rec" onclick="showPNGForm()">
                     <img src="{{ url_for('static', filename='images/png.png') }}" class="document-icon">PNG Converter
                 </div>
-                <form action="/Convert" style="border: 3px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
+                <form action="/convertPage" style="border: 3px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
                     <div>
                         <input type="file" name="file" id="pngfiles" accept=".png" multiple required>
                     </div>
@@ -560,7 +560,7 @@
                 <div id="bmp_rectangle" class="rectangle bmp-rec" onclick="showBMPForm()">
                     <img src="{{ url_for('static', filename='images/bmp.png') }}" class="document-icon">BMP Converter
                 </div>
-                <form action="/Convert" style="border: 3px solid #6B2282" id="bmp_form" method="post" enctype="multipart/form-data">
+                <form action="/convertPage" style="border: 3px solid #6B2282" id="bmp_form" method="post" enctype="multipart/form-data">
                     <div>
                         <input type="file" name="file" id="bmpfiles" accept=".bmp" multiple required>
                     </div>
@@ -601,7 +601,6 @@
             </div>
 
     </div>
-
 
     <script src="static/index.js"></script>
 

@@ -318,7 +318,7 @@ def signup_page():
     error = session.pop("error", None)
     return render_template("signup.html", error=error)
 
-@app.route("/upload", methods=["POST"])
+@app.route("/mergePDF", methods=["POST"])
 def upload_file():
     usable_id = session.get("user_id", "none")
 
@@ -387,7 +387,7 @@ def upload_file():
         print("No valid files to merge.")
         return redirect(request.url)
 
-@app.route("/Convert", methods=["POST", "GET"])
+@app.route("/convertPage", methods=["POST", "GET"])
 def render_wordFiles():
     if request.method == "POST":
         print("Received POST request.")
@@ -444,13 +444,13 @@ def render_wordFiles():
         except IndexError:
             break
 
-    return render_template("Convert.html", logged_in=logged_in,
+    return render_template("convert.html", logged_in=logged_in,
                                                             file_names=sorted_names,
                                                             data_types=data_types,
                                                             file_count=file_count)
 
 
-@app.route("/convertWord", methods=["POST", "GET"])
+@app.route("/convertToPDF", methods=["POST", "GET"])
 def upload_word_file():
     names = request.form.getlist("file_names[]")
     print(f"New names: {names}")
@@ -602,7 +602,7 @@ def add_file():
     logged_in = session.get("logged_in")
 
     print(f"Files uploaded successfully: {file_paths}")  # Debug statement
-    return render_template("Convert.html", logged_in=logged_in,
+    return render_template("convert.html", logged_in=logged_in,
                                                              file_names=sorted_names,
                                                              data_types=data_types,
                                                              file_count=file_count)
