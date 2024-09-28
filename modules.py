@@ -1,4 +1,8 @@
-from PyPDF2 import PdfMerger
+from PyPDF2 import PdfMerger, PdfWriter, PdfReader
+from pptx import Presentation
+from pdf2image import convert_from_path
+from pdf2docx import Converter
+from pdfplumber import open as open_pdf
 from flask import session, redirect, request
 from werkzeug.utils import secure_filename
 import os, shutil
@@ -195,6 +199,76 @@ def convert_file_to_pdf(input_file, rename, output_folder):
         pythoncom.CoUninitialize()
 
 
+def convert_pdf_to_file(input_file, output_format, output_folder):
+    try:
+        # Initialize COM objects
+        pythoncom.CoInitialize()
+
+        # Get the absolute file path
+        abs_input_file = os.path.abspath(input_file)
+        abs_output_folder = os.path.abspath(output_folder)
+        base_name = os.path.splitext(os.path.basename(abs_input_file))[0]
+
+        # Check the output format and perform conversion
+        if output_format.lower() in ['.doc', '.docx']:
+            print("Converting PDF to Word...")
+            output_file = os.path.join(abs_output_folder, f"{base_name}.docx")
+            cv = Converter(abs_input_file)
+            cv.convert(output_file)  # Converts PDF to .docx
+            cv.close()
+
+        elif output_format.lower() in ['.xls', '.xlsx']:
+            print("Converting PDF to Excel...")
+            output_file = os.path.join(abs_output_folder, f"{base_name}.xlsx")
+            pdf = open_pdf(abs_input_file)
+            with open(output_file, 'w') as excel_file:
+                # Extract tables from the PDF and write them to the Excel file
+                for page in pdf.pages:
+                    tables = page.extract_tables()
+                    for table in tables:
+                        for row in table:
+                            excel_file.write(','.join(row) + '\n')
+
+        elif output_format.lower() in ['.ppt', '.pptx']:
+            print("Converting PDF to PowerPoint...")
+            output_file = os.path.join(abs_output_folder, f"{base_name}.pptx")
+            pdf_pages = convert_from_path(abs_input_file)
+            presentation = Presentation()
+
+            for page in pdf_pages:
+                slide = presentation.slides.add_slide(presentation.slide_layouts[5])
+                img_path = os.path.join(output_folder, "temp_image.png")
+                page.save(img_path, "PNG")
+                slide.shapes.add_picture(img_path, 0, 0)
+                os.remove(img_path)
+
+            presentation.save(output_file)
+
+        elif output_format.lower() in ['.jpeg', '.jpg', '.png', '.bmp']:
+            print(f"Converting PDF to {output_format.upper()} image...")
+            output_file = os.path.join(abs_output_folder, f"{base_name}{output_format}")
+            images = convert_from_path(abs_input_file)
+            # Save the first page as an image
+            images[0].save(output_file)
+
+        elif output_format.lower() == '.gif':
+            print("Converting PDF to GIF...")
+            output_file = os.path.join(abs_output_folder, f"{base_name}.gif")
+            images = convert_from_path(abs_input_file)
+            # Convert PDF pages to a GIF animation
+            images[0].save(output_file, save_all=True, append_images=images[1:], loop=0)
+
+        else:
+            raise ValueError(
+                "Unsupported output format. Supported formats: .docx, .xlsx, .pptx, .jpeg, .jpg, .png, .bmp, .gif")
+
+        print(f"Converted PDF to {output_format} successfully!")
+
+    except Exception as e:
+        print(f"Error during conversion: {e}")
+
+    finally:
+        pythoncom.CoUninitialize()
 
 def sanitize_filename(filename):
     # Replace spaces with underscores and handle other special characters

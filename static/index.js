@@ -34,9 +34,11 @@ function DisplayList0() {
 
 function DisplayList1() {
     var listItem1 = document.getElementById("list_item1");
+    var listItem1_2 = document.getElementById("list_item1.2");
 
     if (listItem1.style.display === "flex") {
         listItem1.style.display = "none"; // Hide the forms
+        listItem1_2.style.display = "none";
     }
     else {
         listItem1.style.display = "flex"; // Show the forms
@@ -46,13 +48,23 @@ function DisplayList1() {
         document.getElementById("word_form").style.display = "none"; // Show the form
         document.getElementById("excel_form").style.display = "none"; // Show the form
         document.getElementById("pp_form").style.display = "none";
+
+        listItem1_2.style.display = "flex";
+        document.getElementById("pdfExcel_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("pdfWord_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("pdfPP_rectangle").style.display = "flex";
+        document.getElementById("pdfexcel_form").style.display = "none";
+        document.getElementById("pdfword_form").style.display = "none";
+        document.getElementById("pdfpp_form").style.display = "none";
         }}
 
 function DisplayList2() {
     var listItem2 = document.getElementById("list_item2");
+    var listItem2_2 = document.getElementById("list_item2.2");
 
     if (listItem2.style.display === "flex") {
         listItem2.style.display = "none"; // Hide the forms
+        listItem2_2.style.display = "none";
     }
     else {
         listItem2.style.display = "flex"; // Show the forms
@@ -64,6 +76,16 @@ function DisplayList2() {
         document.getElementById("png_form").style.display = "none"; // Show the form
         document.getElementById("gif_form").style.display = "none"; // Show the form
         document.getElementById("bmp_form").style.display = "none";
+
+        listItem2_2.style.display = "flex"; // Show the forms
+        document.getElementById("pdfJpeg_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("pdfPng_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("pdfGif_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("pdfBmp_rectangle").style.display = "flex"; // Hide the rectangle
+        document.getElementById("pdfjpeg_form").style.display = "none"; // Show the form
+        document.getElementById("pdfpng_form").style.display = "none"; // Show the form
+        document.getElementById("pdfgif_form").style.display = "none"; // Show the form
+        document.getElementById("pdfbmp_form").style.display = "none";
 
         }
     }
@@ -100,42 +122,154 @@ function showJPEGForm() {
     document.getElementById("png_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("gif_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("bmp_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfJpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPng_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfGif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfBmp_rectangle").style.display = "flex"; // Hide the rectangle
+
     document.getElementById("jpeg_form").style.display = "flex"; // Show the form
     document.getElementById("png_form").style.display = "none"; // Show the form
     document.getElementById("gif_form").style.display = "none"; // Show the form
     document.getElementById("bmp_form").style.display = "none";
+    document.getElementById("pdfjpeg_form").style.display = "none"; // Show the form
+    document.getElementById("pdfpng_form").style.display = "none"; // Show the form
+    document.getElementById("pdfgif_form").style.display = "none"; // Show the form
+    document.getElementById("pdfbmp_form").style.display = "none";
+
 }
 function showPNGForm() {
     document.getElementById("jpeg_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("png_rectangle").style.display = "none"; // Hide the rectangle
     document.getElementById("gif_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("bmp_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfJpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPng_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfGif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfBmp_rectangle").style.display = "flex"; // Hide the rectangle
+
     document.getElementById("jpeg_form").style.display = "none"; // Show the form
     document.getElementById("png_form").style.display = "flex"; // Show the form
     document.getElementById("gif_form").style.display = "none"; // Show the form
     document.getElementById("bmp_form").style.display = "none";
+    document.getElementById("pdfjpeg_form").style.display = "none"; // Show the form
+    document.getElementById("pdfpng_form").style.display = "none"; // Show the form
+    document.getElementById("pdfgif_form").style.display = "none"; // Show the form
+    document.getElementById("pdfbmp_form").style.display = "none";
 }
 function showGIFForm() {
     document.getElementById("jpeg_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("png_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("gif_rectangle").style.display = "none"; // Hide the rectangle
     document.getElementById("bmp_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfJpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPng_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfGif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfBmp_rectangle").style.display = "flex"; // Hide the rectangle
+
     document.getElementById("jpeg_form").style.display = "none"; // Show the form
     document.getElementById("png_form").style.display = "none"; // Show the form
     document.getElementById("gif_form").style.display = "flex"; // Show the form
     document.getElementById("bmp_form").style.display = "none";
+    document.getElementById("pdfjpeg_form").style.display = "none"; // Show the form
+    document.getElementById("pdfpng_form").style.display = "none"; // Show the form
+    document.getElementById("pdfgif_form").style.display = "none"; // Show the form
+    document.getElementById("pdfbmp_form").style.display = "none";
 }
 function showBMPForm() {
     document.getElementById("jpeg_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("png_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("gif_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("bmp_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("pdfJpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPng_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfGif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfBmp_rectangle").style.display = "flex"; // Hide the rectangle
+
     document.getElementById("jpeg_form").style.display = "none"; // Show the form
     document.getElementById("png_form").style.display = "none"; // Show the form
     document.getElementById("gif_form").style.display = "none"; // Show the form
     document.getElementById("bmp_form").style.display = "flex";
+    document.getElementById("pdfjpeg_form").style.display = "none"; // Show the form
+    document.getElementById("pdfpng_form").style.display = "none"; // Show the form
+    document.getElementById("pdfgif_form").style.display = "none"; // Show the form
+    document.getElementById("pdfbmp_form").style.display = "none";
 }
+function showPDF_JpegForm() {
+    document.getElementById("jpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("png_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("gif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("bmp_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfJpeg_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("pdfPng_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfGif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfBmp_rectangle").style.display = "flex"; // Hide the rectangle
 
+    document.getElementById("jpeg_form").style.display = "none"; // Show the form
+    document.getElementById("png_form").style.display = "none"; // Show the form
+    document.getElementById("gif_form").style.display = "none"; // Show the form
+    document.getElementById("bmp_form").style.display = "none";
+    document.getElementById("pdfjpeg_form").style.display = "flex"; // Show the form
+    document.getElementById("pdfpng_form").style.display = "none"; // Show the form
+    document.getElementById("pdfgif_form").style.display = "none"; // Show the form
+    document.getElementById("pdfbmp_form").style.display = "none";
+}
+function showPDF_GifForm() {
+    document.getElementById("jpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("png_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("gif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("bmp_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfJpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPng_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfGif_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("pdfBmp_rectangle").style.display = "flex"; // Hide the rectangle
+
+    document.getElementById("jpeg_form").style.display = "none"; // Show the form
+    document.getElementById("png_form").style.display = "none"; // Show the form
+    document.getElementById("gif_form").style.display = "none"; // Show the form
+    document.getElementById("bmp_form").style.display = "none";
+    document.getElementById("pdfjpeg_form").style.display = "none"; // Show the form
+    document.getElementById("pdfpng_form").style.display = "none"; // Show the form
+    document.getElementById("pdfgif_form").style.display = "flex"; // Show the form
+    document.getElementById("pdfbmp_form").style.display = "none";
+}
+function showPDF_PngForm() {
+    document.getElementById("jpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("png_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("gif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("bmp_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfJpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPng_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("pdfGif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfBmp_rectangle").style.display = "flex"; // Hide the rectangle
+
+    document.getElementById("jpeg_form").style.display = "none"; // Show the form
+    document.getElementById("png_form").style.display = "none"; // Show the form
+    document.getElementById("gif_form").style.display = "none"; // Show the form
+    document.getElementById("bmp_form").style.display = "none";
+    document.getElementById("pdfjpeg_form").style.display = "none"; // Show the form
+    document.getElementById("pdfpng_form").style.display = "flex"; // Show the form
+    document.getElementById("pdfgif_form").style.display = "none"; // Show the form
+    document.getElementById("pdfbmp_form").style.display = "none";
+}
+function showPDF_BmpForm() {
+    document.getElementById("jpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("png_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("gif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("bmp_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfJpeg_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPng_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfGif_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfBmp_rectangle").style.display = "none"; // Hide the rectangle
+
+    document.getElementById("jpeg_form").style.display = "none"; // Show the form
+    document.getElementById("png_form").style.display = "none"; // Show the form
+    document.getElementById("gif_form").style.display = "none"; // Show the form
+    document.getElementById("bmp_form").style.display = "none";
+    document.getElementById("pdfjpeg_form").style.display = "none"; // Show the form
+    document.getElementById("pdfpng_form").style.display = "none"; // Show the form
+    document.getElementById("pdfgif_form").style.display = "none"; // Show the form
+    document.getElementById("pdfbmp_form").style.display = "flex";
+}
 
 
 
@@ -149,27 +283,96 @@ function showWordForm() {
     document.getElementById("blue_rectangle").style.display = "none"; // Hide the rectangle
     document.getElementById("green_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("orange_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfExcel_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfWord_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPP_rectangle").style.display = "flex";
+
     document.getElementById("word_form").style.display = "flex"; // Show the form
     document.getElementById("excel_form").style.display = "none"; // Show the form
     document.getElementById("pp_form").style.display = "none";
+    document.getElementById("pdfexcel_form").style.display = "none";
+    document.getElementById("pdfword_form").style.display = "none";
+    document.getElementById("pdfpp_form").style.display = "none";
 }
 
 function showExcelForm() {
     document.getElementById("blue_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("green_rectangle").style.display = "none"; // Hide the rectangle
     document.getElementById("orange_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfExcel_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfWord_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPP_rectangle").style.display = "flex";
+
     document.getElementById("word_form").style.display = "none"; // Show the form
     document.getElementById("excel_form").style.display = "flex"; // Show the form
     document.getElementById("pp_form").style.display = "none";
+    document.getElementById("pdfexcel_form").style.display = "none";
+    document.getElementById("pdfword_form").style.display = "none";
+    document.getElementById("pdfpp_form").style.display = "none";
 }
 
 function showPPForm() {
     document.getElementById("blue_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("green_rectangle").style.display = "flex"; // Hide the rectangle
     document.getElementById("orange_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("pdfExcel_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfWord_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPP_rectangle").style.display = "flex";
+
     document.getElementById("word_form").style.display = "none"; // Show the form
     document.getElementById("excel_form").style.display = "none"; // Show the form
     document.getElementById("pp_form").style.display = "flex";
+    document.getElementById("pdfexcel_form").style.display = "none";
+    document.getElementById("pdfword_form").style.display = "none";
+    document.getElementById("pdfpp_form").style.display = "none";
+}
+
+function showPDF_PPForm() {
+    document.getElementById("blue_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("green_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("orange_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfExcel_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfWord_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPP_rectangle").style.display = "none";
+
+    document.getElementById("word_form").style.display = "none";
+    document.getElementById("excel_form").style.display = "none";
+    document.getElementById("pp_form").style.display = "none";
+    document.getElementById("pdfexcel_form").style.display = "none";
+    document.getElementById("pdfword_form").style.display = "none";
+    document.getElementById("pdfpp_form").style.display = "flex";
+}
+
+function showPDF_WordForm() {
+    document.getElementById("blue_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("green_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("orange_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfExcel_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfWord_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("pdfPP_rectangle").style.display = "flex";
+
+    document.getElementById("word_form").style.display = "none";
+    document.getElementById("excel_form").style.display = "none";
+    document.getElementById("pp_form").style.display = "none";
+    document.getElementById("pdfexcel_form").style.display = "none";
+    document.getElementById("pdfword_form").style.display = "flex";
+    document.getElementById("pdfpp_form").style.display = "none";
+}
+
+function showPDF_ExcelForm() {
+    document.getElementById("blue_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("green_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("orange_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfExcel_rectangle").style.display = "none"; // Hide the rectangle
+    document.getElementById("pdfWord_rectangle").style.display = "flex"; // Hide the rectangle
+    document.getElementById("pdfPP_rectangle").style.display = "flex";
+
+    document.getElementById("word_form").style.display = "none";
+    document.getElementById("excel_form").style.display = "none";
+    document.getElementById("pp_form").style.display = "none";
+    document.getElementById("pdfexcel_form").style.display = "flex";
+    document.getElementById("pdfword_form").style.display = "none";
+    document.getElementById("pdfpp_form").style.display = "none";
 }
 
 
