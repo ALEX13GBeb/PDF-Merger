@@ -179,17 +179,17 @@
         <form method="post">
             <div class="form-group">
                 <label for="first_name">First Name:</label>
-                <input type="text" id="first_name" name="signup_fn" required>
+                <input type="text" id="first_name" pattern="[\p{L}\s]+" title="Only letters from any language allowed" name="signup_fn" required>
             </div>
 
             <div class="form-group">
                 <label for="last_name">Last Name:</label>
-                <input type="text" id="last_name" name="signup_ln" required>
+                <input type="text" id="last_name" pattern="[\p{L}\s]+" title="Only letters from any language allowed" name="signup_ln" required>
             </div>
 
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="signup_un" required>
+                <input type="text" id="username" pattern="[\p{L}\p{N}]+" title="Only numbers and letters allowed" name="signup_un" required>
             </div>
 
             <div class="form-group">

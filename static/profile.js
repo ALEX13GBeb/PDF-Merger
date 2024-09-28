@@ -102,8 +102,9 @@ function displayChangePassword(button) {
 };
 
 submitPassButton.addEventListener("click", function() {
-    if (document.getElementById("password").value == document.getElementById("re_password").value
-         && document.getElementById("password").value.length >=8) {
+    if (document.getElementById("password").value != document.getElementById("re_password").value)
+        {alert("The passwords don't match!")}
+    else if ( document.getElementById("password").value.length >= 8 ) {
         passForm.submit();
         changePassButton.style.display = "block";
         submitPassButton.style.display = 'none'; // Hide the save button again
@@ -114,7 +115,6 @@ submitPassButton.addEventListener("click", function() {
         document.getElementById("password").value = "";
         document.getElementById("re_password").value = "";
     }
-    else {alert("The passwords don't match or the password is too short (It must be at least 8 characters long)!")};
 });
 
 cancelPassButton.addEventListener("click", function(){
@@ -127,14 +127,17 @@ cancelPassButton.addEventListener("click", function(){
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    const points = parseInt(document.getElementById('points').value);
+    // Get the points element and retrieve its value
+    const pointsElement = document.getElementById('points');
+    const points = parseInt(pointsElement.value);  // Get the value of the input
+
     const premiumButton = document.getElementById('premium-button');
 
     // Check if points are 1000 or more
     if (points >= 1000) {
-        premiumButton.disabled = false;
-        premiumButton.classList.add('enabled');
-        premiumButton.style.cursor = "pointer";
+        premiumButton.disabled = false;  // Enable the premium button
+        premiumButton.classList.add('enabled');  // Optionally, add a class to visually enable the button
+        premiumButton.style.cursor = "pointer";  // Change the cursor to pointer to indicate it's clickable
     }
 });
 

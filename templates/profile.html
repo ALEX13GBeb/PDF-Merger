@@ -449,6 +449,20 @@
             transform: translateX(-50%) scale(1.1);
         }
 
+        .successUpgrade {
+            color: #0c8500;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: #e6ffe6;
+            padding: 10px;
+            border: 2px solid #0c8500;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 15px 0;
+            font-family: 'Arial', sans-serif;
+        }
+
     </style>
 </head>
 <body>
@@ -535,7 +549,7 @@
                 <div class="info-item">
                     <p>Password:</p>
                     <div class="info-box">
-                        <input type="password" id="password" name="updated_password">
+                        <input type="password" id="password" minlength="8" name="updated_password" required>
                         <img src="{{ url_for('static', filename='images/eye-close.png') }}" alt="Password Hidden" id="pass_img" class="password-image"
                             data-eye-open="{{ url_for('static', filename='images/eye-open.png') }}"
                             data-eye-close="{{ url_for('static', filename='images/eye-close.png') }}">
@@ -545,7 +559,7 @@
                 <div class="info-item">
                     <p>Repeat Password:</p>
                     <div class="info-box">
-                        <input type="password" id="re_password">
+                        <input type="password" id="re_password" required>
                         <img src="{{ url_for('static', filename='images/eye-close.png') }}" alt="Password Hidden" id="re_pass_img" class="password-image"
                             data-eye-open="{{ url_for('static', filename='images/eye-open.png') }}"
                             data-eye-close="{{ url_for('static', filename='images/eye-close.png') }}">
@@ -553,12 +567,12 @@
                 </div>
 
             </div>
-        </form>
-
         <div class="button-container">
-            <button class="save-button" id="submit_pass_button">Submit</button>
+            <button class="save-button" type="submit" id="submit_pass_button">Submit</button>
             <button class="cancel-button" id="cancel_pass_button">Cancel</button>
         </div>
+
+        </form>
 
 
         <form action="deleteAccount" method="POST" id="deleteAccountForm">
@@ -569,8 +583,12 @@
 
         <button class="premium-upgrade-button" onclick="window.location.href='https://buy.stripe.com/test_4gw17BafOb8T4us4gg';"></button>
 
+        <div class="successUpgrade" style="display: none;">
+            You have successfully upgraded to PRO USER. Enjoy the next 7 days of Premium Experience!
+        </div>
+
     </div>
 
-                <script src="static/profile.js"></script>
+    <script src="static/profile.js"></script>
 </body>
 </html>

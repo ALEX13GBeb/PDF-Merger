@@ -213,3 +213,5 @@ document.addEventListener('scroll', function() {
             footer.classList.remove('show');
         }
     });
+
+

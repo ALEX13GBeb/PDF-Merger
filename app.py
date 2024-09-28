@@ -83,13 +83,15 @@ def profile_page():
     un_dynamic = session.get("un_dynamic", "none")
     email_dynamic = session.get("email_dynamic", "none")
     points_dynamic = session.get("points_dynamic", "none")
+    upgrade_successful = session.pop('upgrade_successful', None)
 
     return render_template("profile.html",
                            fn_dynamic=fn_dynamic,
                            ln_dynamic=ln_dynamic,
                            un_dynamic=un_dynamic,
                            email_dynamic=email_dynamic,
-                           points_dynamic=points_dynamic
+                           points_dynamic=points_dynamic,
+                           upgrade_successful=upgrade_successful
                            )
 
 
@@ -655,6 +657,9 @@ def premium_trial():
         mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
         session["points_dynamic"] = str(mycursor.fetchall()[0][0])
         myDatabase.commit()
+
+        session['upgrade_successful'] = True
+
         return redirect(url_for("profile_page"))
 
     finally:

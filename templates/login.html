@@ -189,7 +189,7 @@
         <form method="post">
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="login_un"  required>
+                <input type="text" id="username" pattern="[\p{L}\p{N}]+" title="Only numbers and letters allowed" name="login_un"  required>
             </div>
 
             <br>
