@@ -56,3 +56,9 @@ function restrictFileNameInput(event) {
 
     }
 }
+
+   // Function to show the loading overlay
+function showLoading() {
+    document.getElementById('loading-overlay').style.display = 'flex';
+}
+
