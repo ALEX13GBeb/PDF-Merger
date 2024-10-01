@@ -126,15 +126,17 @@ cancelPassButton.addEventListener("click", function(){
     }
 });
 
+
 document.addEventListener('DOMContentLoaded', function() {
     // Get the points element and retrieve its value
     const pointsElement = document.getElementById('points');
     const points = parseInt(pointsElement.value);  // Get the value of the input
 
     const premiumButton = document.getElementById('premium-button');
+    const premiumMessageDiv = document.querySelector('.premium-message');
 
     // Check if points are 1000 or more
-    if (points >= 1000) {
+    if (points >= 1000 && !premiumMessageDiv) {
         premiumButton.disabled = false;  // Enable the premium button
         premiumButton.classList.add('enabled');  // Optionally, add a class to visually enable the button
         premiumButton.style.cursor = "pointer";  // Change the cursor to pointer to indicate it's clickable

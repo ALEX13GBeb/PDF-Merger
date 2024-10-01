@@ -96,6 +96,7 @@ def profile_page():
 
     mycursor.execute("SELECT account_type FROM subscriptions WHERE user_id = %s", (usable_id,))
     account_type_fetch = str(mycursor.fetchall()[0][0])
+    print(account_type_fetch)
 
     mycursor.execute("SELECT DATEDIFF(pro_end_date, CURDATE()) FROM subscriptions WHERE user_id = %s", (usable_id,))
     days_left = str(mycursor.fetchall()[0][0])
