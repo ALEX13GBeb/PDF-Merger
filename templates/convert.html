@@ -242,7 +242,7 @@
         .pps-icon,
         .docx-icon,
         .doc-icon,
-        .xslx-icon,
+        .xlsx-icon,
         .xls-icon,
         .jpeg-icon,
         .jpg-icon,
@@ -427,11 +427,11 @@
         {% endif %}
 
 
-        <form action="/convertToPDF" id="convert_form" method="post" enctype="multipart/form-data">
+        <form action="/convert" id="convert_form" method="post" enctype="multipart/form-data">
             <div class="icons-container">
                 {% for file_name in file_names %}
                 <div class="icon-item" data-file-name="{{ file_name }}">
-                    <div class="{{ file_name.split('.')[-1] }}-icon" style="background-image: url('static/images/{{ file_name.split('.')[-1] }}.png');"></div>
+                    <div class="{{ file_name.split('.')[-1] }}-icon" style="background-image: url('static/images/{{ file_name.split('.')[-1].lower() }}.png');"></div>
                     <button class="icon-button" type="button" onclick="removeFile(this)">x</button>
                     <!-- ^^^^^ type="button" so the button doesn't activate the form's action ^^^^^ -->
                     <input class="file-name" type="text" name="file_names[]" value="{{ file_name }}"  onkeydown="restrictFileNameInput(event)">

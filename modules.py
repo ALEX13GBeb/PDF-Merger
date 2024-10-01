@@ -129,6 +129,8 @@ def convert_file_to_pdf(input_file, rename, output_folder):
                 new_pdf_name = rename[:-5] + ".pdf"
             elif rename.lower().endswith(('.jpg', '.png', '.bmp')):
                 new_pdf_name = rename[:-4] + ".pdf"
+            else:
+                new_pdf_name = rename + ".pdf"
 
             pdf_output_path = os.path.join(abs_output_folder, new_pdf_name)
 
@@ -199,8 +201,7 @@ def convert_file_to_pdf(input_file, rename, output_folder):
         pythoncom.CoUninitialize()
 
 
-
-def convert_pdf_to_word(input_file, output_format, output_folder):
+def convert_pdf_to_word(input_file, output_format, output_folder, rename):
     try:
         # Initialize COM objects
         pythoncom.CoInitialize()
@@ -208,22 +209,30 @@ def convert_pdf_to_word(input_file, output_format, output_folder):
         # Get the absolute file path
         abs_input_file = os.path.abspath(input_file)
         abs_output_folder = os.path.abspath(output_folder)
-        base_name = os.path.splitext(os.path.basename(abs_input_file))[0]
 
-        # Path to your Poppler binaries (adjust this to where you installed Poppler)
-        poppler_path = r'C:\path\to\poppler\bin'  # Replace with the correct path to your Poppler bin folder
-
+        # Set the output file name based on the renamed argument
         if output_format.lower() in ['.doc', '.docx']:
             print("Converting PDF to Word...")
-            output_file = os.path.join(abs_output_folder, f"{base_name}.docx")
+
+            # Ensure the renamed file has the correct extension
+            if rename.lower().endswith(('.xlsx', '.pptx', '.jpeg')):
+                new_name = rename[:-5] + ".docx"
+            elif rename.lower().endswith(('.xls', '.ppt', '.pps', '.jpg', '.png', '.bmp', '.gif', '.pdf')):
+                new_name = rename[:-4] + ".docx"
+            else:
+                new_name = rename + ".docx"
+
+            output_file = os.path.join(abs_output_folder, new_name)
+
+            # Perform the conversion
             cv = Converter(abs_input_file)
             cv.convert(output_file)  # Converts PDF to .docx
             cv.close()
 
         else:
-            raise ValueError("Unsupported output format. Supported formats: .docx, .pptx, .jpeg, .jpg, .png, .bmp")
+            raise ValueError("Unsupported output format. Supported formats: .docx")
 
-        print(f"Converted PDF to {output_format} successfully!")
+        print(f"Converted PDF to {output_format} successfully: {output_file}")
 
     except Exception as e:
         print(f"Error during conversion: {e}")

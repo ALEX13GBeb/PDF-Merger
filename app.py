@@ -458,7 +458,7 @@ def render_wordFiles():
                                                             file_count=file_count)
 
 
-@app.route("/convertToPDF", methods=["POST", "GET"])
+@app.route("/convert", methods=["POST", "GET"])
 def upload_word_file():
     names = request.form.getlist("file_names[]")
 
@@ -489,6 +489,10 @@ def upload_word_file():
                 try:
                     # Get the corresponding new name from the map
                     file_name = file_rename_map.get(file)
+
+                    if file_name ==  "":
+                        file_name = "convertedPDF"
+
                     secured_name = secure_filename(file_name)
 
                     docx_file_path = os.path.join(upload_folder, file)
@@ -572,12 +576,16 @@ def upload_word_file():
                 try:
                     # Get the corresponding new name from the map
                     file_name = file_rename_map.get(file)
+
+                    if file_name ==  "":
+                        file_name = "convertedWord.docx"
+
                     secured_name = secure_filename(file_name)
 
                     pdf_file_path = os.path.join(upload_folder, file)
 
                     # Use convert_pdf_to_file for conversion
-                    modules.convert_pdf_to_word(pdf_file_path, wanted_file_type, output_folder)
+                    modules.convert_pdf_to_word(pdf_file_path, wanted_file_type, output_folder, secured_name)
 
                     # Construct the output filename based on the desired format
                     base_name = os.path.splitext(secured_name)[0]
