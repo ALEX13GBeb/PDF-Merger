@@ -1,1 +1,1 @@
-CREATE SCHEMA IF NOT EXISTS `merge_data`;
+CREATE DATABASE IF NOT EXISTS `merge_data`;

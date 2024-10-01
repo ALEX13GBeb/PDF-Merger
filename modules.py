@@ -199,7 +199,8 @@ def convert_file_to_pdf(input_file, rename, output_folder):
         pythoncom.CoUninitialize()
 
 
-def convert_pdf_to_file(input_file, output_format, output_folder):
+
+def convert_pdf_to_word(input_file, output_format, output_folder):
     try:
         # Initialize COM objects
         pythoncom.CoInitialize()
@@ -209,7 +210,9 @@ def convert_pdf_to_file(input_file, output_format, output_folder):
         abs_output_folder = os.path.abspath(output_folder)
         base_name = os.path.splitext(os.path.basename(abs_input_file))[0]
 
-        # Check the output format and perform conversion
+        # Path to your Poppler binaries (adjust this to where you installed Poppler)
+        poppler_path = r'C:\path\to\poppler\bin'  # Replace with the correct path to your Poppler bin folder
+
         if output_format.lower() in ['.doc', '.docx']:
             print("Converting PDF to Word...")
             output_file = os.path.join(abs_output_folder, f"{base_name}.docx")
@@ -217,50 +220,8 @@ def convert_pdf_to_file(input_file, output_format, output_folder):
             cv.convert(output_file)  # Converts PDF to .docx
             cv.close()
 
-        elif output_format.lower() in ['.xls', '.xlsx']:
-            print("Converting PDF to Excel...")
-            output_file = os.path.join(abs_output_folder, f"{base_name}.xlsx")
-            pdf = open_pdf(abs_input_file)
-            with open(output_file, 'w') as excel_file:
-                # Extract tables from the PDF and write them to the Excel file
-                for page in pdf.pages:
-                    tables = page.extract_tables()
-                    for table in tables:
-                        for row in table:
-                            excel_file.write(','.join(row) + '\n')
-
-        elif output_format.lower() in ['.ppt', '.pptx']:
-            print("Converting PDF to PowerPoint...")
-            output_file = os.path.join(abs_output_folder, f"{base_name}.pptx")
-            pdf_pages = convert_from_path(abs_input_file)
-            presentation = Presentation()
-
-            for page in pdf_pages:
-                slide = presentation.slides.add_slide(presentation.slide_layouts[5])
-                img_path = os.path.join(output_folder, "temp_image.png")
-                page.save(img_path, "PNG")
-                slide.shapes.add_picture(img_path, 0, 0)
-                os.remove(img_path)
-
-            presentation.save(output_file)
-
-        elif output_format.lower() in ['.jpeg', '.jpg', '.png', '.bmp']:
-            print(f"Converting PDF to {output_format.upper()} image...")
-            output_file = os.path.join(abs_output_folder, f"{base_name}{output_format}")
-            images = convert_from_path(abs_input_file)
-            # Save the first page as an image
-            images[0].save(output_file)
-
-        elif output_format.lower() == '.gif':
-            print("Converting PDF to GIF...")
-            output_file = os.path.join(abs_output_folder, f"{base_name}.gif")
-            images = convert_from_path(abs_input_file)
-            # Convert PDF pages to a GIF animation
-            images[0].save(output_file, save_all=True, append_images=images[1:], loop=0)
-
         else:
-            raise ValueError(
-                "Unsupported output format. Supported formats: .docx, .xlsx, .pptx, .jpeg, .jpg, .png, .bmp, .gif")
+            raise ValueError("Unsupported output format. Supported formats: .docx, .pptx, .jpeg, .jpg, .png, .bmp")
 
         print(f"Converted PDF to {output_format} successfully!")
 
@@ -269,7 +230,6 @@ def convert_pdf_to_file(input_file, output_format, output_folder):
 
     finally:
         pythoncom.CoUninitialize()
-
 def sanitize_filename(filename):
     # Replace spaces with underscores and handle other special characters
     sanitized = re.sub(r'[^\w\s]', '', filename).replace(' ', '_')

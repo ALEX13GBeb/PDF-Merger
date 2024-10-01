@@ -503,6 +503,7 @@
                     <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">
                 </div>
                 <form action="/convertPage" style="border: 3px solid #FF6743" id="pp_form" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="form_name" value=".pdf">
                         <input type="file" name="file" id="ppfiles" accept=".pptx, .ppt, .pps" multiple required>
                 </form>
 
@@ -514,6 +515,7 @@
                 </div>
                 <form action="/convertPage" style="border: 3px solid #485FBB" id="word_form" method="post" enctype="multipart/form-data">
                     <div>
+                        <input type="hidden" name="form_name" value=".pdf">
                         <input type="file" name="file" id="wordfiles" accept=".docx, .doc" multiple required>
                     </div>
                 </form>
@@ -526,6 +528,7 @@
                 </div>
                 <form action="/convertPage" style="border: 3px solid #008000" id="excel_form" method="post" enctype="multipart/form-data">
                     <div>
+                        <input type="hidden" name="form_name" value=".pdf">
                         <input type="file" name="file" id="excelfiles" accept=".xlsx, .xls" multiple required>
                     </div>
                 </form>
@@ -534,32 +537,14 @@
             <br>
 
             <div id="list_item1.2" class="flex-row">
-                <div id="pdfPP_rectangle" class="rectangle red-rec" onclick="showPDF_PPForm()">
-                    <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF to PowerPoint
-                    <img src="{{ url_for('static', filename='images/pptx.png') }}" class="document-icon">
-                </div>
-                <form action="/convertPage" style="border: 3px solid #DD0000" id="pdfpp_form" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" id="pdfppfiles" accept=".pdf" multiple required>
-                </form>
-
-                <br>
 
                 <div id="pdfWord_rectangle" class="rectangle red-rec" onclick="showPDF_WordForm()">
                     <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF to Word
                     <img src="{{ url_for('static', filename='images/docx.png') }}" class="document-icon">
                 </div>
                 <form action="/convertPage" style="border: 3px solid #DD0000" id="pdfword_form" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="form_name" value=".docx">
                         <input type="file" name="file" id="pdfwordfiles" accept=".pdf" multiple required>
-                </form>
-
-                <br>
-
-                <div id="pdfExcel_rectangle" class="rectangle red-rec" onclick="showPDF_ExcelForm()">
-                    <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF to Excel
-                    <img src="{{ url_for('static', filename='images/xlsx.png') }}" class="document-icon">
-                </div>
-                <form action="/convertPage" style="border: 3px solid #DD0000" id="pdfexcel_form" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" id="pdfexcelfiles" accept=".pdf" multiple required>
                 </form>
 
             </div>
@@ -588,6 +573,7 @@
 
                 <form action="/convertPage" style="border: 3px solid #FF8C00" id="jpeg_form" method="post" enctype="multipart/form-data">
                     <div>
+                        <input type="hidden" name="form_name" value=".pdf">
                         <input type="file" name="file" id="jpegfiles" accept=".jpeg, .jpg" multiple required>
                     </div>
                 </form>
@@ -600,6 +586,7 @@
                 </div>
                 <form action="/convertPage" style="border: 3px solid #00308F" id="gif_form" method="post" enctype="multipart/form-data">
                     <div>
+                        <input type="hidden" name="form_name" value=".pdf">
                         <input type="file" name="file" id="giffiles" accept=".gif" multiple required>
                     </div>
                 </form>
@@ -612,6 +599,7 @@
                 </div>
                 <form action="/convertPage" style="border: 3px solid #32C984" id="png_form" method="post" enctype="multipart/form-data">
                     <div>
+                        <input type="hidden" name="form_name" value=".pdf">
                         <input type="file" name="file" id="pngfiles" accept=".png" multiple required>
                     </div>
                 </form>
@@ -624,56 +612,10 @@
                 </div>
                 <form action="/convertPage" style="border: 3px solid #6B2282" id="bmp_form" method="post" enctype="multipart/form-data">
                     <div>
+                        <input type="hidden" name="form_name" value=".pdf">
                         <input type="file" name="file" id="bmpfiles" accept=".bmp" multiple required>
                     </div>
                 </form>
-            </div>
-
-            <br>
-
-            <div id="list_item2.2" class="flex-row">
-
-                <div id="pdfJpeg_rectangle" class="rectangle red-rec" onclick="showPDF_JpegForm()">
-                    <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF to Word
-                    <img src="{{ url_for('static', filename='images/jpeg.png') }}" class="document-icon">
-                </div>
-                <form action="/convertPage" style="border: 3px solid #DD0000" id="pdfjpeg_form" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" id="pdfjpegfiles" accept=".pdf" multiple required>
-                </form>
-
-                <br>
-
-                <div id="pdfGif_rectangle" class="rectangle red-rec" onclick="showPDF_GifForm()">
-                    <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF to Word
-                    <img src="{{ url_for('static', filename='images/gif.png') }}" class="document-icon">
-                </div>
-                <form action="/convertPage" style="border: 3px solid #DD0000" id="pdfgif_form" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" id="pdfgiffiles" accept=".pdf" multiple required>
-                </form>
-
-                <br>
-
-                <div id="pdfPng_rectangle" class="rectangle red-rec" onclick="showPDF_PngForm()">
-                    <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF to Word
-                    <img src="{{ url_for('static', filename='images/png.png') }}" class="document-icon">
-                </div>
-                <form action="/convertPage" style="border: 3px solid #DD0000" id="pdfpng_form" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" id="pdfpngfiles" accept=".pdf" multiple required>
-                </form>
-
-                <br>
-
-                <div id="pdfBmp_rectangle" class="rectangle red-rec" onclick="showPDF_BmpForm()">
-                    <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF to Word
-                    <img src="{{ url_for('static', filename='images/bmp.png') }}" class="document-icon">
-                </div>
-                <form action="/convertPage" style="border: 3px solid #DD0000" id="pdfbmp_form" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" id="pdfbmpfiles" accept=".pdf" multiple required>
-                </form>
-
-                <br>
-
-
             </div>
 
         </div>

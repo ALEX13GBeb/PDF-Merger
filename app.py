@@ -394,6 +394,10 @@ def render_wordFiles():
     if request.method == "POST":
         print("Received POST request.")
 
+    form_name = request.form.get('form_name')
+    session["wanted_file_type"] = form_name
+    print(session.get("wanted_file_type"))
+
     logged_in = session.get("logged_in")
 
     if "file" not in request.files:
@@ -425,6 +429,8 @@ def render_wordFiles():
         data_types = ".png"
     elif file_names[0].lower().endswith(".bmp"):
         data_types = ".bmp"
+    elif file_names[0].lower().endswith(".pdf"):
+        data_types = ".pdf"
 
     if not files:
         print("No files selected.")
@@ -455,9 +461,10 @@ def render_wordFiles():
 @app.route("/convertToPDF", methods=["POST", "GET"])
 def upload_word_file():
     names = request.form.getlist("file_names[]")
-    print(f"New names: {names}")
 
     usable_id = session.get("user_id", "none")
+
+    wanted_file_type = session.get("wanted_file_type")
 
     upload_folder = usable_id + "_" + app.config["UPLOAD_FOLDER"]
     output_folder = usable_id + "_" + app.config["OUTPUT_FOLDER"]
@@ -476,88 +483,164 @@ def upload_word_file():
     os.makedirs(output_folder, exist_ok=True)
 
     converted_files = []
+    if wanted_file_type == ".pdf":
+        if names:
+            for file in files:
+                try:
+                    # Get the corresponding new name from the map
+                    file_name = file_rename_map.get(file)
+                    secured_name = secure_filename(file_name)
 
-    if names:
-        for file in files:
+                    docx_file_path = os.path.join(upload_folder, file)
+
+                    # Convert file and handle name correction
+                    modules.convert_file_to_pdf(docx_file_path, secured_name, output_folder)
+
+                    # Rename the file if necessary and check for conversion output
+                    if secured_name.lower().endswith(('.docx', '.xlsx', '.pptx', '.jpeg')):
+                        cleaned_name = secured_name[:-5] + ".pdf"
+                    elif secured_name.lower().endswith(('.doc', '.xls', '.ppt', '.pps', '.jpg', '.png', '.bmp', '.gif')):
+                        cleaned_name = secured_name[:-4] + ".pdf"
+                    else:
+                        cleaned_name = secured_name + ".pdf"
+
+                    output_file_path = os.path.join(output_folder, cleaned_name)
+
+                    if os.path.exists(output_file_path):
+                        converted_files.append(output_file_path)
+                        print(f"Conversion successful for {file_name}")
+                    else:
+                        print(f"Converted file not found for {file_name}")
+
+                except Exception as e:
+                    print(f"Error during conversion for {file_name}: {e}")
+                    return redirect(request.url)
+
+            print(f"Converted files: {converted_files}")
+
+            usable_id = session.get("user_id")
             try:
-                # Get the corresponding new name from the map
-                file_name = file_rename_map.get(file)
-                secured_name = secure_filename(file_name)
-
-                docx_file_path = os.path.join(upload_folder, file)
-
-                # Convert file and handle name correction
-                modules.convert_file_to_pdf(docx_file_path, secured_name, output_folder)
-
-                # Rename the file if necessary and check for conversion output
-                if secured_name.lower().endswith(('.docx', '.xlsx', '.pptx', '.jpeg')):
-                    cleaned_name = secured_name[:-5] + ".pdf"
-                elif secured_name.lower().endswith(('.doc', '.xls', '.ppt', '.pps', '.jpg', '.png', '.bmp', '.gif')):
-                    cleaned_name = secured_name[:-4] + ".pdf"
-                else:
-                    cleaned_name = secured_name + ".pdf"
-
-                output_file_path = os.path.join(output_folder, cleaned_name)
-
-                if os.path.exists(output_file_path):
-                    converted_files.append(output_file_path)
-                    print(f"Conversion successful for {file_name}")
-                else:
-                    print(f"Converted file not found for {file_name}")
-
+                myDatabase = modules.sql_connection()  # Establish a database connection
+                mycursor = myDatabase.cursor()
+                mycursor.execute("UPDATE subscriptions SET points = points + 10 WHERE user_id = %s", (usable_id,))
+                mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
+                session["points_dynamic"] = str(mycursor.fetchall()[0][0])
+                myDatabase.commit()  # Commit the changes
+                print("points added!")
             except Exception as e:
-                print(f"Error during conversion for {file_name}: {e}")
+                return jsonify({'error': str(e)}), 500  # Handle any database errors
+
+            finally:
+                if mycursor:
+                    mycursor.close()  # Ensure cursor is closed
+                if myDatabase:
+                    myDatabase.close()  # Ensure database connection is closed
+
+            # Handle multiple or single files for download
+            if len(converted_files) > 1:
+                zip_filename = "converted_files.zip"
+                zip_path = os.path.join(output_folder, zip_filename)
+                with zipfile.ZipFile(zip_path, "w") as zipf:
+                    for file in converted_files:
+                        zipf.write(file, os.path.basename(file))
+
+                cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
+                                                                                         output_folder))
+                cleanup_thread.start()
+
+                print(f"Returning zip file: {zip_path}")
+                return send_file(zip_path, as_attachment=True, mimetype='application/zip')
+            elif converted_files:
+
+                cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
+                                                                                         output_folder))
+                cleanup_thread.start()
+
+                print(f"Returning single file: {converted_files[0]}")
+                return send_file(converted_files[0], as_attachment=True)
+            else:
+                print("No valid files were converted.")
                 return redirect(request.url)
 
-        print(f"Converted files: {converted_files}")
-
-        usable_id = session.get("user_id")
-        try:
-            myDatabase = modules.sql_connection()  # Establish a database connection
-            mycursor = myDatabase.cursor()
-            mycursor.execute("UPDATE subscriptions SET points = points + 10 WHERE user_id = %s", (usable_id,))
-            mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
-            session["points_dynamic"] = str(mycursor.fetchall()[0][0])
-            myDatabase.commit()  # Commit the changes
-            print("points added!")
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500  # Handle any database errors
-
-        finally:
-            if mycursor:
-                mycursor.close()  # Ensure cursor is closed
-            if myDatabase:
-                myDatabase.close()  # Ensure database connection is closed
-
-        # Handle multiple or single files for download
-        if len(converted_files) > 1:
-            zip_filename = "converted_files.zip"
-            zip_path = os.path.join(output_folder, zip_filename)
-            with zipfile.ZipFile(zip_path, "w") as zipf:
-                for file in converted_files:
-                    zipf.write(file, os.path.basename(file))
-
-            cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
-                                                                                     output_folder))
-            cleanup_thread.start()
-
-            print(f"Returning zip file: {zip_path}")
-            return send_file(zip_path, as_attachment=True, mimetype='application/zip')
-        elif converted_files:
-
-            cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder,
-                                                                                     output_folder))
-            cleanup_thread.start()
-
-            print(f"Returning single file: {converted_files[0]}")
-            return send_file(converted_files[0], as_attachment=True)
         else:
-            print("No valid files were converted.")
+            print("No file names provided.")
             return redirect(request.url)
 
     else:
-        print("No file names provided.")
-        return redirect(request.url)
+        if names:
+            for file in files:
+                try:
+                    # Get the corresponding new name from the map
+                    file_name = file_rename_map.get(file)
+                    secured_name = secure_filename(file_name)
+
+                    pdf_file_path = os.path.join(upload_folder, file)
+
+                    # Use convert_pdf_to_file for conversion
+                    modules.convert_pdf_to_word(pdf_file_path, wanted_file_type, output_folder)
+
+                    # Construct the output filename based on the desired format
+                    base_name = os.path.splitext(secured_name)[0]
+                    cleaned_name = f"{base_name}{wanted_file_type}"
+
+                    output_file_path = os.path.join(output_folder, cleaned_name)
+
+                    if os.path.exists(output_file_path):
+                        converted_files.append(output_file_path)
+                        print(f"Conversion successful for {file_name}")
+                    else:
+                        print(f"Converted file not found for {file_name}")
+
+                except Exception as e:
+                    print(f"Error during conversion for {file_name}: {e}")
+                    return redirect(request.url)
+
+            print(f"Converted files: {converted_files}")
+
+            usable_id = session.get("user_id")
+            try:
+                myDatabase = modules.sql_connection()  # Establish a database connection
+                mycursor = myDatabase.cursor()
+                mycursor.execute("UPDATE subscriptions SET points = points + 10 WHERE user_id = %s", (usable_id,))
+                mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
+                session["points_dynamic"] = str(mycursor.fetchall()[0][0])
+                myDatabase.commit()  # Commit the changes
+                print("Points added!")
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500  # Handle any database errors
+
+            finally:
+                if mycursor:
+                    mycursor.close()  # Ensure cursor is closed
+                if myDatabase:
+                    myDatabase.close()  # Ensure database connection is closed
+
+            # Handle multiple or single files for download
+            if len(converted_files) > 1:
+                zip_filename = "converted_files.zip"
+                zip_path = os.path.join(output_folder, zip_filename)
+                with zipfile.ZipFile(zip_path, "w") as zipf:
+                    for file in converted_files:
+                        zipf.write(file, os.path.basename(file))
+
+                cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder, output_folder))
+                cleanup_thread.start()
+
+                print(f"Returning zip file: {zip_path}")
+                return send_file(zip_path, as_attachment=True, mimetype='application/zip')
+            elif converted_files:
+                cleanup_thread = threading.Thread(target=modules.deferred_cleanup, args=(upload_folder, output_folder))
+                cleanup_thread.start()
+
+                print(f"Returning single file: {converted_files[0]}")
+                return send_file(converted_files[0], as_attachment=True)
+            else:
+                print("No valid files were converted.")
+                return redirect(request.url)
+
+        else:
+            print("No file names provided.")
+            return redirect(request.url)
 
 
 @app.route('/addFile', methods=['POST'])
@@ -600,6 +683,8 @@ def add_file():
         data_types = ".png"
     elif sorted_names[0].lower().endswith(".bmp"):
         data_types = ".bmp"
+    elif sorted_names[0].lower().endswith(".pdf"):
+        data_types = ".pdf"
 
     logged_in = session.get("logged_in")
 
