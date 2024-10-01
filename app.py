@@ -78,12 +78,33 @@ def logout():
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile_page():
+    usable_id = session.get("user_id")
+    upgrade_successful = session.pop('upgrade_successful', None)
+
     fn_dynamic = session.get("fn_dynamic", "none")
     ln_dynamic = session.get("ln_dynamic", "none")
     un_dynamic = session.get("un_dynamic", "none")
     email_dynamic = session.get("email_dynamic", "none")
     points_dynamic = session.get("points_dynamic", "none")
-    upgrade_successful = session.pop('upgrade_successful', None)
+
+    try:
+        myDatabase = modules.sql_connection()
+        mycursor = myDatabase.cursor()
+    except mysql.connector.Error as err:
+        print(f"Database connection error: {err}")
+        return jsonify({'error': 'Failed to connect to the database.'}), 500
+
+    mycursor.execute("SELECT account_type FROM subscriptions WHERE user_id = %s", (usable_id,))
+    account_type_fetch = str(mycursor.fetchall()[0][0])
+
+    mycursor.execute("SELECT DATEDIFF(pro_end_date, CURDATE()) FROM subscriptions WHERE user_id = %s", (usable_id,))
+    days_left = str(mycursor.fetchall()[0][0])
+
+    if account_type_fetch == "Premium":
+        isPremium = True
+    else:
+        isPremium = False
+
 
     return render_template("profile.html",
                            fn_dynamic=fn_dynamic,
@@ -91,7 +112,9 @@ def profile_page():
                            un_dynamic=un_dynamic,
                            email_dynamic=email_dynamic,
                            points_dynamic=points_dynamic,
-                           upgrade_successful=upgrade_successful
+                           upgrade_successful=upgrade_successful,
+                           isPremium=isPremium,
+                           days_left=days_left
                            )
 
 
@@ -749,11 +772,36 @@ def premium_trial():
 
         mycursor.execute("SELECT points FROM subscriptions WHERE user_id = %s", (usable_id,))
         session["points_dynamic"] = str(mycursor.fetchall()[0][0])
+
         myDatabase.commit()
 
-        session['upgrade_successful'] = True
 
-        return redirect(url_for("profile_page"))
+        mycursor.execute("SELECT account_type FROM subscriptions WHERE user_id = %s", (usable_id,))
+        account_type_fetch = str(mycursor.fetchall()[0][0])
+        if account_type_fetch == "Premium":
+            session['upgrade_successful'] = True
+
+        mycursor.execute("SELECT DATEDIFF(pro_end_date, pro_start_date) FROM subscriptions WHERE user_id = %s", (usable_id,))
+        days_left = str(mycursor.fetchall()[0][0])
+
+
+
+        isPremium = session['upgrade_successful']
+        fn_dynamic = session.get("fn_dynamic", "none")
+        ln_dynamic = session.get("ln_dynamic", "none")
+        un_dynamic = session.get("un_dynamic", "none")
+        email_dynamic = session.get("email_dynamic", "none")
+        points_dynamic = session.get("points_dynamic", "none")
+
+        return render_template("profile.html",
+                                isPremium=isPremium,
+                                fn_dynamic=fn_dynamic,
+                                ln_dynamic=ln_dynamic,
+                                un_dynamic=un_dynamic,
+                                email_dynamic=email_dynamic,
+                                points_dynamic=points_dynamic,
+                                days_left=days_left
+                               )
 
     finally:
         if mycursor:

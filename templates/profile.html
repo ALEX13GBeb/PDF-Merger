@@ -449,25 +449,39 @@
             transform: translateX(-50%) scale(1.1);
         }
 
-        .successUpgrade {
-            color: #0c8500;
-            font-size: 1.2rem;
-            font-weight: bold;
-            background-color: #e6ffe6;
-            padding: 10px;
-            border: 2px solid #0c8500;
-            text-align: center;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 15px 0;
-            font-family: 'Arial', sans-serif;
-        }
+        .header-container {
+            display:flex;
+            flex-direction:row;
+            justify-content: flex-start;
+            align-items: center;
+
+        .premium-message {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 80px;
+            width: 300px;
+            padding: 15px;
+            border: 3px solid #D4AF37; /* Gold border */
+            border-radius: 12px; /* Slightly rounder for a premium feel */
+            background: linear-gradient(145deg, #FFD700, #DAA520); /* Gradient for a golden background */
+            color: #FFFFFF; /* Bright white for better contrast */
+            font-size: 22px; /* Slightly larger font for emphasis */
+            font-weight: 700; /* Increase font weight for better legibility */
+            margin: 20px 0; /* Adjust margins as needed */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* Deeper shadow for a more luxurious effect */
+            text-transform: uppercase; /* Uppercase text to make it stand out */
+            letter-spacing: 1.5px; /* Slightly wider letter spacing for clearer text */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add subtle shadow for better contrast */
+}
 
     </style>
 </head>
 <body>
     <div class="page-box">
 
+        <div class="header-container">
         <h1>
             <form action="/">
                 <button id="bring-home" type="submit">
@@ -476,6 +490,14 @@
                 </button>
             </form>
         </h1>
+
+        {% if isPremium %}
+            <div class="premium-message" >
+                <h3>PRO USER</h3>
+                <h3>( {{ days_left }} days left )</h3>
+            </div>
+        {% endif %}
+        </div>
 
         <div class="info-container">
             <div class="info">
@@ -583,9 +605,6 @@
 
         <button class="premium-upgrade-button" onclick="window.location.href='https://buy.stripe.com/test_4gw17BafOb8T4us4gg';"></button>
 
-        <div class="successUpgrade" style="display: none;">
-            You have successfully upgraded to PRO USER. Enjoy the next 7 days of Premium Experience!
-        </div>
 
     </div>
 
