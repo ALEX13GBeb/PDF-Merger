@@ -59,6 +59,12 @@ function restrictFileNameInput(event) {
 
    // Function to show the loading overlay
 function showLoading() {
+    // Show the loading overlay
     document.getElementById('loading-overlay').style.display = 'flex';
+
+    // Hide the loading overlay after 3 seconds (3000 milliseconds)
+    setTimeout(function() {
+        document.getElementById('loading-overlay').style.display = 'none';
+    }, 3000);
 }
 

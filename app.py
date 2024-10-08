@@ -69,7 +69,9 @@ def index():
         pass
 
     logged_in=session.get("logged_in", False)
-    return render_template("index.html", logged_in=logged_in)
+    premium = session.get("premium_account", False)
+
+    return render_template("index.html", logged_in=logged_in, premium=premium)
 
 @app.route("/signout")
 def logout():
@@ -213,6 +215,15 @@ def login_page():
                     login_id = mycursor.fetchall()
 
                     session["user_id"] = str(login_id[0][0])
+                    usable_id = session.get("user_id", "none")
+
+                    mycursor.execute("SELECT account_type FROM subscriptions WHERE user_id = %s", (usable_id,))
+                    type_of_account = str(mycursor.fetchall()[0][0])
+
+                    if type_of_account == "Premium":
+                        session["premium_account"] = True
+                    else:
+                        session["premium_account"] = False
 
                     mycursor.execute( profile_query, (str(login_id[0][0]),) )
                     profile_data = mycursor.fetchall()
@@ -861,8 +872,8 @@ def delete_account():
             myDatabase.close()  # Ensure database connection is closed
 
     session.pop("logged_in", None)  # Remove user from session
-    session.pop("user_id", None)  # Remove user_id from session
-    return redirect(url_for("index"))  # Redirect to the index page
+    session.pop("user_id", None)
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug=True)

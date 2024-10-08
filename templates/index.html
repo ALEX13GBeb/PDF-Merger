@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Merger</title>
+    <title>PDF Alex</title>
 
     <style>
-        body{
+        body {
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-
-            background-color:#f0f0f0;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         h1 {
             display: flex;
+            flex-wrap: wrap;
             flex-direction: row;
             justify-content: flex-start;
             align-items: center;
 
             position: relative;
 
-            width: 49.5%;
+            width: 100%;
 
             color: #585858;
             font-size: 52px;
@@ -47,6 +50,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 15px 0;
             font-family: 'Arial', sans-serif;
+            width: 90%;
+            max-width: 600px;
         }
 
         .site-icon {
@@ -59,6 +64,7 @@
 
         .page-box {
             display: flex;
+            flex-wrap: wrap;
             flex-direction: column;
             justify-content: flex-start;
             align-items: flex-start;
@@ -68,6 +74,8 @@
             left: 40px;
             right: 40px;
             bottom: 20px;
+
+            height: calc(100vh - 60px);
 
             background-color: white;
             background-image: url("static/images/PDF_Alex.png");
@@ -93,11 +101,13 @@
             font-weight: 900;
 
             border: none;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .button {
             padding: 10px 12px;
-            width: 80px;
+            width: 100px;
 
             border: none;
             border-radius: 10px;
@@ -157,10 +167,9 @@
             flex-wrap: wrap;
 
             position:relative;
-
-            width: 30%;
+;
+            width: auto;
             padding: 5px;
-
         }
 
         .tools-box {
@@ -177,33 +186,24 @@
             background-color: white;
             box-shadow: 2px 2px 4px rgba(1, 1, 1, 0.3);
 
-            max-width: 500px;
+            max-width: 420px;
             max-height: 50px;
             width: 100%;
         }
 
 
         .tools-box h3 {
-            flex-grow: 1;
-
             margin: 0;
-
-            font-size: 20px;
-            font-weight: 900;
+            font-size: 1.2rem;
+            font-weight: bold;
+            flex-grow: 1;
         }
 
 
         .list-button {
-            display: flex;
-            flex-shrink: 1;
-            align-items: center;
-            justify-content: center;
-
             border: none;
             background: none;
-            padding: 0;
             cursor: pointer;
-            margin: 5px;
         }
 
         .flex-row {
@@ -212,8 +212,6 @@
             gap: 10px;  /* Space between items */
             z-index: 100;
         }
-
-
 
         .list-button:focus {
             outline: none; /* Removes default outline on focus */
@@ -230,10 +228,12 @@
         #list_item1,
         #list_item2 {
             display: none;
+            flex-wrap: wrap;
             flex-direction: row;
             align-items: left;
             justify-content: left;
             overflow: hidden;
+            height: auto;
         }
 
         .rectangle {
@@ -242,10 +242,12 @@
             align-items: center;
             justify-content: center;
 
-            width: 10%;
-            height: 30px;
+            width: auto;
+            height: auto;
             max-width: 400px;
             min-width: 200px;
+            min-height: 40px;
+
 
             border-radius: 10px;
             cursor: pointer;
@@ -323,7 +325,7 @@
             width: 10%;
             max-width: 400px;
             min-width: 200px;
-            height: 100%;
+            height: auto;
 
             border: 3px solid black;
             border-radius: 10px;
@@ -336,7 +338,7 @@
 
 
         form input {
-            width: 100%;
+            width: auto;
 
             padding: 10px;
             box-sizing: border-box;
@@ -345,6 +347,13 @@
 
 
         form input[type="file"] {
+            width: 100%;
+
+            box-sizing:border-box;
+            box-shadow: none;
+        }
+
+        form input[type="submit"] {
             width: 100%;
 
             box-sizing:border-box;
@@ -366,8 +375,10 @@
 
             display: flex;
             flex-direction: row;
-            justify-content: space-around;
+            flex-wrap: wrap;
+            justify-content: space-between;
             align-items: flex-start; /* Align the text at the top */
+            gap: 20px
 
             width: 100%;
             height: 18%;
@@ -393,8 +404,6 @@
 
         }
 
-
-
         .instructions p {
             font-size: 16px;
             text-align: center;
@@ -402,10 +411,12 @@
         }
 
         .instructions div {
+            flex: 1 1 calc(33.333% - 20px);
             padding-top: 0px;
             padding-right: 75px; /* Adjust padding as necessary */
             padding-bottom: 0px;
             padding-left: 75px;
+            box-sizing: border-box;
         }
 
         .header-container {
@@ -422,6 +433,17 @@
             height: 30px; /* Match the image height to the header */
             width: auto; /* Maintain aspect ratio */
             margin-right: 10px; /* Add space between the image and header */
+        }
+
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+            .instructions {
+                flex-direction: column; /* Stack instructions vertically */
+            }
+
+            .instructions > div {
+                flex: 1 1 100%; /* Each instruction takes full width */
+            }
         }
 
 
@@ -464,7 +486,7 @@
 
             <br>
 
-            <div id="list_item0" class="flex-row">
+            <div id="list_item0">
                 <div id="red_rectangle" class="rectangle red-rec" onclick="showPdfForm()">
                     <img src="{{ url_for('static', filename='images/pdf.png') }}" class="document-icon">PDF Merger
                 </div>
@@ -477,7 +499,6 @@
                         <input type="text" name="merged_filename" placeholder="Enter merged file name..." required>
                         <input type="submit" id="submit_button" class="" value="Upload and Merge">
                     </div>
-                        <p class="error-message" id="error_number_files"></p>
                 </form>
             </div>
 

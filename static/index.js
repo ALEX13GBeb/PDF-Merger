@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function() {
     var errorElement = document.getElementById("error_number_files");
     var submitButton = document.getElementById("submit_button");
     var form = document.getElementById("index_form");
-    submitButton.disabled = true;
     // Event listener for file input changes
     fileInput.addEventListener("change", function() {
         var fileCount = fileInput.files.length;
@@ -20,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+
 function DisplayList0() {
     var listItem0 = document.getElementById("list_item0");
 
@@ -28,8 +28,8 @@ function DisplayList0() {
     }
     else {
         listItem0.style.display = "flex"; // Show the forms
-        document.getElementById("red_rectangle").style.display = "flex"; // Hide the rectangle
-        document.getElementById("index_form").style.display = "none"; // Show the form
+        document.getElementById("red_rectangle").style.display = "flex";
+        document.getElementById("index_form").style.display = "none";
         }}
 
 function DisplayList1() {
@@ -99,6 +99,7 @@ window.onload = function() {
         }
     }
 };
+
 
 function showJPEGForm() {
     document.getElementById("jpeg_rectangle").style.display = "none"; // Hide the rectangle
